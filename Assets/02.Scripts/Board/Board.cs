@@ -1,16 +1,24 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Board : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField]
+    private BoardGenerator boardGenerator;
+
+    private Dictionary<(int, int), Block> dicBlocks = new Dictionary<(int, int), Block>();
+
+    void Awake()
     {
+        this.dicBlocks = this.boardGenerator.GenerateBoard();
         
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    //public void DicTest()
+    //{
+    //    foreach(KeyValuePair<(int, int), Block> pair in this.dicBlocks)
+    //    {
+    //        Debug.Log($"BlockName: {pair.Value.name}, Block Position: {pair.Key.Item1}, {pair.Key.Item2}");
+    //    }
+    //}
 }

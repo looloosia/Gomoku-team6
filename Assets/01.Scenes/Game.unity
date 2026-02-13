@@ -296,6 +296,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 584300134}
+  - component: {fileID: 584300136}
   - component: {fileID: 584300135}
   m_Layer: 0
   m_Name: Board
@@ -337,6 +338,19 @@ MonoBehaviour:
   blockPrefab: {fileID: 4480820168219386168, guid: 277fd7b563295364d9501d271842ac49, type: 3}
   blockParentPos: {fileID: 54726392}
   startPos: {fileID: 1361966627}
+--- !u!114 &584300136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 584300133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3915f720599fbcf449a720f44c57169d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Board
+  boardGenerator: {fileID: 584300135}
 --- !u!1 &1361966626
 GameObject:
   m_ObjectHideFlags: 0

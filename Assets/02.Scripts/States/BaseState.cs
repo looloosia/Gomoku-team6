@@ -22,6 +22,7 @@ public abstract class BaseState
         {
             // 게임 승패 확인
             var gameResult = gameLogic.CheckGameResult();
+            
             if (gameResult == GameLogic.GameResult.None)
             {
                 // 턴 전환

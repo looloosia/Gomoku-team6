@@ -11,7 +11,6 @@ public class TurnManager : MonoBehaviour
     private BaseState _currentState;
     private GameLogic  _gameLogic;
     
-    
     public void InitState(Constants.GameType gameType, GameLogic gameLogic)
     {
         _gameLogic = gameLogic;

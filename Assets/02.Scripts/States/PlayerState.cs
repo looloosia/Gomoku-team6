@@ -19,6 +19,7 @@ public class PlayerState : BaseState
         gameLogic.ChangeGameState();
     }
     
+    
     public override void OnEnter(GameLogic gameLogic)
     {
         // 상태 진입 시 로직 구현

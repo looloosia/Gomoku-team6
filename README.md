@@ -1,6 +1,5 @@
 # 오목 6팀
-
-- Notion: https://www.notion.so/304f829a649e80cdb211f7182398ded0?v=304f829a649e809eb57f000c219740e4&source=copy_link
+Notion: https://www.notion.so/304f829a649e80cdb211f7182398ded0?v=304f829a649e809eb57f000c219740e4&source=copy_link
 
 ## 환경
 - Unity: 6000.3.7f1

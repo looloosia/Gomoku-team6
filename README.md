@@ -15,14 +15,18 @@
 ## 브랜치 전략
 - main: 제출용(직접 push 금지됨)
 - develop: 병합용
-- 이름: 작업용
+- 이름/구현기능: 작업용
 
 ## 작업 방법
-1. 'develop'에서 브랜치 생성
-2. 해당 브랜치에서 commit, push
-3. base: develop으로 PR 생성
-4. console 에러 없으면 merge
-5. 제출 시 develop -> main 으로 PR
+1. 'develop'에서 브랜치 생성: '이름/구현기능'
+2. (선택) base: develop 으로 Draft PR 생성 
+3. 기능이 최소 동작/테스트 되면
+  - Draft PR 생성했을 경우  
+     > Ready for review 클릭  
+   - Draft PR 생성 안 했을 경우  
+     > PR 생성
+4. 리뷰 후 merge (에러 등 확인)
+5. 최종 제출 시 develop -> main 으로 PR
 
 ## 규칙
 - 같은 씬을 동시에 수정X (hierarchy, 오브젝트 배치, 속성/컴포넌트 변경)

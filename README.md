@@ -22,11 +22,11 @@
 2. (선택) base: develop 으로 Draft PR 생성 
 3. 기능이 최소 동작/테스트 되면
   * Draft PR 생성했을 경우
-  > Ready for review 클릭
+   > Ready for review 클릭
   * Draft PR 생성 안 했을 경우
-  > PR 생성
+   > PR 생성
 4. 리뷰 후 merge (에러 등 확인)
-+ 최종 제출 시 develop -> main 으로 PR
+최종 제출 시 develop -> main 으로 PR
 
 ## 규칙
 - 같은 씬을 동시에 수정X (hierarchy, 오브젝트 배치, 속성/컴포넌트 변경)

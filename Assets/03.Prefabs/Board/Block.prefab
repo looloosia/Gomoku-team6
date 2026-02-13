@@ -151,5 +151,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65d3b032fddf4204398de4f64d92c8ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Block
-  blackBlock: {fileID: 0}
-  whiteBlock: {fileID: 0}
+  stone: {fileID: 7452329495917970757}

@@ -350,6 +350,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3915f720599fbcf449a720f44c57169d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Board
+  whiteStone: {fileID: 9185100545972174240, guid: a10793afac20a4541ae2f2120dc3a05a, type: 3}
+  blackStone: {fileID: -824027187401283259, guid: 4bb33df469e3e3842a56a55d28f6b048, type: 3}
   boardGenerator: {fileID: 584300135}
 --- !u!1 &1361966626
 GameObject:

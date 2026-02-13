@@ -1,24 +1,16 @@
 ---
-name: Bug report
-about: 버그 제보
-title: "[Bug] "
-labels: bug
+name: Feature request
+about: 기능 제안
+title: "[Feat] "
+labels: enhancement
 ---
 
-## 현상
+## 목표
 -
 
-## 재현 방법
-1.
-2.
-3.
-
-## 기대 동작
+## 구현 아이디어
 -
 
-## 환경
-- Unity: 6000.3.7f1
-- OS: Windows
-
-## 첨부
-- 스크린샷/영상/로그
+## 완료 기준
+- [ ]
+- [ ]

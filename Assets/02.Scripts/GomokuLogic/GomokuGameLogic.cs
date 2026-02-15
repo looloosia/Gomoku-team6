@@ -23,7 +23,7 @@ public class GomokuGameLogic
     
     
     //흑돌인지 백돌인지 선택(흑: 선, 백: 후)
-    public GomokuGameLogic(GameType gameType, PlayerType playerType/*, BlockController blockController*/,DemoTurnStateManager turnStateManager)
+    public GomokuGameLogic(GameType gameType, PlayerType playerType /*, BlockController blockController*/,DemoTurnStateManager turnStateManager)
     {
         //this.blockController = blockController;
         board = new PlayerType[BOARD_SIZE, BOARD_SIZE];

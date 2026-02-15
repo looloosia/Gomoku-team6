@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using UnityEngine;
 using static Constants;
-using static UnityEditor.Rendering.InspectorCurveEditor;
 
 public class DemoTurnStateManager : MonoBehaviour
 {
@@ -11,9 +10,9 @@ public class DemoTurnStateManager : MonoBehaviour
 
     private DemoBaseState currenState;
 
-    public Action<DemoBaseState> endGameDelegate;
+    public Action<DemoBaseState, Constants.GameResult> onEndGame;
 
-    public void SetState(DemoBaseState newState/*, PlayerType playerType*/)
+    public void SetState(DemoBaseState newState)
     {
         currenState = newState;
         if(counterRoutine !=null)
@@ -31,7 +30,8 @@ public class DemoTurnStateManager : MonoBehaviour
             Debug.Log($"{timeLimit}초");
             yield return new WaitForSeconds(1f);
         }
-        //TODO: gameManager에서 게임 끝 함수 호출
-        endGameDelegate?.Invoke(playerState);
+        onEndGame?.Invoke(playerState, GameResult.Lose);
     }
+    //TODO: 끝나면 로직에서 호출할 함수: 기능-코루틴 정지, UI숨기기
 }
+

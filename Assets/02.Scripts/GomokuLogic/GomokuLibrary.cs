@@ -57,7 +57,7 @@ public static class GomokuLibrary
 
         //TODO: 4-4
 
-        //
+        
 
         return Constants.ForbiddenType.None;
     }

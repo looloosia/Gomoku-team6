@@ -13,13 +13,12 @@ public class GomokuGameLogic
     private DemoBaseState currentState;
 
     private DemoTurnStateManager turnStateManager;
-    public enum GameResult { None, Win, Lose, Draw };
 
     public PlayerType[,] Board { get { return board; } }
 
     private Coroutine counterRoutine = null;
 
-    //승리, 패배 판정 용 임시 카운터 변수
+    //승리, 패배 판정 용 임시 카운터 변수(삭제예정)
     public int demoCounter = 5;
     
     
@@ -30,7 +29,8 @@ public class GomokuGameLogic
         board = new PlayerType[BOARD_SIZE, BOARD_SIZE];
 
         this.turnStateManager = turnStateManager;
-        //turnStateManager.endGameDelegate = 
+        this.turnStateManager.onEndGame += EndGame;
+
         PlayerType otherPlayerType = playerType == PlayerType.Black ? PlayerType.White : PlayerType.Black; //상대방 타입(멀티플레이일 경우 게스트)
         
         switch (gameType)
@@ -39,116 +39,131 @@ public class GomokuGameLogic
                 playerAState = new DemoBaseState(playerType);
                 playerBState = new DemoBaseState(otherPlayerType);
                 ////흑돌인 Player먼저 시작
-                SetState(playerAState);
+                StartFirstState();               
                 break;
-            case GameType.SinglePlay:
-                //playerAState = new PlayerState(true);
-                //playerBState = new AIState(false);
+
+            //case GameType.SinglePlay:
+            //    playerAState = new DemoBaseState(playerType);
+            //    playerBState = new DemoBaseState(otherPlayerType);
 
                 ////첫 턴인 Player먼저 시작
-                //SetState(playerAState);
-                break;
+                //StartFirstState();
+                //break;
 
+        }
+    }
+
+
+    private void StartFirstState()
+    {
+        if (playerAState.Type == Constants.PlayerType.Black)
+        {
+            SetState(playerAState);
+        }
+        else
+        {
+            SetState(playerBState);
         }
     }
 
     //턴 혹은 상태가 바뀔 때 호출되는 메서드
-    public void SetState(DemoBaseState newState) //델리게이트 호출
+    public void SetState(DemoBaseState newState)
     {
-        currentState?.OnExit(this);//기존 스테이트는 끝
+        currentState?.OnExit(this); //기존 스테이트 끝
         currentState = newState;
-        currentState?.OnEnter(this);//새로운 스테이트 시작
+        currentState?.OnEnter(this);    //새로운 스테이트 시작
+
+        turnStateManager.SetState(newState);
     }
 
-    //public bool PlaceMarker(int index, PlayerType playerType)
-    //{
-    //    int row = index / BOARD_SIZE;
-    //    int col = index % BOARD_SIZE;
-    //    if (board[row, col] != Constants.PlayerType.None)
-    //        return false;
-
-    //    blockController.PlaceMarker(index, playerType);
-    //    board[row, col] = playerType;
-    //    return true;
-    //}
+    public bool PlaceMarker(PlayerType playerType, int inRow, int inCol)
+    {
+        if (board[inRow, inCol] != Constants.PlayerType.None) //무엇인가 있는 경우
+        {
+            Debug.Log("빈 칸에 돌을 놓아주세요");
+            return false;
+        }
+        if (RuleChecker(playerType, inRow, inCol) != ForbiddenType.None)
+            return false;
+        //blockController.PlaceMarker(index, playerType);
+        board[inRow, inCol] = playerType;
+        return true;
+    }
 
     //턴 변경
     public void ChangeGameState()
     {
-        Debug.Log("ChangeGameState");
-
         if (currentState == playerAState)
         {
-            currentState = playerBState;
-            turnStateManager.SetState(playerBState);
+            SetState(playerBState);
         }
         else
         {
-            currentState = playerAState;
-            turnStateManager. SetState(playerAState);
+            SetState(playerAState);
         }
-        SetState(currentState);
     }
 
-    public GameResult CheckGameResult(Constants.PlayerType playerType, int inRow, int inCol) //인풋: 바둑돌 놓은 좌표 
+    public Constants.GameResult CheckGameResult(Constants.PlayerType playerType, int inRow, int inCol) //인풋: 바둑돌 놓은 좌표 
     {
         //승리 조건 확인 로직 구현
         if (CheckGameWin(PlayerType.Black, board, inRow, inCol))
         {
-            return GameResult.Win;
+            return Constants.GameResult.Win;
         }
 
         if (CheckGameWin(PlayerType.White, board, inRow, inCol))
         {
-            return GameResult.Lose;
+            return Constants.GameResult.Lose;
         }
         
         return GameResult.None;
     }
-
-    public void EndGame(/*GameResult gameResult,*/ DemoBaseState playerState) 
+    public void EndGame(DemoBaseState playerState, Constants.GameResult gameResult) 
     {
+        
+        if(gameResult == Constants.GameResult.Win) //승리
+        {
+            if(playerState == playerAState)
+            {
+                Debug.Log("A 승리");
+                Debug.Log("B 패배");
+            }
+            else
+            {
+                Debug.Log("B 승리");
+                Debug.Log("A 패배");
+            }
+        }
 
-        //string resultString = "";
-        if(playerAState == playerState)
+        else if (gameResult == Constants.GameResult.Lose) //패배(시간 초과 등)
         {
-            Debug.Log(playerAState.Type + " win");
-            Debug.Log(playerBState.Type + " lose");
+            if (playerState == playerAState)
+            {
+                Debug.Log("B 승리");
+                Debug.Log("A 패배");
+            }
+            else
+            {
+                Debug.Log("A 승리");
+                Debug.Log("B 패배");
+            }
         }
-        else
-        {
-            Debug.Log(playerBState.Type + " win");
-            Debug.Log(playerAState.Type + " lose");
-        }
-        //switch (gameResult)
-        //{
-        //    case GameResult.Win:
-        //        resultString = "Player1 승리";
-        //        break;
-        //    case GameResult.Lose:
-        //        resultString = "Player2 승리";
-        //        break;
-        //}
+        
+        //TurnStateManager에서 아예 다 꺼버리는 함수 호출
+        turnStateManager.onEndGame -= EndGame;
+
         //GameManager.Instance.OpenConfirmPanel(resultString, () => { GameManager.Instance.ChangeToMainScene(); });
     }
 
-    public bool RuleChecker()
+    public ForbiddenType RuleChecker(Constants.PlayerType playerType, int inRow, int inCol)
     {
-        return true;
+        //3목인 경우 return ForbiddenType.Three;
+        //4목인 경우 return ForbiddenType.Four;
+        //장목인 경우 return ForbiddenType.Long;
+
+
+        return ForbiddenType.None;
     }
-
-    //IEnumerator CounterRoutine(PlayerType playerType)
-    //{
-    //    int timeLimit = TIME_LIMIT;
-
-    //    while (timeLimit>0)
-    //    {
-    //        timeLimit--;
-    //        //TODO: 타이머 UI호출 함수에 매개변수로 timeLimit보내기
-    //        yield return new WaitForSeconds(1f);
-    //    }
-    //    //TODO: 반복문 끝나면 현재 유저가 졌다고 판정
-    //}
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///
@@ -168,10 +183,9 @@ public class DemoBaseState
         gameLogic.demoCounter--;
         if (gameLogic.demoCounter ==0)
         {
-            gameLogic.EndGame(this);
+            //gameLogic.EndGame(this);
             return;
         }
-        gameLogic.ChangeGameState();
         
         Debug.Log($"{this} turn Enter");
     }
@@ -187,27 +201,27 @@ public class DemoBaseState
     public void HandleNextTurn(GomokuGameLogic gameLogic)
     {
         Debug.Log("HandleNextTurn");
+        gameLogic.ChangeGameState();
+
     }
 
     public void ProcessMove(GomokuGameLogic gameLogic, Constants.PlayerType playerType, int inRow, int inCol)
     {
-        //특정 위치 마커 표시
-        //    if (gameLogic.RuleChecker())
-        //    {
-        //        GomokuGameLogic.GameResult gameResult = gameLogic.CheckGameResult(playerType, inRow, inCol);
-
-        //        if (gameResult == GomokuGameLogic.GameResult.None)
-        //        {
-
-        //            HandleNextTurn(gameLogic);
-        //        }
-        //        else
-        //        {
-        //            gameLogic.EndGame(gameResult, playerType);
-
-        //        }
-        //    }
         Debug.Log("ProcessMove");
+        //룰 확인
+        if (gameLogic.PlaceMarker(playerType, inRow, inCol))
+        {
+            Constants.GameResult gameResult = gameLogic.CheckGameResult(playerType, inRow, inCol);
+
+            if (gameResult == Constants.GameResult.None)
+            {
+                HandleNextTurn(gameLogic);
+            }
+            else
+            {
+                gameLogic.EndGame(this, gameResult);
+            }
+        }
     }
     
 }

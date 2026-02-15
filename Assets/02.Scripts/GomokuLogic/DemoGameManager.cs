@@ -9,8 +9,6 @@ public class DemoGameManager : DemoSingleton<DemoGameManager>
     private PlayerType playerType;
     protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
     {
-        
-        
         if(scene.name == SCENE_GAME)
         {
             DemoTurnStateManager turnStateManager = FindFirstObjectByType<DemoTurnStateManager>();
@@ -21,7 +19,6 @@ public class DemoGameManager : DemoSingleton<DemoGameManager>
             }
 
             gameLogic = new GomokuGameLogic(GameType.LocalDualPlay, PlayerType.Black, turnStateManager);
-
         }
         Debug.Log("¾À ·Îµå");
     }

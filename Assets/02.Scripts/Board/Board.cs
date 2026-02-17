@@ -1,14 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static Constants;
 
 public class Board : MonoBehaviour
 {
-    [SerializeField]
-    private Sprite whiteStone;
-    [SerializeField]
-    private Sprite blackStone;
-
     [SerializeField]
     private BoardGenerator boardGenerator;
 
@@ -37,17 +33,17 @@ public class Board : MonoBehaviour
         {
             Block clickedBlock = hit.collider.GetComponent<Block>();
 
-            if (clickedBlock != null && !clickedBlock.HasStone)
+            if (clickedBlock != null && clickedBlock.markerType == eMarkerType.None)
             {
-                //돌 생성
-                clickedBlock.SetStone(true, RandomStone());
+                //돌 생성(랜덤, 플레이어 임시)
+                clickedBlock.SetStone((eMarkerType)RandomStone());
             }
         }
     }
-    public Sprite RandomStone()
+    public int RandomStone()
     {
-        Sprite randomSprite = Random.Range(0, 2) == 0 ? this.blackStone : this.whiteStone;
-        return randomSprite;
+        int rand = Random.Range(1, 3);
+        return rand;
     }
     //public void DicTest()
     //{

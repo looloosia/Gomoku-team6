@@ -10,7 +10,7 @@ public class BoardGenerator : MonoBehaviour
 
     [SerializeField]
     private Transform startPos;     //첫 블럭 위치
-    private int boardSize = 15;     //오목판 사이즈 (15x15)
+
     private float spacing = 0.6f;   //블럭 간격
 
 
@@ -20,9 +20,9 @@ public class BoardGenerator : MonoBehaviour
 
         Vector2 startPos = this.startPos.position;
 
-        for (int y = 0; y < this.boardSize; y++)
+        for (int y = 0; y < Constants.BOARD_SIZE; y++)
         {
-            for (int x = 0; x < this.boardSize; x++)
+            for (int x = 0; x < Constants.BOARD_SIZE; x++)
             {
                 //블럭 위치
                 float posX = startPos.x + (x * this.spacing);

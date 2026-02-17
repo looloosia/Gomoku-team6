@@ -11,5 +11,5 @@ public static class Constants
     public enum PlayerType { None, Black, White }
 
     public enum GameResult { None, Win, Lose }
-    public enum ForbiddenType { None, Three, Four, Long } //3-3, 4-4, 장목
+    public enum ForbiddenType { None, DoubleThree, DoubleFour, Overline } //3-3, 4-4, 장목
 }

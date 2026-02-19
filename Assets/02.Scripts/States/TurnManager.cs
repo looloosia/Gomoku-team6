@@ -4,7 +4,7 @@ using UnityEngine;
 /// GameType에 따른 턴 초기와 작업
 /// GameLogic 역할 스크립트에서 blockcontroller, 보드 초기화 할 때 InitState() 호출해서 함께 초기화
 /// </summary>
-public class TurnManager : MonoBehaviour
+public class TurnManager
 {
     public BaseState playerAState;
     public BaseState playerBState;

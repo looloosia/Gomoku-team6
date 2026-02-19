@@ -8,12 +8,12 @@ public class AIState : BaseState
 {
     private Constants.PlayerType _playerType;
     
-    public AIState(bool isFirstPlayer)
+    public AIState(PlayerType playerType)
     {
         _playerType = isFirstPlayer ? Constants.PlayerType.Player1 : Constants.PlayerType.Player2;
     }
     
-    public override void HandleMove(GameLogic gameLogic, int index)
+    public override void HandleMove(int index)
     {
         ProcessMove(gameLogic, index, _playerType);
     }
@@ -37,7 +37,7 @@ public class AIState : BaseState
             int col = result.Value.col;
             int index = row * Constants.BOARD_SIZE + col;
     
-            HandleMove(gameLogic, index);
+            HandleMove(index);
         } 
     }
     

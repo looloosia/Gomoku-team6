@@ -11,9 +11,9 @@ public abstract class BaseState
 {
     private TurnManager _turnManager;
     public abstract void OnEnter(GameLogic gameLogic);                      // 상태 진입 시 호출
-    public abstract void HandleMove(GameLogic gameLogic, int index);        // 플레이어 이동 처리
+    public abstract void HandleMove(int index);        // 플레이어 이동 처리
     public abstract void OnExit(GameLogic gameLogic);                       // 상태 종료 시 호출
-    public abstract void HandleNextTurn(GameLogic gameLogic);               // 다음 턴 처리
+    public abstract void HandleNextTurn();               // 다음 턴 처리
     
     public void ProcessMove(GameLogic gameLogic, int index, Constants.PlayerType playerType) // Constants 생기면 참조 다시설정
     {
@@ -26,7 +26,7 @@ public abstract class BaseState
             if (gameResult == GameLogic.GameResult.None)
             {
                 // 턴 전환
-                HandleNextTurn(gameLogic);
+                HandleNextTurn();
                 Debug.Log("턴 전환");
             }
             else if (gameResult == GameLogic.GameResult.Win)

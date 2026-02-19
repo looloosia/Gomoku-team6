@@ -106,12 +106,12 @@ public class GomokuGameLogic
     public Constants.GameResult CheckGameResult(Constants.PlayerType playerType, int inRow, int inCol) //인풋: 바둑돌 놓은 좌표 
     {
         //승리 조건 확인 로직 구현
-        if (CheckGameWin(PlayerType.Black, board, inRow, inCol))
+        if (CheckGameWin(board, PlayerType.Black,inRow, inCol))
         {
             return Constants.GameResult.Win;
         }
 
-        if (CheckGameWin(PlayerType.White, board, inRow, inCol))
+        if (CheckGameWin(board, PlayerType.White,  inRow, inCol))
         {
             return Constants.GameResult.Lose;
         }

@@ -3,7 +3,6 @@ using UnityEngine;
 
 public enum BGM
 {
-    lobby,
     COUNT
 }
 

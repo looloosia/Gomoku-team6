@@ -20,6 +20,7 @@ public class BoardGenerator : MonoBehaviour
 
         Vector2 startPos = this.startPos.position;
 
+        //坷弗率 困何磐 积己
         for (int y = 0; y < Constants.BOARD_SIZE; y++)
         {
             for (int x = 0; x < Constants.BOARD_SIZE; x++)

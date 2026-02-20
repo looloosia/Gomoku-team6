@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RegisterPopupView : MonoBehaviour
+public class SignupPopupView : MonoBehaviour
 {
     [Header("InputField")]
     public TMP_InputField idInput;

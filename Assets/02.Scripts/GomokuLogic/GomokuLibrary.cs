@@ -2,6 +2,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using System.Collections;
 using static Constants;
+using System;
 //큐로 기보 가능할지도 (포지션, 돌 타입)
 
 public static class GomokuLibrary
@@ -9,9 +10,9 @@ public static class GomokuLibrary
     private static Queue forbiddenPositions;
 
     private static readonly Vector2Int[] directions = { new Vector2Int(0, 1), new Vector2Int(1, 0), new Vector2Int(1, 1), new Vector2Int(1, -1) };
-    public static bool CheckGameWin(Constants.PlayerType[,] board, Constants.PlayerType playerType,  int inRow, int inCol)
+    public static bool CheckGameWin(Constants.PlayerType[,] board, Constants.PlayerType playerType, int inRow, int inCol)
     {
-        if (IsOverline(board,playerType, inRow,inCol))
+        if (IsOverline(board, playerType, inRow, inCol))
         {
             return false;
         }
@@ -22,14 +23,14 @@ public static class GomokuLibrary
     }
 
     //금수 체크함수
-    public static Constants.ForbiddenType IsForbidden(Constants.PlayerType[,] board, Constants.PlayerType playerType,int inRow, int inCol)
+    public static Constants.ForbiddenType IsForbidden(Constants.PlayerType[,] board, Constants.PlayerType playerType, int inRow, int inCol)
     {
         //백돌은 금수없음
         if (playerType == Constants.PlayerType.White)
         {
             return Constants.ForbiddenType.None;
         }
-        
+
         //TODO: 3-3인 경우 
         if (IsDoubleThree(board, playerType, inRow, inCol))
         {
@@ -49,11 +50,11 @@ public static class GomokuLibrary
 
     public static void CheckForbiddenPostions(Constants.PlayerType[,] board, PlayerType playerType, int boardRange)
     {
-        for(int r=0;r<boardRange;r++)
+        for (int r = 0; r < boardRange; r++)
         {
-            for(int c =0; c<boardRange;c++)
+            for (int c = 0; c < boardRange; c++)
             {
-                if(IsForbidden(board,playerType,r,c) != ForbiddenType.None)
+                if (IsForbidden(board, playerType, r, c) != ForbiddenType.None)
                 {
                     forbiddenPositions.Enqueue(new Vector2Int(r, c));
                 }
@@ -63,9 +64,9 @@ public static class GomokuLibrary
 
     public static void ClearForbiddenPositionCheck(Constants.PlayerType[,] board)
     {
-        while(forbiddenPositions.Count >0)
+        while (forbiddenPositions.Count > 0)
         {
-            Vector2Int position = (Vector2Int) forbiddenPositions.Dequeue();
+            Vector2Int position = (Vector2Int)forbiddenPositions.Dequeue();
             //board[position[0], position[1]]; //forbiddenCheck된 것 해제
         }
     }
@@ -82,14 +83,15 @@ public static class GomokuLibrary
 
         for (int i = 0; i < 4; i++) //방향 탐색 위한 반복문
         {
-            if (IsOpenThree(board,playerType, inRow, inCol, i))
+            if (IsOpenThree(board, playerType, inRow, inCol, i))
             {
                 openThreeChecked++;
             }
         }
         return true;
     }
-    //3
+
+    //열린3
     private static bool IsOpenThree(Constants.PlayerType[,] board, PlayerType playerType, int inRow, int inCol, int dir)
     {
 
@@ -166,7 +168,7 @@ public static class GomokuLibrary
 
         /*
         forwardBlank:
-        1. 0이라면 이미 빈 칸이 하나 있어 더 이상 빈 칸이 있으면 안 된다.
+        1. 0이라면 이미 사이에 빈 칸이 하나 있어 더 이상 빈 칸이 있으면 안 된다.
         2. 1이라면,
             2-1. 빈 칸이 연속 두 번 나왔다.
             2-2. 정방향의 끝 쪽에 상대편 돌이 있다.
@@ -175,7 +177,14 @@ public static class GomokuLibrary
          */
         backwardBlank = forwardBlank;
 
-        forwardBlank = 0;
+        if (forwardBlank == 1) //빈 칸이 없는 경우
+        {
+            forwardBlank = 0; //옆에 더할 때 0
+        }
+        else//빈 칸이 있는 경우
+        {
+            forwardBlank = 1;//옆에 더할 때 1
+        }
 
         //역방향
         while (true)
@@ -505,11 +514,11 @@ public static class GomokuLibrary
         }
     }
 
-    public static bool IsOverline(Constants.PlayerType[,] board, PlayerType playerType,  int inRow, int inCol)
+    public static bool IsOverline(Constants.PlayerType[,] board, PlayerType playerType, int inRow, int inCol)
     {
         for (int dir = 0; dir < 4; dir++)
         {
-            if(IsOneLineOverline(board, playerType, inRow, inCol, dir))
+            if (IsOneLineOverline(board, playerType, inRow, inCol, dir))
             {
                 return true;
             }
@@ -564,7 +573,7 @@ public static class GomokuLibrary
         //초기화
         curRow = inRow;
         curCol = inCol;
-        
+
         //역방향
         while (true)
         {
@@ -617,5 +626,120 @@ public static class GomokuLibrary
         return false;
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //AI구현
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static (int, int)? GetBestMove(Constants.PlayerType[,] board, PlayerType playerType, int boardRange)
+    {
+        int bestScore = int.MinValue;
+        int bestRow = -1, bestCol = -1;
+
+        for (int row = 0; row < boardRange; row++)
+        {
+            for (int col = 0; col < boardRange; col++)
+            {
+                if (board[row, col] == PlayerType.None) //빈 칸
+                {
+                    if (IsInRange(row, col, boardRange))
+                    {
+                        board[row, col] = playerType;
+
+                        int score = Minimax(board, playerType, 3, false, int.MinValue, int.MaxValue, boardRange);
+
+                        if (score > bestScore)
+                        {
+                            score = bestScore;
+                            bestRow = row;
+                            bestCol = col;
+                        }
+                    }
+                }
+            }
+        }
+        return (bestRow, bestCol);
+    }
+
+    public static int Minimax(Constants.PlayerType[,] board, PlayerType playerType, int depth, bool isMaximizing, int alpha, int beta, int boardRange)
+    {
+        if (depth == 0 /*|| IsGameOver(board)*/ ) //종료 조건: 최대 깊이 도달 혹은 게임 종료
+        {
+
+        }
+
+        PlayerType otherPlayer = playerType == PlayerType.Black ? PlayerType.White : PlayerType.Black;
+
+        if (isMaximizing) //Maximizing하는 순서
+        {
+            int maxScore = int.MinValue;
+
+            for (int row = 0; row < boardRange; row++)
+            {
+                for (int col = 0; col < boardRange; col++)
+                {
+                    if (board[row, col] == PlayerType.None)
+                    {
+                        board[row, col] = playerType;   //TODO: 필요 시 보드 복제하는 코드로 대체하기
+
+                        int score = Minimax(board, playerType, depth - 1, false, alpha, beta, boardRange);
+
+                        maxScore = Math.Max(maxScore, score); // 최댓값 비교
+
+                        alpha = Math.Max(alpha, score);
+
+                        board[row, col] = PlayerType.None;
+
+                        if (beta <= alpha)
+                        {
+                            break;
+                        }
+                    }
+                }
+                if (beta <= alpha)
+                {
+                    break;
+                }
+            }
+            return maxScore;
+        }
+        else
+        {
+            int minScore = int.MaxValue;
+
+            for (int row = 0; row < boardRange; row++)
+            {
+                for (int col = 0; col < boardRange; col++)
+                {
+                    int score = Minimax(board, otherPlayer, depth - 1, true, alpha, beta, boardRange);
+
+                    minScore = Math.Min(minScore, score);
+                    beta = Math.Min(beta, score);
+
+                    board[row, col] = PlayerType.None;
+                    if (beta <= alpha)
+                    {
+                        break;
+                    }
+                }
+                if (beta <= alpha)
+                {
+                    break;
+                }
+            }
+            return minScore;
+        }
+
+    }
+    ///<summary>
+    /// TODO: 점수 판정함수
+    /// 4방향 돌리기
+    /// 0,1,2,3해서
+    /// 흑이면 
+    /// ->3-3, 4-4 나올 때 X
+    /// Hash를 가지고 OPEN_THREE나 FOUR가 있으면 그 자리에서 -점수 줘버리기
+    /// 
+    /// 백이면 그냥 다 더하기
+    /// 
+    /// </summary>
 }
 

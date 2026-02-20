@@ -106,15 +106,15 @@ public class GomokuGameLogic
     public Constants.GameResult CheckGameResult(Constants.PlayerType playerType, int inRow, int inCol) //ÀÎÇ²: ¹ÙµÏµ¹ ³õÀº ÁÂÇ¥ 
     {
         //½Â¸® Á¶°Ç È®ÀÎ ·ÎÁ÷ ±¸Çö
-        if (CheckGameWin(board, PlayerType.Black,inRow, inCol))
-        {
-            return Constants.GameResult.Win;
-        }
+        //if (CheckGameWin(board, PlayerType.Black,inRow, inCol))
+        //{
+        //    return Constants.GameResult.Win;
+        //}
 
-        if (CheckGameWin(board, PlayerType.White,  inRow, inCol))
-        {
-            return Constants.GameResult.Lose;
-        }
+        //if (CheckGameWin(board, PlayerType.White,  inRow, inCol))
+        //{
+        //    return Constants.GameResult.Lose;
+        //}
         
         return GameResult.None;
     }

@@ -8,7 +8,7 @@ public static class Constants
 
     public const int TIME_LIMIT = 5;
     public enum GameType { SinglePlay, LocalDualPlay /*, MultiDualPlay*/ }
-    public enum PlayerType { None, Black, White }
+    public enum PlayerType { None, Black, White, Forbidden }
 
     public enum GameResult { None, Win, Lose }
     public enum ForbiddenType { None, DoubleThree, DoubleFour, Overline } //3-3, 4-4, ¿Â∏Ò

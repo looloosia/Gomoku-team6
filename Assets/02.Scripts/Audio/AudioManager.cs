@@ -12,6 +12,11 @@ public enum SFX
     COUNT
 }
 
+
+// 사용법 
+// PlaySFX(SFX sfx) 함수 호출 ,싱글톤사용 또는 액션사용 매개변수는 위의 enum SFX에서 baduk_button_click 을 호출
+// 빈 게임오브젝트 생성 -> audiomanager 스크립트 부착 audiomanager 붙은 게임오브젝트 하위에 빈게임오브젝트 두개 생성 이름을 sfx,bgm으로 생성 후 audiomanager 스크립트의 sfxTrs,bgmtrs에 할당
+// bgm은 리소스 적당한게 없어 아직 안넣음. 끝!
 public class AudioManager : MonoBehaviour
 {
     public Transform BGMTrs;

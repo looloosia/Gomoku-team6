@@ -419,6 +419,7 @@ GameObject:
   - component: {fileID: 584300134}
   - component: {fileID: 584300136}
   - component: {fileID: 584300135}
+  - component: {fileID: 584300137}
   m_Layer: 0
   m_Name: Board
   m_TagString: Untagged
@@ -472,6 +473,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Board
   boardGenerator: {fileID: 584300135}
+  playerChange: {fileID: 584300137}
+--- !u!114 &584300137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 584300133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e42e024cde75884183f9f13f28b9f7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerChange
+  btnPlayerChange: {fileID: 550285749}
 --- !u!1 &723695166
 GameObject:
   m_ObjectHideFlags: 0

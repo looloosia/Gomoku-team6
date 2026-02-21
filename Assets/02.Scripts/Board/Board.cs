@@ -8,6 +8,10 @@ public class Board : MonoBehaviour
     [SerializeField]
     private BoardGenerator boardGenerator;
 
+    //temp
+    [SerializeField]
+    private PlayerChange playerChange;
+
     private Dictionary<(int, int), Block> dicBlocks = new Dictionary<(int, int), Block>();
 
     void Awake()
@@ -33,10 +37,10 @@ public class Board : MonoBehaviour
         {
             Block clickedBlock = hit.collider.GetComponent<Block>();
 
-            if (clickedBlock != null && clickedBlock.markerType == eMarkerType.None)
+            if (clickedBlock != null && clickedBlock.markerType == PlayerType.None)
             {
                 //돌 생성(랜덤, 플레이어 임시)
-                clickedBlock.SetStone((eMarkerType)RandomStone());
+                clickedBlock.SetStone(this.playerChange.Type);
             }
         }
     }

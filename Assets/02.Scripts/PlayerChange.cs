@@ -13,7 +13,7 @@ public class PlayerChange : MonoBehaviour
     {
         this.btnPlayerChange.onClick.AddListener(() =>
         {
-            this.type = this.type == Constants.PlayerType.Black ? Constants.PlayerType.White : Constants.PlayerType.Black;
+            this.type = (this.type == Constants.PlayerType.Black) ? Constants.PlayerType.White : Constants.PlayerType.Black;
         });
     }
 }

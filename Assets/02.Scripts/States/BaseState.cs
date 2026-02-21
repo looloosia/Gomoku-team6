@@ -1,52 +1,34 @@
 using UnityEngine;
-using UnityEngine.AdaptivePerformance;
 
-using UnityEngine;
-
-/// <summary>
-/// 게임 턴 상태 기본 클래스
-/// 현재 Constants(PlayerType), GameLogic(CheckGameResult(), PlaceMarker()) 필요
-/// </summary>
 public abstract class BaseState
 {
-    private TurnManager _turnManager;
-    public abstract void OnEnter(GameLogic gameLogic);                      // 상태 진입 시 호출
-    public abstract void HandleMove(int index);        // 플레이어 이동 처리
-    public abstract void OnExit(GameLogic gameLogic);                       // 상태 종료 시 호출
-    public abstract void HandleNextTurn();               // 다음 턴 처리
-    
-    public void ProcessMove(GameLogic gameLogic, int index, Constants.PlayerType playerType) // Constants 생기면 참조 다시설정
+    protected Constants.PlayerType _playerType;
+    public Constants.PlayerType Type => _playerType;
+
+    protected Board _board;
+
+    public abstract void OnEnter(GomokuGameLogic gameLogic);
+    public abstract void HandleMove(GomokuGameLogic gameLogic, int inRow, int inCol);
+    public abstract void OnExit(GomokuGameLogic gameLogic);
+    public abstract void HandleNextTurn(GomokuGameLogic gameLogic);
+
+    public void ProcessMove(GomokuGameLogic gameLogic, int inRow, int inCol)
     {
-        // 특정 위치에 마커(바둑알) 표시
-        if (gameLogic.PlaceMarker(index, playerType))
+        if (gameLogic.PlaceMarker(_playerType, inRow, inCol))
         {
-            // 게임 승패 확인
-            var gameResult = gameLogic.CheckGameResult();
-            
-            if (gameResult == GameLogic.GameResult.None)
+            // board 스크립트의 돌 생성 관련 함수 호출
+            // 예. _board.PlaceStone(inRow, inCol, _playerType);
+            var gameResult = gameLogic.CheckGameResult(_playerType, inRow, inCol);
+
+            if (gameResult == Constants.GameResult.None)
             {
-                // 턴 전환
-                HandleNextTurn();
-                Debug.Log("턴 전환");
-            }
-            else if (gameResult == GameLogic.GameResult.Win)
-            {
-                // 게임 승리 처리
-                gameLogic.EndGame(gameResult);
-                Debug.Log("게임 승리");
-            }
-            else if (gameResult == GameLogic.GameResult.Draw)
-            {
-                // 게임 무승부 처리
-                gameLogic.EndGame(gameResult);
-                Debug.Log("게임 무승부");
+                HandleNextTurn(gameLogic);
             }
             else
             {
-                // 게임 패배 처리
-                gameLogic.EndGame(gameResult);
-                Debug.Log("게임 패배");
+                gameLogic.EndGame(this, gameResult);
             }
         }
     }
+    
 }

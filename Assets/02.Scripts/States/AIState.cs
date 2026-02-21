@@ -1,47 +1,30 @@
 using UnityEngine;
 
-/// <summary>
-/// AI 턴 관리
-/// 현재 Constants(PlayerType), BlockController, GameLogic, GameManager(SetGameTurn()) 필요
-/// </summary>
-public class AIState : BaseState
+namespace _02.Scripts.States
 {
-    private Constants.PlayerType _playerType;
-    
-    public AIState(PlayerType playerType)
+    public class AIState : BaseState
     {
-        _playerType = isFirstPlayer ? Constants.PlayerType.Player1 : Constants.PlayerType.Player2;
-    }
-    
-    public override void HandleMove(int index)
-    {
-        ProcessMove(gameLogic, index, _playerType);
-    }
-    
-    public override void HandleNextTurn(GameLogic gameLogic)
-    {
-        gameLogic.ChangeGameState();
-    }
-    
-    public override void OnEnter(GameLogic gameLogic)
-    {        
-        // 턴 UI 업데이트
-        GameManager.Instance.SetGameTurn(_playerType);
-    
-        var board = gameLogic.Board;
-        var result = TicTacToeAI.GetBestMove(board);
-    
-        if (result.HasValue)
+        public AIState(Constants.PlayerType playerType)
         {
-            int row = result.Value.row;
-            int col = result.Value.col;
-            int index = row * Constants.BOARD_SIZE + col;
-    
-            HandleMove(index);
-        } 
-    }
-    
-    public override void OnExit(GameLogic gameLogic)
-    {
+            _playerType = playerType;
+        }
+        public override void OnEnter(GomokuGameLogic gameLogic)
+        {
+            GameManager.Instance.SetGameTurn(_playerType);
+        }
+
+        public override void HandleMove(GomokuGameLogic gameLogic, int inRow, int inCol)
+        {
+            ProcessMove(gameLogic, inRow, inCol);
+        }
+
+        public override void OnExit(GomokuGameLogic gameLogic)
+        {
+        }
+
+        public override void HandleNextTurn(GomokuGameLogic gameLogic)
+        {
+            gameLogic.ChangeGameState();
+        }
     }
 }

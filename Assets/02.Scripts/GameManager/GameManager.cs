@@ -76,7 +76,7 @@ public class GameManager : Singleton<GameManager>
                 // _gamePanelController = FindFirstObjectByType<GamePanelController>();
 
                 // Game Logic 생성
-                _gameLogic = new GomokuGameLogic(_gameType, _playerType, _turnStateManager);
+                _gameLogic = new GomokuGameLogic(_gameType, _playerType /*, _board*/, _turnStateManager);
         }
     }
 

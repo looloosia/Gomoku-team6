@@ -11,12 +11,19 @@ public class Board : MonoBehaviour
     //temp
     [SerializeField]
     private PlayerChange playerChange;
+    [SerializeField]
+    private Replay replay;
+    [SerializeField]
+    private End end;
+    
 
     private Dictionary<(int, int), Block> dicBlocks = new Dictionary<(int, int), Block>();
 
     void Awake()
     {
         this.dicBlocks = this.boardGenerator.GenerateBoard();
+
+        InitEvents();
     }
     void Update()
     {
@@ -37,18 +44,47 @@ public class Board : MonoBehaviour
         {
             Block clickedBlock = hit.collider.GetComponent<Block>();
 
-            if (clickedBlock != null && clickedBlock.markerType == PlayerType.None)
+            if (clickedBlock != null && clickedBlock.GetBlockData().markerType == PlayerType.None)
             {
-                //돌 생성(랜덤, 플레이어 임시)
-                clickedBlock.SetStone(this.playerChange.Type);
+                if(this.playerChange.Type == PlayerType.Black)
+                    clickedBlock.SetBlackStone();
+                else if(this.playerChange.Type == PlayerType.White)
+                    clickedBlock.SetWhiteStone();
             }
         }
+    }
+    private void InitEvents()
+    {
+        this.end.SetReplayCallback(BoardReset);
+
+        this.replay.SetReplayCallback(Replay);
     }
     public int RandomStone()
     {
         int rand = Random.Range(1, 3);
         return rand;
     }
+
+    private void Replay()
+    {
+
+    }
+    private void SaveReplay()
+    {
+        foreach (Block block in this.dicBlocks.Values)
+        {
+            
+        }
+    }
+    private void BoardReset()
+    {
+        foreach (Block block in this.dicBlocks.Values)
+        {
+            block.ResetStone();
+        }
+    }
+
+
     //public void DicTest()
     //{
     //    foreach(KeyValuePair<(int, int), Block> pair in this.dicBlocks)

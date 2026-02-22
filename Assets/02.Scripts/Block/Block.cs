@@ -3,7 +3,7 @@ using static Constants;
 
 public class Block : MonoBehaviour
 {
-    public Constants.PlayerType markerType = Constants.PlayerType.None;
+    private BlockData blockData;
 
     [SerializeField]
     private SpriteRenderer stone;
@@ -12,17 +12,11 @@ public class Block : MonoBehaviour
     [SerializeField]
     private Sprite blackStone;
 
-    private (int x, int y) boardPos;
-    public (int x, int y) BoardPos => this.boardPos;
 
 
-    public void SetBlockPosition(int x, int y)
+    private void SetStone(PlayerType markerType)
     {
-        this.boardPos = (x, y);
-    }
-    public void SetStone(PlayerType markerType)
-    {
-        this.markerType = markerType;
+        SetBlockType(markerType);
         switch (markerType)
         {
             case PlayerType.White:
@@ -35,5 +29,29 @@ public class Block : MonoBehaviour
                 this.stone.sprite = null;
                 break;
         }
+    }
+    public BlockData GetBlockData()
+    {
+        return this.blockData;
+    }
+    public void SetBlockPosition(int x, int y)
+    {
+        this.blockData.boardPos = (x, y);
+    }
+    public void SetBlockType(PlayerType markerType)
+    {
+        this.blockData.markerType = markerType;
+    }
+    public void ResetStone()
+    {
+        SetStone(PlayerType.None);
+    }
+    public void SetWhiteStone()
+    {
+        SetStone(PlayerType.White);
+    }
+    public void SetBlackStone()
+    {
+        SetStone(PlayerType.Black);
     }
 }

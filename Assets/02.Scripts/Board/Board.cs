@@ -58,9 +58,16 @@ public class Board : MonoBehaviour
     }
     private void InitEvents()
     {
-        this.end.SetReplayCallback(BoardReset);
+        this.end.SetReplayCallback(() =>
+        {
+            AddReplay();
+            BoardReset();
+        });
 
-        this.replay.SetReplayCallback(AddReplay);
+        this.replay.SetReplayCallback(() =>
+        {
+
+        });
     }
     public int RandomStone()
     {

@@ -30,13 +30,18 @@ public class Block : MonoBehaviour
                 break;
         }
     }
+    public void SetBlockData(BlockData blockData)
+    {
+        this.blockData = blockData;
+        UpdateBlock();
+    }
     public BlockData GetBlockData()
     {
         return this.blockData;
     }
     public void SetBlockPosition(int x, int y)
     {
-        this.blockData.boardPos = (x, y);
+        this.blockData.boardPos = new Vector2Int(x, y);
     }
     public void SetBlockType(PlayerType markerType)
     {
@@ -53,5 +58,9 @@ public class Block : MonoBehaviour
     public void SetBlackStone()
     {
         SetStone(PlayerType.Black);
+    }
+    public void UpdateBlock()
+    {
+        SetStone(this.blockData.markerType);
     }
 }

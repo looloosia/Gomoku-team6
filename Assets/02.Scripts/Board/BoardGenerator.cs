@@ -31,17 +31,18 @@ public class BoardGenerator : MonoBehaviour
                 Vector2 spawnPos = new Vector2(posX, posY);
                 
                 //블럭 생성
-                GameObject newBlock = Instantiate(this.blockPrefab, spawnPos, Quaternion.identity, this.transform);
-                newBlock.transform.SetParent(this.blockParentPos);
+                GameObject objBlock = Instantiate(this.blockPrefab, spawnPos, Quaternion.identity, this.transform);
+                objBlock.transform.SetParent(this.blockParentPos);
 
                 //블럭 세팅
-                Block block = newBlock.GetComponent<Block>();
-                block.SetBlockPosition(x, y);
+                Block block = objBlock.GetComponent<Block>();
+                BlockData data = new BlockData(Constants.PlayerType.None, new Vector2Int(x, y));
+                block.SetBlockData(data);
 
                 //블럭 딕셔너리 추가
                 dicBlocks.Add((x, y), block);
 
-                newBlock.name = $"Block_{(x, y)}";
+                objBlock.name = $"Block_{(x, y)}";
             }
         }
         return dicBlocks;

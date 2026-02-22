@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -20,7 +21,7 @@ public class Board : MonoBehaviour
     //key: 블럭 위치
     private Dictionary<(int, int), Block> dicBlocks = new Dictionary<(int, int), Block>();
     
-    private List<ReplayData> listReplay = new List<ReplayData>();
+    private List<ReplayFrameData> listReplayFrame = new List<ReplayFrameData>();
 
     void Awake()
     {
@@ -53,6 +54,7 @@ public class Board : MonoBehaviour
                     clickedBlock.SetBlackStone();
                 else if(this.playerChange.Type == PlayerType.White)
                     clickedBlock.SetWhiteStone();
+                SaveReplayFrame();
             }
         }
     }
@@ -60,7 +62,7 @@ public class Board : MonoBehaviour
     {
         this.end.SetReplayCallback(() =>
         {
-            AddReplay();
+            SaveReplayJson();
             BoardReset();
         });
 
@@ -75,17 +77,24 @@ public class Board : MonoBehaviour
         return rand;
     }
 
-    private void AddReplay()
+    private void SaveReplayJson()
+    {
+        ReplaySaveData data = new ReplaySaveData(this.listReplayFrame);
+        string json = JsonUtility.ToJson(data, true);
+
+        string folderPath = Application.dataPath + "/Replay";
+        string filePath = folderPath + "/ReplayData_Test.json";
+        File.WriteAllText(filePath, json);
+
+        Debug.Log("파일 저장 완료! 경로: " + filePath);
+    }
+    private void SaveReplayFrame()
     {
         BlockData[] blocks = this.dicBlocks.Values.Select(x => x.GetBlockData()).ToArray();
 
-        ReplayData replayData = new ReplayData(blocks);
+        ReplayFrameData frameData = new ReplayFrameData(blocks);
 
-        this.listReplay.Add(replayData);
-    }
-    private void SaveReplay()
-    {
-        
+        this.listReplayFrame.Add(frameData);
     }
     private void BoardReset()
     {

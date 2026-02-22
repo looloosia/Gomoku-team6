@@ -2,9 +2,9 @@ using UnityEngine;
 using static Constants;
 
 [System.Serializable]
-public class BlockData
+public struct BlockData
 {
-    public PlayerType markerType = PlayerType.None;
+    public PlayerType markerType;
     public Vector2Int boardPos;
     public BlockData(PlayerType markerType, Vector2Int boardPos)
     {

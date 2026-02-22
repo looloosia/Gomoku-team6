@@ -24,7 +24,6 @@ public class ReplayBoard : MonoBehaviour
     {
         this.dicBlocks = this.boardGenerator.GenerateBoard();
         LoadReplayJson();
-        FirstFrameSetting();
 
         this.btnPrev.onClick.AddListener(PrevFrame);
         this.btnNext.onClick.AddListener(NextFrame);
@@ -47,14 +46,6 @@ public class ReplayBoard : MonoBehaviour
 
         Debug.Log("Json 로드 완료");
     }
-    private void FirstFrameSetting()
-    {
-        ReplayFrameData frameToPlay = this.listReplayFrame[this.currentReplayframe];
-
-        SetBoardFromReplayData(frameToPlay);
-
-        this.currentReplayframe++;
-    }
     private void SetBoardFromReplayData(ReplayFrameData frameData)
     {
         foreach(BlockData blockData in frameData.blockDatas)
@@ -67,7 +58,7 @@ public class ReplayBoard : MonoBehaviour
     }
     private void NextFrame()
     {
-        if (this.currentReplayframe > this.listReplayFrame.Count - 1)
+        if (this.currentReplayframe >= this.listReplayFrame.Count - 1)
             return;
 
         this.currentReplayframe++;
@@ -76,7 +67,7 @@ public class ReplayBoard : MonoBehaviour
     }
     private void PrevFrame()
     {
-        if (this.currentReplayframe < 0)
+        if (this.currentReplayframe <= 0)
             return;
 
         this.currentReplayframe--;

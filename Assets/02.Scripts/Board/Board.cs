@@ -28,6 +28,8 @@ public class Board : MonoBehaviour
         this.dicBlocks = this.boardGenerator.GenerateBoard();
 
         InitEvents();
+
+        SaveReplayFrame();
     }
     void Update()
     {

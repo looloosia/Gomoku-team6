@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using static Constants;
@@ -16,8 +17,10 @@ public class Board : MonoBehaviour
     [SerializeField]
     private End end;
     
-
+    //key: 블럭 위치
     private Dictionary<(int, int), Block> dicBlocks = new Dictionary<(int, int), Block>();
+    
+    private List<ReplayData> listReplay = new List<ReplayData>();
 
     void Awake()
     {
@@ -57,7 +60,7 @@ public class Board : MonoBehaviour
     {
         this.end.SetReplayCallback(BoardReset);
 
-        this.replay.SetReplayCallback(Replay);
+        this.replay.SetReplayCallback(AddReplay);
     }
     public int RandomStone()
     {
@@ -65,16 +68,17 @@ public class Board : MonoBehaviour
         return rand;
     }
 
-    private void Replay()
+    private void AddReplay()
     {
+        BlockData[] blocks = this.dicBlocks.Values.Select(x => x.GetBlockData()).ToArray();
 
+        ReplayData replayData = new ReplayData(blocks);
+
+        this.listReplay.Add(replayData);
     }
     private void SaveReplay()
     {
-        foreach (Block block in this.dicBlocks.Values)
-        {
-            
-        }
+        
     }
     private void BoardReset()
     {

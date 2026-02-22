@@ -39,9 +39,9 @@ public class BoardGenerator : MonoBehaviour
                 block.SetBlockPosition(x, y);
 
                 //ºí·° µñ¼Å³Ê¸® Ãß°¡
-                dicBlocks.Add(block.BoardPos, block);
+                dicBlocks.Add((x, y), block);
 
-                newBlock.name = $"Block_{block.BoardPos}";
+                newBlock.name = $"Block_{(x, y)}";
             }
         }
         return dicBlocks;

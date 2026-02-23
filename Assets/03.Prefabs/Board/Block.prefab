@@ -152,3 +152,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Block
   stone: {fileID: 7452329495917970757}
+  whiteStone: {fileID: 9185100545972174240, guid: a10793afac20a4541ae2f2120dc3a05a, type: 3}
+  blackStone: {fileID: -824027187401283259, guid: 4bb33df469e3e3842a56a55d28f6b048, type: 3}

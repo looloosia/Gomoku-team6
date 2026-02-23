@@ -1,7 +1,8 @@
 using System.Linq;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
-public class AccountManager : MonoBehaviour // 싱글톤으로 변경 예정
+public class AccountManager : Singleton<AccountManager>
 {
     private AccountRepository repository = new AccountRepository();
 
@@ -13,7 +14,7 @@ public class AccountManager : MonoBehaviour // 싱글톤으로 변경 예정
         return repository.Exists(id);
     }
 
-    public bool Repository(string id, string pw)
+    public bool Signup(string id, string pw)
     {
         // 1. 아이디 중복 검사
         if (repository.Exists(id))
@@ -55,5 +56,10 @@ public class AccountManager : MonoBehaviour // 싱글톤으로 변경 예정
     public bool IsValidPassword(string pw)
     {
         return pw.Length >= 8 && pw.Any(char.   IsLetter) && pw.Any(char.IsDigit);
+    }
+
+    protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
+    {
+        // AccountManager는 씬 로드 시 할 일 없음
     }
 }

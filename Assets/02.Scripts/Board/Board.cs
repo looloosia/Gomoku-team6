@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using static Constants;
 
@@ -17,11 +18,13 @@ public class Board : MonoBehaviour
     private Replay replay;
     [SerializeField]
     private End end;
-    
+
     //key: 블럭 위치
     private Dictionary<(int, int), Block> dicBlocks = new Dictionary<(int, int), Block>();
     
     private List<ReplayFrameData> listReplayFrame = new List<ReplayFrameData>();
+
+    public UnityAction onPlaceStone;
 
     void Awake()
     {
@@ -33,10 +36,10 @@ public class Board : MonoBehaviour
     }
     void Update()
     {
-        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
-        {
-            StoneOnClick();
-        }
+        //if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+        //{
+        //    StoneOnClick();
+        //}
     }
 
     private void StoneOnClick()
@@ -62,6 +65,9 @@ public class Board : MonoBehaviour
     }
     private void InitEvents()
     {
+        this.onPlaceStone = StoneOnClick;
+
+        //temp
         this.end.SetReplayCallback(() =>
         {
             SaveReplayJson();

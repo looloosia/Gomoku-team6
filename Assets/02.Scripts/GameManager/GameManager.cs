@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using static Constants;
 
@@ -68,8 +70,7 @@ public class GameManager : Singleton<GameManager>
         if (scene.name == SCENE_GAME)
         {
             _turnStateManager = FindFirstObjectByType<TurnStateManager>();
-            _board = FindFirstObjectByType<Board>();
-
+            
             if (_turnStateManager != null)
             {
                 // GamePanelController 참조 가져오기

@@ -87,7 +87,8 @@ public class Board : MonoBehaviour
 
     private void SaveReplayJson()
     {
-        ReplaySaveData data = new ReplaySaveData(this.listReplayFrame);
+        //임시 닉네임과 승패
+        ReplaySaveData data = new ReplaySaveData(this.listReplayFrame, "26/02/23", "Player1", "Player2", (GameType)1);
         string json = JsonUtility.ToJson(data, true);
 
         string folderPath = Application.dataPath + "/Replay";

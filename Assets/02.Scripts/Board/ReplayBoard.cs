@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
+using UnityEngine.Events;
 
 public class ReplayBoard : MonoBehaviour
 {
@@ -20,15 +21,18 @@ public class ReplayBoard : MonoBehaviour
     private List<ReplayFrameData> listReplayFrame = new List<ReplayFrameData>();
 
     private int currentReplayframe = 0;
+
+    public UnityAction onLoadReplayData;
     void Awake()
     {
         this.dicBlocks = this.boardGenerator.GenerateBoard();
-        LoadReplayJson();
+
+        this.onLoadReplayData = LoadReplayData;
 
         this.btnPrev.onClick.AddListener(PrevFrame);
         this.btnNext.onClick.AddListener(NextFrame);
     }
-    private void LoadReplayJson()
+    private void LoadReplayData()
     {
         string folderPath = Application.dataPath + "/Replay";
         string filePath = folderPath + "/ReplayData_Test.json"; // 예시 파일명

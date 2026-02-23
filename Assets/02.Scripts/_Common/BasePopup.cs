@@ -51,4 +51,11 @@ public abstract class BasePopup : MonoBehaviour
         onComplete?.Invoke(); 
         Destroy(gameObject);
     }
+
+    // 핵심 추가: 자식(ConfirmPopup)이 이 함수의 역할을 덮어쓸 수 있게 만듦
+    protected virtual void OnClickClosePopup()
+    {
+        // 기본 동작은 그냥 닫기 (SettingPopup 같은 애들은 이거 그대로 씀)
+        Hide(); 
+    }
 }

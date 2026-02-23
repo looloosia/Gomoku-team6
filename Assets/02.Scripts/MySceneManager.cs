@@ -26,4 +26,14 @@ public class MySceneManager : Singleton<MySceneManager>
         };
     }
 
+    //찾는 스크립트 없는 버전
+    public void LoadSceneWithCallback(string sceneName, Action onSceneLoad = null)
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+
+        asyncLoad.completed += (operation) =>
+        {
+            onSceneLoad?.Invoke();
+        };
+    }
 }

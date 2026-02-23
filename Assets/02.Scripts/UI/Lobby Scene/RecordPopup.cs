@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEngine.Events;
+using UnityEditor.U2D.Aseprite;
 
 public class RecordPopup : BasePopup
 {
@@ -22,9 +23,9 @@ public class RecordPopup : BasePopup
     }
     protected override void Init()
     {
-        CreateRecordContent();
+        Record();
     }
-    private ReplaySaveData LoadReplayJson()
+    private List<ReplayFrameData> LoadReplayJson()
     {
         string folderPath = Application.dataPath + "/Replay";
         string filePath = folderPath + "/ReplayData_Test.json"; // 예시 파일명
@@ -40,25 +41,29 @@ public class RecordPopup : BasePopup
         List<ReplayFrameData> data = loadData.listReplayFrameData;
 
         Debug.Log("Json 로드 완료");
-        return loadData;
+        return data;
     }
     private void Record()
     {
-        ReplaySaveData loadData = LoadReplayJson();
-        RecordContent content = CreateRecordContent();
+        List<ReplayFrameData> frameData = LoadReplayJson();
+        RecordContent content = CreateRecordContent(frameData);
         
     }
-    private RecordContent CreateRecordContent()
+    private RecordContent CreateRecordContent(List<ReplayFrameData> loadData)
     {
         GameObject obj = Instantiate(this.recordPrefab, this.tsParent);
         RecordContent content = obj.GetComponent<RecordContent>();
         this.listRecordContent.Add(content);
         content.Init(RecordScene);
+        content.SetFrameData(loadData);
 
         return content;
     }
     private void RecordScene()
     {
-        
+        MySceneManager.Instance.LoadSceneWithCallback<ReplayBoard>("Record", (replayBoard) =>
+        {
+            replayBoard.onLoadReplayData(LoadReplayJson());
+        });
     }
 }

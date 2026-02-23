@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -30,6 +31,8 @@ public class RecordContent : MonoBehaviour
     [SerializeField]
     private Button btnRecordPlay;
 
+    private List<ReplayFrameData> frameData;
+
     public void Init(UnityAction action)
     {
         this.btnRecordPlay.onClick.AddListener(action);
@@ -59,5 +62,13 @@ public class RecordContent : MonoBehaviour
                 this.imageResult2 = this.imageWin;
                 break;
         }
+    }
+    public List<ReplayFrameData> GetFrameData()
+    {
+        return this.frameData;
+    }
+    public void SetFrameData(List<ReplayFrameData> frameData)
+    {
+        this.frameData = frameData;
     }
 }

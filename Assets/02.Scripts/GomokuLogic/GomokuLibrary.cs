@@ -8,8 +8,12 @@ using static Constants;
 
 public static class GomokuLibrary
 {
-    private static List<List<(int,int)>> candidtateList = new List<List<(int,int)>>();//DFS탐색용 리스트
-
+    private static List<List<(int, int)>> candidatesList = new List<List<(int, int)>> //DFS용 리스트
+    {
+        new List<(int, int)>(), // 0번 인덱스에 할당
+        new List<(int, int)>(), // 1번 인덱스에 할당
+        new List<(int, int)>()  // 2번 인덱스에 할당
+    };
     private static Queue forbiddenPositions = new Queue();
     private static readonly Vector2Int[] directions = { new Vector2Int(0, 1), new Vector2Int(1, 0), new Vector2Int(1, 1), new Vector2Int(1, -1) };
     private static readonly Vector2Int[] doubleDirections =
@@ -118,7 +122,7 @@ public static class GomokuLibrary
             {
                 board[row, col] = playerType; //돌 놓아보고 미니맥스
 
-                int score = Minimax(board, playerType,  3, false, int.MinValue, int.MaxValue, row, col, boardRange);
+                int score = Minimax(board, playerType, 0, false, int.MinValue, int.MaxValue, row, col, boardRange);
 
                 if (score > bestScore)
                 {
@@ -134,7 +138,7 @@ public static class GomokuLibrary
 
     public static int Minimax(Constants.PlayerType[,] board, PlayerType playerType, int depth, bool isMaximizing, int alpha, int beta, int initR, int initC, int boardRange)
     {
-        if (depth == 0 /*|| IsGameOver(board)*/ ) //종료 조건: 최대 깊이 도달 혹은 게임 종료
+        if (depth == MINIMAX_DEPTH /*|| IsGameOver(board)*/ ) //종료 조건: 최대 깊이 도달 혹은 게임 종료
         {
             return EvaluateScore(board, playerType, initR, initC, boardRange);
         }
@@ -156,7 +160,7 @@ public static class GomokuLibrary
                 {
                     board[row, col] = playerType;   //TODO: 필요 시 보드 복제하는 코드로 대체하기
 
-                    int score = Minimax(board, playerType,depth + 1, false, alpha, beta, row, col, boardRange);
+                    int score = Minimax(board, playerType, depth + 1, false, alpha, beta, row, col, boardRange);
 
                     maxScore = Math.Max(maxScore, score); // 최댓값 비교
 
@@ -209,7 +213,7 @@ public static class GomokuLibrary
     private static List<(int, int)> GetCandidateMoves(PlayerType[,] board, int depth, int boardRange)
     {
         const int RADIUS = 2;
-        List<(int, int)> candidates = new List<(int, int)>();
+        List<(int, int)> candidates = candidatesList[depth];
         bool[,] visited = new bool[boardRange, boardRange];
 
         for (int r = 0; r < boardRange; r++)

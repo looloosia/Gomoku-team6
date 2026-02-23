@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using static Constants;
 using static GomokuLibrary;
+
 public class GomokuGameLogic
 {
     //public BlockController blockController;

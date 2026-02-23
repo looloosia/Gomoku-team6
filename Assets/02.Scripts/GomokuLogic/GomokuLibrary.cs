@@ -1,15 +1,16 @@
-using Unity.VisualScripting;
-using UnityEngine;
-using System.Collections;
-using static Constants;
 using System;
-using UnityEngine.Rendering.Universal;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using static Constants;
 //큐로 기보 가능할지도 (포지션, 돌 타입)
+
 
 public static class GomokuLibrary
 {
-    private static Queue forbiddenPositions;
+    private static List<List<(int,int)>> candidtateList = new List<List<(int,int)>>();//DFS탐색용 리스트
 
+    private static Queue forbiddenPositions = new Queue();
     private static readonly Vector2Int[] directions = { new Vector2Int(0, 1), new Vector2Int(1, 0), new Vector2Int(1, 1), new Vector2Int(1, -1) };
     private static readonly Vector2Int[] doubleDirections =
         {
@@ -20,7 +21,7 @@ public static class GomokuLibrary
     //AI 점수 구현 시 필요
     //public static bool CheckGameWin(Constants.PlayerType[,] board, Constants.PlayerType playerType, int inRow, int inCol)
     //{
-        
+
     //}
 
     //금수 체크함수
@@ -43,7 +44,7 @@ public static class GomokuLibrary
         {
             return Constants.ForbiddenType.None;
         }
-        
+
         //TODO: 3-3인 경우 
         if (CheckDoubleThree(board, playerType, inRow, inCol, boardRange))
         {
@@ -92,77 +93,84 @@ public static class GomokuLibrary
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //AI구현
+
+    /// 수정해야할 수도 있는 부분
+    ///: Minimax함수에서 isMaximizing이 바뀔 때, playerType매개변수 부분에 otherplayerType을 넣는게 맞는지 확인해봐야 함
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static (int, int)? GetBestMove(Constants.PlayerType[,] board, PlayerType playerType, int boardRange)
+    private static int EvaluateScore(PlayerType[,] board, PlayerType playerType, int inRow, int inCol, int boardRange)
+    {
+        return 0;
+    }
+    public static (int, int)? GetBestMove(PlayerType[,] board, PlayerType playerType, int boardRange)
     {
         int bestScore = int.MinValue;
         int bestRow = -1, bestCol = -1;
 
-        for (int row = 0; row < boardRange; row++)
+        List<(int, int)> candidates = GetCandidateMoves(board, 0, boardRange);
+
+        foreach ((int, int) pos in candidates)
         {
-            for (int col = 0; col < boardRange; col++)
+            int row = pos.Item1;
+            int col = pos.Item2;
+
+            if (board[row, col] == PlayerType.None) //빈 칸
             {
-                if (board[row, col] == PlayerType.None) //빈 칸
+                board[row, col] = playerType; //돌 놓아보고 미니맥스
+
+                int score = Minimax(board, playerType,  3, false, int.MinValue, int.MaxValue, row, col, boardRange);
+
+                if (score > bestScore)
                 {
-                    if (IsInRange(row, col, boardRange))
-                    {
-                        board[row, col] = playerType;
-
-                        int score = Minimax(board, playerType, 3, false, int.MinValue, int.MaxValue, boardRange);
-
-                        if (score > bestScore)
-                        {
-                            score = bestScore;
-                            bestRow = row;
-                            bestCol = col;
-                        }
-                    }
+                    bestScore = score;
+                    bestRow = row;
+                    bestCol = col;
                 }
+                board[row, col] = PlayerType.None;//놓은 돌 초기화
             }
         }
         return (bestRow, bestCol);
     }
 
-    public static int Minimax(Constants.PlayerType[,] board, PlayerType playerType, int depth, bool isMaximizing, int alpha, int beta, int boardRange)
+    public static int Minimax(Constants.PlayerType[,] board, PlayerType playerType, int depth, bool isMaximizing, int alpha, int beta, int initR, int initC, int boardRange)
     {
         if (depth == 0 /*|| IsGameOver(board)*/ ) //종료 조건: 최대 깊이 도달 혹은 게임 종료
         {
-
+            return EvaluateScore(board, playerType, initR, initC, boardRange);
         }
 
         PlayerType otherPlayer = playerType == PlayerType.Black ? PlayerType.White : PlayerType.Black;
+
+        List<(int, int)> candidates = GetCandidateMoves(board, depth + 1, boardRange);
 
         if (isMaximizing) //Maximizing하는 순서
         {
             int maxScore = int.MinValue;
 
-            for (int row = 0; row < boardRange; row++)
+            foreach ((int, int) pos in candidates)
             {
-                for (int col = 0; col < boardRange; col++)
+                int row = pos.Item1;
+                int col = pos.Item2;
+
+                if (board[row, col] == PlayerType.None)
                 {
-                    if (board[row, col] == PlayerType.None)
+                    board[row, col] = playerType;   //TODO: 필요 시 보드 복제하는 코드로 대체하기
+
+                    int score = Minimax(board, playerType,depth + 1, false, alpha, beta, row, col, boardRange);
+
+                    maxScore = Math.Max(maxScore, score); // 최댓값 비교
+
+                    alpha = Math.Max(alpha, score);
+
+                    board[row, col] = PlayerType.None;
+
+                    if (beta <= alpha)
                     {
-                        board[row, col] = playerType;   //TODO: 필요 시 보드 복제하는 코드로 대체하기
-
-                        int score = Minimax(board, playerType, depth - 1, false, alpha, beta, boardRange);
-
-                        maxScore = Math.Max(maxScore, score); // 최댓값 비교
-
-                        alpha = Math.Max(alpha, score);
-
-                        board[row, col] = PlayerType.None;
-
-                        if (beta <= alpha)
-                        {
-                            break;
-                        }
+                        break;
                     }
+
                 }
-                if (beta <= alpha)
-                {
-                    break;
-                }
+
             }
             return maxScore;
         }
@@ -170,30 +178,73 @@ public static class GomokuLibrary
         {
             int minScore = int.MaxValue;
 
-            for (int row = 0; row < boardRange; row++)
+            foreach ((int, int) pos in candidates)
             {
-                for (int col = 0; col < boardRange; col++)
+                int row = pos.Item1;
+                int col = pos.Item2;
+
+                if (board[row, col] == PlayerType.None)
                 {
-                    int score = Minimax(board, otherPlayer, depth - 1, true, alpha, beta, boardRange);
+                    board[row, col] = otherPlayer;
+                    int score = Minimax(board, otherPlayer, depth + 1, true, alpha, beta, row, col, boardRange);
 
                     minScore = Math.Min(minScore, score);
                     beta = Math.Min(beta, score);
 
                     board[row, col] = PlayerType.None;
+
                     if (beta <= alpha)
                     {
                         break;
                     }
                 }
-                if (beta <= alpha)
-                {
-                    break;
-                }
             }
+
             return minScore;
         }
 
     }
+
+    //Minimax범위 제한 함수. 돌이 많이 있는 곳이 돌을 놓기 유리할 자리일 확률이 높다는 것을 전제
+    private static List<(int, int)> GetCandidateMoves(PlayerType[,] board, int depth, int boardRange)
+    {
+        const int RADIUS = 2;
+        List<(int, int)> candidates = new List<(int, int)>();
+        bool[,] visited = new bool[boardRange, boardRange];
+
+        for (int r = 0; r < boardRange; r++)
+        {
+            for (int c = 0; c < boardRange; c++)
+            {
+                if (board[r, c] != PlayerType.None) // 돌이 있는 곳 발견
+                {
+                    // 주변 radius 칸을 후보지에 추가
+                    for (int dr = -RADIUS; dr <= RADIUS; dr++)
+                    {
+                        for (int dc = -RADIUS; dc <= RADIUS; dc++)
+                        {
+                            int rr = r + dr;
+                            int cc = c + dc;
+
+                            if (IsInRange(rr, cc, boardRange) && board[rr, cc] == PlayerType.None && !visited[rr, cc])
+                            {
+                                candidates.Add((rr, cc));
+                                visited[rr, cc] = true;
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
+        // 만약 판이 비어있다면 중앙점 반환
+        if (candidates.Count == 0) return new List<(int, int)> { (boardRange / 2, boardRange / 2) };
+
+        return candidates;
+    }
+
+
     ///<summary>
     /// TODO: 점수 판정함수
     /// 4방향 돌리기

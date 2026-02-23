@@ -1,22 +1,66 @@
 using UnityEngine;
+using static Constants;
 
 public class Block : MonoBehaviour
 {
+    private BlockData blockData;
+
     [SerializeField]
     private SpriteRenderer stone;
-    private (int x, int y) boardPos;
-    public (int x, int y) BoardPos => this.boardPos;
+    [SerializeField]
+    private Sprite whiteStone;
+    [SerializeField]
+    private Sprite blackStone;
 
-    private bool hasStone;
-    public bool HasStone => this.hasStone;
 
+
+    private void SetStone(PlayerType markerType)
+    {
+        SetBlockType(markerType);
+        switch (markerType)
+        {
+            case PlayerType.White:
+                this.stone.sprite = this.whiteStone;
+                break;
+            case PlayerType.Black:
+                this.stone.sprite = this.blackStone;
+                break;
+            case PlayerType.None:
+                this.stone.sprite = null;
+                break;
+        }
+    }
+    public void SetBlockData(BlockData blockData)
+    {
+        this.blockData = blockData;
+        UpdateBlock();
+    }
+    public BlockData GetBlockData()
+    {
+        return this.blockData;
+    }
     public void SetBlockPosition(int x, int y)
     {
-        this.boardPos = (x, y);
+        this.blockData.boardPos = new Vector2Int(x, y);
     }
-    public void SetStone(bool hasStone, Sprite sprite)
+    public void SetBlockType(PlayerType markerType)
     {
-        this.hasStone = true;
-        this.stone.sprite = sprite;
+        this.blockData.markerType = markerType;
+    }
+    public void ResetStone()
+    {
+        SetStone(PlayerType.None);
+    }
+    public void SetWhiteStone()
+    {
+        SetStone(PlayerType.White);
+    }
+    public void SetBlackStone()
+    {
+        SetStone(PlayerType.Black);
+    }
+    public void UpdateBlock()
+    {
+        SetStone(this.blockData.markerType);
     }
 }

@@ -10,7 +10,7 @@ public class BoardGenerator : MonoBehaviour
 
     [SerializeField]
     private Transform startPos;     //첫 블럭 위치
-    private int boardSize = 15;     //오목판 사이즈 (15x15)
+
     private float spacing = 0.6f;   //블럭 간격
 
 
@@ -20,9 +20,10 @@ public class BoardGenerator : MonoBehaviour
 
         Vector2 startPos = this.startPos.position;
 
-        for (int y = 0; y < this.boardSize; y++)
+        //오른쪽 위부터 생성
+        for (int y = 0; y < Constants.BOARD_SIZE; y++)
         {
-            for (int x = 0; x < this.boardSize; x++)
+            for (int x = 0; x < Constants.BOARD_SIZE; x++)
             {
                 //블럭 위치
                 float posX = startPos.x + (x * this.spacing);
@@ -30,17 +31,18 @@ public class BoardGenerator : MonoBehaviour
                 Vector2 spawnPos = new Vector2(posX, posY);
                 
                 //블럭 생성
-                GameObject newBlock = Instantiate(this.blockPrefab, spawnPos, Quaternion.identity, this.transform);
-                newBlock.transform.SetParent(this.blockParentPos);
+                GameObject objBlock = Instantiate(this.blockPrefab, spawnPos, Quaternion.identity, this.transform);
+                objBlock.transform.SetParent(this.blockParentPos);
 
                 //블럭 세팅
-                Block block = newBlock.GetComponent<Block>();
-                block.SetBlockPosition(x, y);
+                Block block = objBlock.GetComponent<Block>();
+                BlockData data = new BlockData(Constants.PlayerType.None, new Vector2Int(x, y));
+                block.SetBlockData(data);
 
                 //블럭 딕셔너리 추가
-                dicBlocks.Add(block.BoardPos, block);
+                dicBlocks.Add((x, y), block);
 
-                newBlock.name = $"Block_{block.BoardPos}";
+                objBlock.name = $"Block_{(x, y)}";
             }
         }
         return dicBlocks;

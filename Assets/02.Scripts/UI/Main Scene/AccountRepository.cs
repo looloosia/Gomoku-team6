@@ -1,7 +1,7 @@
 using UnityEngine;
 
 // 데이터 저장/조회 담당하는 로직
-public class AccountRepository : MonoBehaviour
+public class AccountRepository
 {
     // 유저마다 고유키를 만들기 위한 클래스 
     public string GetKey(string id)

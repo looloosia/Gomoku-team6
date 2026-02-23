@@ -8,23 +8,23 @@ namespace _02.Scripts.States
         {
             _playerType = playerType;
         }
-        public override void OnEnter(GomokuGameLogic gameLogic)
+        public override void OnEnter(/*GomokuGameLogic gameLogic*/)
         {
             GameManager.Instance.SetGameTurn(_playerType);
         }
 
-        public override void HandleMove(GomokuGameLogic gameLogic, int inRow, int inCol)
+        public override void HandleMove(/*GomokuGameLogic gameLogic, */ int inRow, int inCol)
         {
-            ProcessMove(gameLogic, inRow, inCol);
+            ProcessMove(/*gameLogic, */inRow, inCol);
         }
 
-        public override void OnExit(GomokuGameLogic gameLogic)
+        public override void OnExit(/*GomokuGameLogic gameLogic*/)
         {
         }
 
-        public override void HandleNextTurn(GomokuGameLogic gameLogic)
+        public override void HandleNextTurn(/*GomokuGameLogic gameLogic*/)
         {
-            gameLogic.ChangeGameState();
+            // gameLogic.ChangeGameState();
         }
     }
 }

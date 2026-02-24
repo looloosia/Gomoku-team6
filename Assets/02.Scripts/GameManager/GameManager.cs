@@ -9,32 +9,32 @@ public class GameManager : Singleton<GameManager>
     #region UI
 
     [SerializeField] private GameObject settingsPanelPrefab;
-    [SerializeField] private GameObject confirmPanelPrefab;
+    // [SerializeField] private GameObject confirmPanelPrefab;
     
     // 캔버스
     private Canvas _canvas;
 
     // 게임 화면의 UI 컨트롤러
-    // private GamePanelController _gamePanelController; 
+    private GamePanelController _gamePanelController; 
     
     // Game Turn UI 업데이트
     public void SetGameTurn(Constants.PlayerType playerTurnType)
     {
-        // _gamePanelController.SetPlayerTurnPanel(playerTurnType);
+        _gamePanelController.SetPlayerTurnPanel(playerTurnType);
     }
 
     // Settings 패널 열기
-    public void OpenSettingsPanel()
+    public void OpenSettingsPopup()
     {
-        var settingsPanelObject = Instantiate(settingsPanelPrefab, _canvas.transform);
-        // settingsPanelObject.GetComponent<SettingsPanelController>().Show();
+        var settingsPopupObject = Instantiate(settingsPanelPrefab, _canvas.transform);
+        settingsPopupObject.GetComponent<SettingsPanelController>().Show();
     }
 
     // Confirm 패널 열기
-    public void OpenConfirmPanel(string message /* , ConfirmPanelController.OnConfirmButtonClicked onConfirmButtonClicked */)
+    public void OpenConfirmPanel(string message , ConfirmPanelController.OnConfirmButtonClicked onConfirmButtonClicked)
     {
         var confirmPanelObject = Instantiate(confirmPanelPrefab, _canvas.transform);
-        // confirmPanelObject.GetComponent<ConfirmPanelController>().Show(message, onConfirmButtonClicked);
+        confirmPanelObject.GetComponent<ConfirmPanelController>().Show(message, onConfirmButtonClicked);
     }
 
     #endregion

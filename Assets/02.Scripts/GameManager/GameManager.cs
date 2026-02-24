@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using static Constants;
 
@@ -6,14 +8,14 @@ public class GameManager : Singleton<GameManager>
 {
     #region UI
 
-    [SerializeField] private GameObject settingsPanelPrefab;
-    [SerializeField] private GameObject confirmPanelPrefab;
+    [SerializeField] private GameObject settingsPopupPrefab;
+    [SerializeField] private GameObject confirmPopupPrefab;
     
     // 캔버스
     private Canvas _canvas;
 
     // 게임 화면의 UI 컨트롤러
-    // private GamePanelController _gamePanelController; 
+    private GamePanelController _gamePanelController; 
     
     // Game Turn UI 업데이트
     public void SetGameTurn(Constants.PlayerType playerTurnType)
@@ -21,18 +23,26 @@ public class GameManager : Singleton<GameManager>
         // _gamePanelController.SetPlayerTurnPanel(playerTurnType);
     }
 
-    // Settings 패널 열기
-    public void OpenSettingsPanel()
+    // Settings 팝업 열기
+    public void OpenSettingPopup()
     {
-        var settingsPanelObject = Instantiate(settingsPanelPrefab, _canvas.transform);
-        // settingsPanelObject.GetComponent<SettingsPanelController>().Show();
+        if (_canvas == null)
+        {
+            _canvas = FindFirstObjectByType<Canvas>();
+        }
+        var settingsPopupObject = Instantiate(settingsPopupPrefab, _canvas.transform);
+        settingsPopupObject.GetComponent<SettingPopup>().Show();
     }
 
-    // Confirm 패널 열기
-    public void OpenConfirmPanel(string message /* , ConfirmPanelController.OnConfirmButtonClicked onConfirmButtonClicked */)
+    // Confirm 팝업 열기
+    public void OpenConfirmPopup(string msg, string submsg = "", string cancelStr = "취소", ConfirmPopup.OnConfirmButtonClicked _onCancel = null, string confirmStr = "확인", ConfirmPopup.OnConfirmButtonClicked _onConfirm = null)
     {
-        var confirmPanelObject = Instantiate(confirmPanelPrefab, _canvas.transform);
-        // confirmPanelObject.GetComponent<ConfirmPanelController>().Show(message, onConfirmButtonClicked);
+        if (_canvas == null)
+        {
+            _canvas = FindFirstObjectByType<Canvas>();
+        }
+        var confirmPanelObject = Instantiate(confirmPopupPrefab, _canvas.transform);
+        confirmPanelObject.GetComponent<ConfirmPopup>().Show(msg, submsg, cancelStr, _onCancel, confirmStr, _onConfirm);
     }
 
     #endregion
@@ -68,8 +78,7 @@ public class GameManager : Singleton<GameManager>
         if (scene.name == SCENE_GAME)
         {
             _turnStateManager = FindFirstObjectByType<TurnStateManager>();
-            _board = FindFirstObjectByType<Board>();
-
+            
             if (_turnStateManager != null)
             {
                 // GamePanelController 참조 가져오기

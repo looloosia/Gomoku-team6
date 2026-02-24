@@ -82,7 +82,7 @@ public class GameManager : Singleton<GameManager>
             if (_turnStateManager != null)
             {
                 // GamePanelController 참조 가져오기
-                // _gamePanelController = FindFirstObjectByType<GamePanelController>();
+                _gamePanelController = FindFirstObjectByType<GamePanelController>();
 
                 // TODO: Game Logic 생성
                 // _gameLogic = new GomokuGameLogic(_gameType, _playerType /*, _board*/, _turnStateManager);

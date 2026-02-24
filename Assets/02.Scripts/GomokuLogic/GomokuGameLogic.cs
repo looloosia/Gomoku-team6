@@ -8,12 +8,12 @@ public class GomokuGameLogic
     //public BlockController blockController;
     private PlayerType[,] board;
 
-    public DemoBaseState playerAState;
-    public DemoBaseState playerBState;
+    public BaseState playerAState;
+    public BaseState playerBState;
 
-    private DemoBaseState currentState;
+    private BaseState currentState;
 
-    private DemoTurnStateManager turnStateManager;
+    private TurnStateManager turnStateManager;
 
     public PlayerType[,] Board { get { return board; } }
 
@@ -24,7 +24,7 @@ public class GomokuGameLogic
     
     
     //흑돌인지 백돌인지 선택(흑: 선, 백: 후)
-    public GomokuGameLogic(GameType gameType, PlayerType playerType /*, BlockController blockController*/,DemoTurnStateManager turnStateManager)
+    public GomokuGameLogic(GameType gameType, PlayerType playerType /*, BlockController blockController*/,TurnStateManager turnStateManager)
     {
         //this.blockController = blockController;
         board = new PlayerType[BOARD_SIZE, BOARD_SIZE];
@@ -37,15 +37,15 @@ public class GomokuGameLogic
         switch (gameType)
         {
             case GameType.LocalDualPlay:
-                playerAState = new DemoBaseState(playerType);
-                playerBState = new DemoBaseState(otherPlayerType);
+                playerAState = new BaseState(playerType);
+                playerBState = new BaseState(otherPlayerType);
                 ////흑돌인 Player먼저 시작
                 StartFirstState();               
                 break;
 
             //case GameType.SinglePlay:
-            //    playerAState = new DemoBaseState(playerType);
-            //    playerBState = new DemoBaseState(otherPlayerType);
+            //    playerAState = new BaseState(playerType);
+            //    playerBState = new BaseState(otherPlayerType);
 
                 ////첫 턴인 Player먼저 시작
                 //StartFirstState();
@@ -68,7 +68,7 @@ public class GomokuGameLogic
     }
 
     //턴 혹은 상태가 바뀔 때 호출되는 메서드
-    public void SetState(DemoBaseState newState)
+    public void SetState(BaseState newState)
     {
         currentState?.OnExit(this); //기존 스테이트 끝
         currentState = newState;
@@ -119,7 +119,7 @@ public class GomokuGameLogic
         
         return GameResult.None;
     }
-    public void EndGame(DemoBaseState playerState, Constants.GameResult gameResult) 
+    public void EndGame(BaseState playerState, Constants.GameResult gameResult) 
     {
         
         if(gameResult == Constants.GameResult.Win) //승리
@@ -168,61 +168,61 @@ public class GomokuGameLogic
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///
-public class DemoBaseState
-{
-    private PlayerType playerType;
-    public PlayerType Type { get { return playerType; }}
+//public class DemoBaseState
+//{
+//    private PlayerType playerType;
+//    public PlayerType Type { get { return playerType; }}
 
-    public DemoBaseState(PlayerType playerType)
-    {
-        this.playerType = playerType;
-        Debug.Log(playerType+"생성");
+//    public DemoBaseState(PlayerType playerType)
+//    {
+//        this.playerType = playerType;
+//        Debug.Log(playerType+"생성");
 
-    }
-    public  void OnEnter(GomokuGameLogic gameLogic)
-    {
-        gameLogic.demoCounter--;
-        if (gameLogic.demoCounter ==0)
-        {
-            //gameLogic.EndGame(this);
-            return;
-        }
+//    }
+//    public  void OnEnter(GomokuGameLogic gameLogic)
+//    {
+//        gameLogic.demoCounter--;
+//        if (gameLogic.demoCounter ==0)
+//        {
+//            //gameLogic.EndGame(this);
+//            return;
+//        }
         
-        Debug.Log($"{this} turn Enter");
-    }
-    public void HandleMove(GomokuGameLogic gameLogic, int index)
-    {
-        Debug.Log("HandleMove");
+//        Debug.Log($"{this} turn Enter");
+//    }
+//    public void HandleMove(GomokuGameLogic gameLogic, int index)
+//    {
+//        Debug.Log("HandleMove");
         
-    }
-    public void OnExit(GomokuGameLogic gameLogic)
-    {
-        Debug.Log("OnExit");
-    }
-    public void HandleNextTurn(GomokuGameLogic gameLogic)
-    {
-        Debug.Log("HandleNextTurn");
-        gameLogic.ChangeGameState();
+//    }
+//    public void OnExit(GomokuGameLogic gameLogic)
+//    {
+//        Debug.Log("OnExit");
+//    }
+//    public void HandleNextTurn(GomokuGameLogic gameLogic)
+//    {
+//        Debug.Log("HandleNextTurn");
+//        gameLogic.ChangeGameState();
 
-    }
+//    }
 
-    public void ProcessMove(GomokuGameLogic gameLogic, Constants.PlayerType playerType, int inRow, int inCol)
-    {
-        Debug.Log("ProcessMove");
-        //룰 확인
-        if (gameLogic.PlaceMarker(playerType, inRow, inCol))
-        {
-            Constants.GameResult gameResult = gameLogic.CheckGameResult(playerType, inRow, inCol);
+//    public void ProcessMove(GomokuGameLogic gameLogic, Constants.PlayerType playerType, int inRow, int inCol)
+//    {
+//        Debug.Log("ProcessMove");
+//        //룰 확인
+//        if (gameLogic.PlaceMarker(playerType, inRow, inCol))
+//        {
+//            Constants.GameResult gameResult = gameLogic.CheckGameResult(playerType, inRow, inCol);
 
-            if (gameResult == Constants.GameResult.None)
-            {
-                HandleNextTurn(gameLogic);
-            }
-            else
-            {
-                gameLogic.EndGame(this, gameResult);
-            }
-        }
-    }
+//            if (gameResult == Constants.GameResult.None)
+//            {
+//                HandleNextTurn(gameLogic);
+//            }
+//            else
+//            {
+//                gameLogic.EndGame(this, gameResult);
+//            }
+//        }
+//    }
     
-}
+//}

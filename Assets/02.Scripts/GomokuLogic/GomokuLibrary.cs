@@ -138,7 +138,7 @@ public static class GomokuLibrary
 
     public static int Minimax(Constants.PlayerType[,] board, PlayerType playerType, int depth, bool isMaximizing, int alpha, int beta, int initR, int initC, int boardRange)
     {
-        if (depth == MINIMAX_DEPTH /*|| IsGameOver(board)*/ ) //종료 조건: 최대 깊이 도달 혹은 게임 종료
+        if (depth == 3 /*|| IsGameOver(board)*/ ) //종료 조건: 최대 깊이 도달 혹은 게임 종료
         {
             return EvaluateScore(board, playerType, initR, initC, boardRange);
         }

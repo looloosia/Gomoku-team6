@@ -8,8 +8,8 @@ public class GameManager : Singleton<GameManager>
 {
     #region UI
 
-    [SerializeField] private GameObject settingsPanelPrefab;
-    // [SerializeField] private GameObject confirmPanelPrefab;
+    [SerializeField] private GameObject settingsPopupPrefab;
+    [SerializeField] private GameObject confirmPopupPrefab;
     
     // 캔버스
     private Canvas _canvas;
@@ -20,21 +20,29 @@ public class GameManager : Singleton<GameManager>
     // Game Turn UI 업데이트
     public void SetGameTurn(Constants.PlayerType playerTurnType)
     {
-        _gamePanelController.SetPlayerTurnPanel(playerTurnType);
+        // _gamePanelController.SetPlayerTurnPanel(playerTurnType);
     }
 
-    // Settings 패널 열기
-    public void OpenSettingsPopup()
+    // Settings 팝업 열기
+    public void OpenSettingPopup()
     {
-        var settingsPopupObject = Instantiate(settingsPanelPrefab, _canvas.transform);
-        settingsPopupObject.GetComponent<SettingsPanelController>().Show();
+        if (_canvas == null)
+        {
+            _canvas = FindFirstObjectByType<Canvas>();
+        }
+        var settingsPopupObject = Instantiate(settingsPopupPrefab, _canvas.transform);
+        settingsPopupObject.GetComponent<SettingPopup>().Show();
     }
 
-    // Confirm 패널 열기
-    public void OpenConfirmPanel(string message , ConfirmPanelController.OnConfirmButtonClicked onConfirmButtonClicked)
+    // Confirm 팝업 열기
+    public void OpenConfirmPopup(string msg, string submsg = "", string cancelStr = "취소", ConfirmPopup.OnConfirmButtonClicked _onCancel = null, string confirmStr = "확인", ConfirmPopup.OnConfirmButtonClicked _onConfirm = null)
     {
-        var confirmPanelObject = Instantiate(confirmPanelPrefab, _canvas.transform);
-        confirmPanelObject.GetComponent<ConfirmPanelController>().Show(message, onConfirmButtonClicked);
+        if (_canvas == null)
+        {
+            _canvas = FindFirstObjectByType<Canvas>();
+        }
+        var confirmPanelObject = Instantiate(confirmPopupPrefab, _canvas.transform);
+        confirmPanelObject.GetComponent<ConfirmPopup>().Show(msg, submsg, cancelStr, _onCancel, confirmStr, _onConfirm);
     }
 
     #endregion

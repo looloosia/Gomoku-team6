@@ -37,15 +37,15 @@ public class GomokuGameLogic
         switch (gameType)
         {
             case GameType.LocalDualPlay:
-                playerAState = new BaseState(playerType);
-                playerBState = new BaseState(otherPlayerType);
+                playerAState = new PlayerState(playerType);
+                playerBState = new PlayerState(otherPlayerType);
                 ////흑돌인 Player먼저 시작
                 StartFirstState();               
                 break;
 
             //case GameType.SinglePlay:
-            //    playerAState = new BaseState(playerType);
-            //    playerBState = new BaseState(otherPlayerType);
+            //    playerAState = new PlayerState(playerType);
+            //    playerBState = new AIState(otherPlayerType);
 
                 ////첫 턴인 Player먼저 시작
                 //StartFirstState();

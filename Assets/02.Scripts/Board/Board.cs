@@ -12,17 +12,12 @@ public class Board : MonoBehaviour
 {
     [SerializeField]
     private BoardGenerator boardGenerator;
+    [SerializeField]
+    private GamePanelController gamePanel;
 
     //temp
     [SerializeField]
-    private PlayerChange playerChange;
-    [SerializeField]
-    private End end;
-
-    [SerializeField]
-    private Button btnPut;
-    [SerializeField]
-    private Button btnCancel;
+    private PlayerChange stoneChange;
 
     //Âø¼ö ºí·°
     private Block tempBlock;
@@ -67,42 +62,30 @@ public class Board : MonoBehaviour
                 if (this.tempBlock != null)
                     this.tempBlock.ResetStone();
                 this.tempBlock = clickedBlock;
-                this.tempBlock.SetPlacementImage(this.playerChange.Type);
+                this.tempBlock.SetPlacementImage(this.stoneChange.Type);
             }
         }
     }
     private void InitEvents()
     {
-        this.btnPut.onClick.AddListener(PutStone);
-        this.btnCancel.onClick.AddListener(CancelStone);
+        this.gamePanel.OnConfirmMoveEvent += PutStone;
+        this.gamePanel.OnReturnMoveEvent += BoardReset;
+        this.gamePanel.OnReturnMoveEvent += SaveReplayJson;
 
         this.onPlaceStone = StoneOnClick;
-
-        //temp
-        this.end.SetReplayCallback(() =>
-        {
-            SaveReplayJson();
-            BoardReset();
-        });
     }
     private void PutStone()
     {
         if (this.tempBlock == null)
             return;
-        if (this.playerChange.Type == PlayerType.Black)
+        if (this.stoneChange.Type == PlayerType.Black)
             this.tempBlock.SetBlackStone();
-        else if (this.playerChange.Type == PlayerType.White)
+        else if (this.stoneChange.Type == PlayerType.White)
             this.tempBlock.SetWhiteStone();
 
         this.tempBlock = null;
 
         SaveReplayFrame();
-    }
-    private void CancelStone()
-    {
-        if (this.tempBlock == null)
-            return;
-        this.tempBlock.ResetStone();
     }
     private void SaveReplayJson()
     {
@@ -143,13 +126,4 @@ public class Board : MonoBehaviour
             this.listReplayFrame.RemoveRange(1, this.listReplayFrame.Count - 1);
         }
     }
-
-
-    //public void DicTest()
-    //{
-    //    foreach(KeyValuePair<(int, int), Block> pair in this.dicBlocks)
-    //    {
-    //        Debug.Log($"BlockName: {pair.Value.name}, Block Position: {pair.Key.Item1}, {pair.Key.Item2}");
-    //    }
-    //}
 }

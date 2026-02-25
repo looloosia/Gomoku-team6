@@ -4,7 +4,7 @@ namespace _02.Scripts.States
 {
     public class AIState : BaseState
     {
-        public AIState(Constants.PlayerType playerType) : base(playerType)
+        public AIState(Constants.PlayerType playerType) : base(playerType, Constants.ControllerType.AI)
         {
         }
 

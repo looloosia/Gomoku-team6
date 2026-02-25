@@ -5,7 +5,7 @@ public class PlayerState : BaseState
 {
     private GomokuGameLogic _gameLogic;
     // 턴 변경
-    public PlayerState(Constants.PlayerType playerType) : base(playerType)
+    public PlayerState(Constants.PlayerType playerType) : base(playerType, Constants.ControllerType.Human)
     {
     }
 
@@ -18,7 +18,7 @@ public class PlayerState : BaseState
     {
         Debug.Log("OnEnter");
         _board = GameManager.Instance.Board;
-        _board.onPlaceStone += OnBlockClicked;
+        _board.onPlaceStone += OnStonePlace;
         
         // demoCounter 기반 임시 테스트용
         gameLogic.demoCounter--;
@@ -36,9 +36,11 @@ public class PlayerState : BaseState
         GameManager.Instance.SetGameTurn(_playerType);
     }
 
-    void OnBlockClicked(/*, Block block */)
+    
+    void OnStonePlace(/*, Block block */)
     {
-        // TODO: 주석해제) 블록이 클릭되었을 때 처리할 로직
+        // 블록이 놓아질 때 처리할 로직
+        // TODO: 주석해제
         // Vector2Int pos = block.GetBlockData().boardPos;
         
         // temp
@@ -60,6 +62,6 @@ public class PlayerState : BaseState
 
     public override void OnExit(GomokuGameLogic gameLogic)
     { 
-        _board.onPlaceStone -= OnBlockClicked;
+        _board.onPlaceStone -= OnStonePlace;
     }
 }

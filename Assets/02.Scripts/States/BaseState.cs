@@ -4,12 +4,15 @@ public abstract class BaseState
 {
     protected Constants.PlayerType _playerType;
     public Constants.PlayerType Type => _playerType;
+    protected Constants.ControllerType _controllerType;
+    public  Constants.ControllerType ControllerType => _controllerType;
 
     protected Board _board;
 
-    protected BaseState(Constants.PlayerType playerType)
+    protected BaseState(Constants.PlayerType playerType, Constants.ControllerType controllerType)
     {
         _playerType = playerType;
+        _controllerType = controllerType;
     }
 
     public abstract void OnEnter(GomokuGameLogic gameLogic);

@@ -16,6 +16,7 @@ public class GameManager : Singleton<GameManager>
 
     // 게임 화면의 UI 컨트롤러
     private GamePanelController _gamePanelController; 
+    public GamePanelController GamePanelController => _gamePanelController;
     
     // Game Turn UI 업데이트
     public void SetGameTurn(Constants.PlayerType playerTurnType)

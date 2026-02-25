@@ -50,7 +50,7 @@ public class GameManager : Singleton<GameManager>
     #region Game
 
     // Game Logic
-    // private GomokuGameLogic _gameLogic;
+    private GomokuGameLogic _gameLogic;
 
     private Board _board;
     
@@ -85,7 +85,7 @@ public class GameManager : Singleton<GameManager>
                 _gamePanelController = FindFirstObjectByType<GamePanelController>();
 
                 // TODO: Game Logic 생성
-                // _gameLogic = new GomokuGameLogic(_gameType, _playerType /*, _board*/, _turnStateManager);
+                _gameLogic = new GomokuGameLogic(_gameType, _playerType /*, _board*/, _turnStateManager);
             }
         }
     }

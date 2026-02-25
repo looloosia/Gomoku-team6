@@ -92,6 +92,22 @@ public class GameManager : Singleton<GameManager>
         if (scene.name == SCENE_GAME)
         {
             _turnStateManager = FindFirstObjectByType<TurnStateManager>();
+            
+            // TurnStateManager가 씬에 없을 경우 생성
+            if (_turnStateManager == null)
+            {
+                GameObject prefab = Resources.Load<GameObject>("Prefabs/TurnManager");
+                
+                if (prefab != null)
+                {
+                    GameObject instance = Instantiate(prefab);
+                    instance.name = "TurnManager";
+                
+                    _turnStateManager = instance.GetComponent<TurnStateManager>();
+                    _forbiddensVisualizer = instance.GetComponentInChildren<ForbiddensVisualizer>();
+                }
+            }
+            
             _forbiddensVisualizer = FindFirstObjectByType<ForbiddensVisualizer>();
             _board = FindFirstObjectByType<Board>();
             

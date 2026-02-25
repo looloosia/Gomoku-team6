@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1404970713595147320
+--- !u!1 &6751448452482175575
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,23 +8,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5428526607628640477}
-  - component: {fileID: 5605535908353633024}
-  - component: {fileID: 2105239043975507474}
+  - component: {fileID: 8236827287721448963}
+  - component: {fileID: 4771185235903547530}
+  - component: {fileID: 9073998506923954592}
   m_Layer: 0
-  m_Name: TurnStateManager
+  m_Name: TurnManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5428526607628640477
+--- !u!4 &8236827287721448963
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1404970713595147320}
+  m_GameObject: {fileID: 6751448452482175575}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.20487, y: 0.81188, z: 0}
@@ -33,27 +33,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5605535908353633024
+--- !u!114 &4771185235903547530
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1404970713595147320}
+  m_GameObject: {fileID: 6751448452482175575}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fa6d1a8df12249e084dd5052abef80e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurnStateManager
---- !u!114 &2105239043975507474
+--- !u!114 &9073998506923954592
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1404970713595147320}
+  m_GameObject: {fileID: 6751448452482175575}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 659ae62ad9174058b32088ad06cfb111, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ForbiddenVisualizer
+  m_EditorClassIdentifier: Assembly-CSharp::ForbiddensVisualizer

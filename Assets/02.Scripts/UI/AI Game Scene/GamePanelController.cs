@@ -20,7 +20,6 @@ public class GamePanelController : MonoBehaviour
     [SerializeField] private Button settingBtn;  // 설정
 
     // 외부로 쏘아 올릴 이벤트 / 델리게이트
-    public event Action<bool> OnMarkerSelectedEvent;
     public event Action OnConfirmMoveEvent; // 착수 눌렀을 때
     public event Action OnReturnMoveEvent; // 무르기 눌렀을 때
     public event Action OnResignEvent; // 기권 확정했을 때
@@ -35,17 +34,9 @@ public class GamePanelController : MonoBehaviour
         // 처음엔 보드에 돌이 없으니 착수/무르기 비활성화
         SetActionButtonsInteractable(false);
 
-        confirmBtn.onClick.AddListener(() => 
-        {
-            OnConfirmMoveEvent?.Invoke();
-            SetActionButtonsInteractable(false);
-        });
+        confirmBtn.onClick.AddListener(() => { OnConfirmMoveEvent?.Invoke(); });
 
-        returnBtn.onClick.AddListener(() => 
-        {
-            OnReturnMoveEvent?.Invoke();
-            SetActionButtonsInteractable(false);
-        });
+        returnBtn.onClick.AddListener(() => { OnReturnMoveEvent?.Invoke(); });
 
         resignBtn.onClick.AddListener(OnClickResign);
         settingBtn.onClick.AddListener(OnClickSetting);
@@ -54,7 +45,7 @@ public class GamePanelController : MonoBehaviour
     private void OnClickResign()
     {
         ConfirmPopup popup = GameManager.Instance.OpenConfirmPopup();
-        popup.Show("기권 하시겠습니까?", "", "취소", null, "확인", () => {OnResignEvent?.Invoke();});
+        popup.Show("기권 하시겠습니까?", "기권할 경우 코인과 승급 포인트를 잃습니다.", "취소", null, "확인", () => {OnResignEvent?.Invoke();});
     }
 
     private void OnClickSetting()
@@ -62,15 +53,15 @@ public class GamePanelController : MonoBehaviour
         GameManager.Instance.OpenSettingPopup();
     }
 
-    public void SetupPlayerProfile(string nickname, string rankData, bool isBlack)
+    public void SetupPlayerProfile(string nickname, string rankData, bool isBlack, Sprite profileSprite)
     {
-        playerProfile.SetProfileInfo(nickname, rankData);
+        playerProfile.SetProfileInfo(nickname, rankData, profileSprite);
         playerProfile.SetMarkerImage(isBlack);
     }
 
-    public void SetupAIProfile(string aiName, string aiRank, bool isBlack)
+    public void SetupAIProfile(string aiName, string aiRank, bool isBlack, Sprite profileSprite)
     {
-        aiProfile.SetProfileInfo(aiName, aiRank);
+        aiProfile.SetProfileInfo(aiName, aiRank, profileSprite);
         aiProfile.SetMarkerImage(isBlack);
     }
 
@@ -93,7 +84,7 @@ public class GamePanelController : MonoBehaviour
     }
 
     // 돌이 보드에 올려져있는지 여부에 따라 버튼 활성화/비활성화
-    private void SetActionButtonsInteractable(bool isInteractable)
+    public void SetActionButtonsInteractable(bool isInteractable)
     {
         confirmBtn.interactable = isInteractable;
         returnBtn.interactable = isInteractable;

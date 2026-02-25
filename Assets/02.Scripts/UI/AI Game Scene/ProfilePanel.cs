@@ -18,7 +18,7 @@ public class ProfilePanel : MonoBehaviour
         nickname.text = _nickname;
         rank.text = _rank;
 
-        if (profileSprite = null)
+        if (profileSprite != null)
             profileImg.sprite = profileSprite;
     }
 

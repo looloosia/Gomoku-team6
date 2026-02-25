@@ -1,0 +1,64 @@
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class PlayerProfilePopup : BasePopup
+{
+    [Header("Popup")]
+    [SerializeField] private GameObject NicknameEditPopup;
+
+    [Header("UI Elements")]
+    [SerializeField] private Image profileImg;
+    [SerializeField] private TMP_Text nicknameText;
+    [SerializeField] private TMP_Text rankText;
+
+    [Header("Buttons")]
+    [SerializeField] private Button editProfileIconBtn;
+    [SerializeField] private Button editNicknameBtn;
+    
+    protected override void Init()
+    {
+        BindButtons();
+    }
+    
+    public override void Show()
+    {
+        base.Show();
+        RefreshUI();
+    }
+
+    public override void Hide(PopupHideDelegate onComplete = null)
+    {
+        onComplete?.Invoke();
+        gameObject.SetActive(false);
+    }
+
+    // 데이터가 변경될 때마다 화면을 갱신하는 함수
+    private void RefreshUI()
+    {
+        UserData me = AccountManager.Instance.CurrentUser;
+        if (me != null)
+        {
+            nicknameText.text = me.nickname;
+            rankText.text = $"{me.rank}급";
+
+            // TODO: me.profiledId로 이미지 세팅
+        }
+    }
+
+    private void BindButtons()
+    {
+        editProfileIconBtn.onClick.AddListener(OnClickEditIcon);
+        editNicknameBtn.onClick.AddListener(OnClickEditNickname);
+    }
+
+    private void OnClickEditIcon()
+    {
+        // TODO: 프사 변경 팝업 호출
+    }
+
+    private void OnClickEditNickname()
+    {
+        NicknameEditPopup.SetActive(true);
+    }
+}

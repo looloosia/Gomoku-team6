@@ -81,7 +81,9 @@ public class GamePanelController : MonoBehaviour
 
     public void UpdateTimerUI(int timeLeft)
     {
-        timerText.text = timeLeft.ToString();
+        TimeSpan time = TimeSpan.FromSeconds(timeLeft);
+        timerText.text = time.ToString(@"mm\:ss");
+    
         timerText.color = (timeLeft <= 5) ? Color.red : Color.black;
     }
 

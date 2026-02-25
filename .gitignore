@@ -120,6 +120,8 @@ Thumbs.db
 .idea/
 
 # Unity extra
+Assets/Replay/*.json
+Assets/Replay/*.json.meta
 /UserSettings/Search/
 .plastic/
 *.bak

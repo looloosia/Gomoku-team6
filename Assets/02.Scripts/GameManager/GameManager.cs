@@ -24,14 +24,14 @@ public class GameManager : Singleton<GameManager>
     }
 
     // Settings 팝업 열기
-    public SettingPopup OpenSettingPopup()
+    public void OpenSettingPopup()
     {
         if (_canvas == null)
         {
             _canvas = FindFirstObjectByType<Canvas>();
         }
         var settingsPopupObject = Instantiate(settingsPopupPrefab, _canvas.transform);
-        return settingsPopupObject.GetComponent<SettingPopup>();
+        settingsPopupObject.GetComponent<SettingPopup>();
     }
 
     // Confirm 팝업 열기
@@ -83,8 +83,8 @@ public class GameManager : Singleton<GameManager>
             {
                 // GamePanelController 참조 가져오기
                 _gamePanelController = FindFirstObjectByType<GamePanelController>();
-
-                // TODO: Game Logic 생성
+                
+                // GomokuGameLogic 생성
                 _gameLogic = new GomokuGameLogic(_gameType, _playerType /*, _board*/, _turnStateManager);
             }
         }

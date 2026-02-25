@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 using static Constants;
 
 public class Board : MonoBehaviour
@@ -15,9 +17,15 @@ public class Board : MonoBehaviour
     [SerializeField]
     private PlayerChange playerChange;
     [SerializeField]
-    private Replay replay;
-    [SerializeField]
     private End end;
+
+    [SerializeField]
+    private Button btnPut;
+    [SerializeField]
+    private Button btnCancel;
+
+    //착수 블럭
+    private Block tempBlock;
 
     //key: 블럭 위치
     private Dictionary<(int, int), Block> dicBlocks = new Dictionary<(int, int), Block>();
@@ -36,10 +44,10 @@ public class Board : MonoBehaviour
     }
     void Update()
     {
-        //if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
-        //{
-        //    StoneOnClick();
-        //}
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            StoneOnClick();
+        }
     }
 
     private void StoneOnClick()
@@ -55,16 +63,19 @@ public class Board : MonoBehaviour
 
             if (clickedBlock != null && clickedBlock.GetBlockData().markerType == PlayerType.None)
             {
-                if(this.playerChange.Type == PlayerType.Black)
-                    clickedBlock.SetBlackStone();
-                else if(this.playerChange.Type == PlayerType.White)
-                    clickedBlock.SetWhiteStone();
-                SaveReplayFrame();
+                //착수 블럭
+                if (this.tempBlock != null)
+                    this.tempBlock.ResetStone();
+                this.tempBlock = clickedBlock;
+                this.tempBlock.SetPlacementImage(this.playerChange.Type);
             }
         }
     }
     private void InitEvents()
     {
+        this.btnPut.onClick.AddListener(PutStone);
+        this.btnCancel.onClick.AddListener(CancelStone);
+
         this.onPlaceStone = StoneOnClick;
 
         //temp
@@ -73,25 +84,40 @@ public class Board : MonoBehaviour
             SaveReplayJson();
             BoardReset();
         });
-
-        this.replay.SetReplayCallback(() =>
-        {
-
-        });
     }
-    public int RandomStone()
+    private void PutStone()
     {
-        int rand = Random.Range(1, 3);
-        return rand;
-    }
+        if (this.tempBlock == null)
+            return;
+        if (this.playerChange.Type == PlayerType.Black)
+            this.tempBlock.SetBlackStone();
+        else if (this.playerChange.Type == PlayerType.White)
+            this.tempBlock.SetWhiteStone();
+        this.tempBlock = null;
 
+        SaveReplayFrame();
+    }
+    private void CancelStone()
+    {
+        if (this.tempBlock == null)
+            return;
+        this.tempBlock.ResetStone();
+    }
     private void SaveReplayJson()
     {
-        ReplaySaveData data = new ReplaySaveData(this.listReplayFrame);
+        string fileName = DateTime.Now.ToString("yy-MM-dd_HH-mm-ss");
+        string replayName = DateTime.Now.ToString("(yy/MM/dd) HH:mm:ss");
+        string player1NickName = "Player1";
+        string player2NickName = "Player2";
+        GameResult result =  GameResult.Win;
+
+        ReplaySaveData data = new ReplaySaveData(this.listReplayFrame, replayName, player1NickName, 
+                                                    player2NickName, result);
+
         string json = JsonUtility.ToJson(data, true);
 
         string folderPath = Application.dataPath + "/Replay";
-        string filePath = folderPath + "/ReplayData_Test.json";
+        string filePath = folderPath + $"/Replay_{fileName}.json";
         File.WriteAllText(filePath, json);
 
         Debug.Log("파일 저장 완료! 경로: " + filePath);
@@ -109,6 +135,11 @@ public class Board : MonoBehaviour
         foreach (Block block in this.dicBlocks.Values)
         {
             block.ResetStone();
+        }
+
+        if (this.listReplayFrame.Count > 1)
+        {
+            this.listReplayFrame.RemoveRange(1, this.listReplayFrame.Count - 1);
         }
     }
 

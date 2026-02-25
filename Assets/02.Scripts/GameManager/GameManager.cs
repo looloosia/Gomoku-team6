@@ -24,25 +24,25 @@ public class GameManager : Singleton<GameManager>
     }
 
     // Settings 팝업 열기
-    public void OpenSettingPopup()
+    public SettingPopup OpenSettingPopup()
     {
         if (_canvas == null)
         {
             _canvas = FindFirstObjectByType<Canvas>();
         }
         var settingsPopupObject = Instantiate(settingsPopupPrefab, _canvas.transform);
-        settingsPopupObject.GetComponent<SettingPopup>().Show();
+        return settingsPopupObject.GetComponent<SettingPopup>();
     }
 
     // Confirm 팝업 열기
-    public void OpenConfirmPopup(string msg, string submsg = "", string cancelStr = "취소", ConfirmPopup.OnConfirmButtonClicked _onCancel = null, string confirmStr = "확인", ConfirmPopup.OnConfirmButtonClicked _onConfirm = null)
+    public ConfirmPopup OpenConfirmPopup()
     {
         if (_canvas == null)
         {
             _canvas = FindFirstObjectByType<Canvas>();
         }
         var confirmPanelObject = Instantiate(confirmPopupPrefab, _canvas.transform);
-        confirmPanelObject.GetComponent<ConfirmPopup>().Show(msg, submsg, cancelStr, _onCancel, confirmStr, _onConfirm);
+        return confirmPanelObject.GetComponent<ConfirmPopup>();
     }
 
     #endregion

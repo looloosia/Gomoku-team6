@@ -93,6 +93,7 @@ public class Board : MonoBehaviour
             this.tempBlock.SetBlackStone();
         else if (this.playerChange.Type == PlayerType.White)
             this.tempBlock.SetWhiteStone();
+
         this.tempBlock = null;
 
         SaveReplayFrame();

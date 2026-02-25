@@ -45,7 +45,7 @@ public class RecordContent : MonoBehaviour
 
     public void Setting()
     {
-        this.txtRecordName.text = this.replaySaveData.replayName;
+        this.txtRecordName.text = this.replaySaveData.recordName;
         this.txtRecordPlayer1.text = this.replaySaveData.player1Name;
         this.txtRecordPlayer2.text = this.replaySaveData.player2Name;
         ResultImageSetting(this.replaySaveData.gameType);
@@ -70,7 +70,7 @@ public class RecordContent : MonoBehaviour
     }
     public List<ReplayFrameData> GetFrameData()
     {
-        return this.replaySaveData.listReplayFrameData;
+        return this.replaySaveData.listRecordFrameData;
     }
     public void SetFrameData(ReplaySaveData replaySaveData)
     {

@@ -62,7 +62,7 @@ public class RecordPopup : BasePopup
             tempList.Add(data);
         }
 
-        resultList = tempList.OrderBy(data => data.replayName).ToList();
+        resultList = tempList.OrderBy(data => data.recordName).ToList();
     }
 
     private void CreateRecordContent(ReplaySaveData loadData)
@@ -77,7 +77,7 @@ public class RecordPopup : BasePopup
     {
         MySceneManager.Instance.LoadSceneWithCallback<ReplayBoard>("Record", (replayBoard) =>
         {
-            List<ReplayFrameData> frame = data.listReplayFrameData;
+            List<ReplayFrameData> frame = data.listRecordFrameData;
             replayBoard.onLoadReplayData(frame);
         });
     }

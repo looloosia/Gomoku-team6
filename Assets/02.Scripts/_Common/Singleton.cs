@@ -14,9 +14,16 @@ public abstract class Singleton<T> : MonoBehaviour where T : Component
                 _instance = FindFirstObjectByType<T>();
                 if (_instance == null)
                 {
-                    GameObject obj = new GameObject();
-                    obj.name = typeof(T).Name;
-                    _instance = obj.AddComponent<T>();
+                    T prefab = Resources.Load<T>("prefabs/" + typeof(T).Name);
+
+                    if (prefab != null)
+                    {
+                        _instance = Instantiate(prefab).GetComponent<T>();
+                    }
+                    else
+                    {
+                        Debug.LogError($"{typeof(T).Name} 프리팹을 찾을 수 없습니다.");
+                    }
                 }
             }
             return _instance;

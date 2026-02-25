@@ -10,7 +10,7 @@ namespace _02.Scripts.States
 
         public override void OnEnter(GomokuGameLogic gameLogic)
         {
-            GameManager.Instance.SetGameTurn(_playerType);
+            GameManager.Instance.SetGameTurn(_currentPlayerType);
         }
 
         public override void HandleMove(GomokuGameLogic gameLogic, int inRow, int inCol)

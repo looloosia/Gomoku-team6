@@ -17,5 +17,5 @@ public static class Constants
     public enum GameResult { None, Win, Lose }
     public enum ForbiddenType { None, DoubleThree, DoubleFour, Overline } //3-3, 4-4
 
-    public enum MarkerChoice { Black, White, Random };
+    public enum MarkerChoice { None, Black, White, Random };
 }

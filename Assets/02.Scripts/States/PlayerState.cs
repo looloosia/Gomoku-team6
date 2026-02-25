@@ -18,14 +18,15 @@ public class PlayerState : BaseState
     // 한 턴이 시작될 때
     public override void OnEnter(GomokuGameLogic gameLogic)
     {
-        _gameLogic = GameManager.Instance.GameLogic;
+        Debug.Log("OnEnter() 실행됨");
+        _gameLogic = gameLogic;
         _board = GameManager.Instance.Board;
         _forbiddensVisualizer = GameManager.Instance.ForbiddensVisualizer;
         
         // TODO: Board.cs 머지되면 주석해제
         // _board.onPlaceStone += OnStonePlace;
         
-        _ctrlPlayerType = GameManager.Instance.PlayerType;
+        _gamePlayerType = GameManager.Instance.GamePlayerType;
         
         // demoCounter 기반 임시 테스트용
         gameLogic.demoCounter--;
@@ -34,25 +35,20 @@ public class PlayerState : BaseState
             gameLogic.EndGame(this, Constants.GameResult.Win);
             return;
         }
-        Debug.Log($"{this} turn Enter");
         
         // 흑돌일 경우 금수 표시
-        if (_playerType == Constants.PlayerType.Black && _ctrlPlayerType == Constants.PlayerType.Black)
-            _forbiddensVisualizer.VisualizeForbiddens(_playerType);
+        if (_currentPlayerType == Constants.PlayerType.Black && _gamePlayerType == Constants.PlayerType.Black)
+            _forbiddensVisualizer.VisualizeForbiddens(_currentPlayerType);
 
         // Turn UI 업데이트
-        GameManager.Instance.SetGameTurn(_playerType);
+        GameManager.Instance.SetGameTurn(_currentPlayerType);
     }
 
-    
+    // 블록이 놓아질 때 처리할 로직
     void OnStonePlace(Block block)
     {
-        // 블록이 놓아질 때 처리할 로직
+        Debug.Log("OnStonePlace() 실행됨");
         Vector2Int pos = block.GetBlockData().boardPos;
-        
-        // temp
-        int tempRow = 1;
-        int tempCol = 1;
         
         // 타이머 멈추기
         GameManager.Instance.TurnStateManager.StopCounterRoutine();

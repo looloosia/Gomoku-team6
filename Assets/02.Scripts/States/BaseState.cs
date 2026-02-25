@@ -2,14 +2,19 @@ using UnityEngine;
 
 public abstract class BaseState
 {
-    protected Constants.PlayerType _playerType;
-    public Constants.PlayerType Type => _playerType;
+    protected Constants.PlayerType _currentPlayerType;
+    protected Constants.PlayerType _gamePlayerType;
+    public Constants.PlayerType Type => _currentPlayerType;
+    protected Constants.ControllerType _controllerType;
+    public  Constants.ControllerType ControllerType => _controllerType;
 
     protected Board _board;
+    protected ForbiddensVisualizer _forbiddensVisualizer;
 
-    protected BaseState(Constants.PlayerType playerType)
+    protected BaseState(Constants.PlayerType playerType, Constants.ControllerType controllerType)
     {
-        _playerType = playerType;
+        _currentPlayerType = playerType;
+        _controllerType = controllerType;
     }
 
     public abstract void OnEnter(GomokuGameLogic gameLogic);
@@ -19,9 +24,9 @@ public abstract class BaseState
 
     public void ProcessMove(GomokuGameLogic gameLogic, int inRow, int inCol)
     {
-        if (gameLogic.PlaceMarker(_playerType, inRow, inCol))
+        if (gameLogic.PlaceMarker(_currentPlayerType, inRow, inCol))
         {
-            var gameResult = gameLogic.CheckGameResult(_playerType, inRow, inCol);
+            var gameResult = gameLogic.CheckGameResult(_currentPlayerType, inRow, inCol);
         
             if (gameResult == Constants.GameResult.None)
             {

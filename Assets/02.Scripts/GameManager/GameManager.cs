@@ -10,12 +10,14 @@ public class GameManager : Singleton<GameManager>
 
     [SerializeField] private GameObject settingsPopupPrefab;
     [SerializeField] private GameObject confirmPopupPrefab;
+    [SerializeField] private GameObject markerSelectPanelPrefab;
     
     // 캔버스
     private Canvas _canvas;
 
     // 게임 화면의 UI 컨트롤러
     private GamePanelController _gamePanelController; 
+    public GamePanelController GamePanelController => _gamePanelController;
     
     // Game Turn UI 업데이트
     public void SetGameTurn(Constants.PlayerType playerTurnType)
@@ -48,44 +50,129 @@ public class GameManager : Singleton<GameManager>
     #endregion
 
     #region Game
-
+    
+    // 착수금지 표시 sprite
+    [SerializeField]
+    private Sprite forbiddenSprite;
+    
     // Game Logic
     private GomokuGameLogic _gameLogic;
+    public GomokuGameLogic GameLogic => _gameLogic;
 
+    // Board
     private Board _board;
-    
     public Board Board => _board;
+    
+    // ForbiddenVisualizer
+    private ForbiddensVisualizer _forbiddensVisualizer;
+    public ForbiddensVisualizer ForbiddensVisualizer => _forbiddensVisualizer;
+    
+    // TurnStateManager
+    private TurnStateManager _turnStateManager;
+    public TurnStateManager TurnStateManager => _turnStateManager;
 
     // 게임의 종류 
     private GameType _gameType;
+    public GameType GameType => _gameType;
 
-    // 플레이어 타입
-    private PlayerType _playerType;
+    // 게임의 플레이어 타입
+    private PlayerType _gamePlayerType;
+    public PlayerType GamePlayerType => _gamePlayerType;
     
-    private TurnStateManager _turnStateManager;
+    // 현재 턴 플레이어 타입
+    private PlayerType _currentPlayerType;
+    public PlayerType CurrentPlayerType => _currentPlayerType;
+    
+    // AI의 이름
+    private string _aiName;
+    public string AIName
+    {
+        get { return _aiName; }
+        set { _aiName = value; }
+    }
+    
+    // AI의 랭크 -나중에 string이 아닌 다른 타입으로 바꿀수도
+    private string _aiRank;
+    public string AIRank
+    {
+        get { return _aiRank; }
+        set { _aiRank = value; }
+    }
 
+    // temp ===========================
+    void Awake()
+    {
+        _gameType = Constants.GameType.LocalDualPlay;
+        _currentPlayerType = PlayerType.Black; 
+        
+        _turnStateManager = FindFirstObjectByType<TurnStateManager>();
+        _forbiddensVisualizer = FindFirstObjectByType<ForbiddensVisualizer>();
+        _board = FindFirstObjectByType<Board>();
+        _gamePanelController = FindFirstObjectByType<GamePanelController>();
+        
+        _gameLogic = new GomokuGameLogic(_gameType, _currentPlayerType, _turnStateManager);
+
+        _aiName = "임시AI이름";
+        _aiRank = "임시AI랭크";
+        
+        if (_forbiddensVisualizer != null)
+        {
+            _forbiddensVisualizer.Init(forbiddenSprite);
+        }
+    }
+    // ================================
+    
     protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
     {
         // 새로운 씬에서 Canvas 참조 가져오기
         _canvas = FindFirstObjectByType<Canvas>();
         
-        // 임시로 게임 타입, 플레이어 타입 설정(추후 수정하기)
+        // TODO: 게임타입, 플레이어타입 설정기능 완성되면 설정된 대로 하게 수정
         _gameType = GameType.LocalDualPlay;
 
-        // 항상 흑이 먼저 게임 시작
-        _playerType = PlayerType.Black;
+        // TODO: 플레이어의 흑백 설정에 맞게 수정
+        _gamePlayerType = PlayerType.Black;
+        
+        // TODO: 돌 색상 선택되면 돌의 정보와 함께 유저 닉네임과 급수 인게임 메인 UI에 띄워야
+        // 유저 정보는 DB에서 꺼내 쓰기
+        // 프로필 이미지는 아직 구현안돼서 null처리
 
         if (scene.name == SCENE_GAME)
         {
             _turnStateManager = FindFirstObjectByType<TurnStateManager>();
             
+            // TurnManager가 씬에 없을 경우 생성
+            if (_turnStateManager == null)
+            {
+                GameObject prefab = Resources.Load<GameObject>("Prefabs/TurnManager");
+                GameObject markerPanelObj = Instantiate(markerSelectPanelPrefab, _canvas.transform);
+                MarkerSelectPanelController markerController = markerPanelObj.GetComponent<MarkerSelectPanelController>();
+                markerController.OnMarkerSelectedEvent += OnMarkerSelected;
+                if (prefab != null)
+                {
+                    GameObject instance = Instantiate(prefab);
+                    instance.name = "TurnManager";
+                
+                    _turnStateManager = instance.GetComponent<TurnStateManager>();
+                    _forbiddensVisualizer = instance.GetComponentInChildren<ForbiddensVisualizer>();
+                }
+            }
+            
+            _forbiddensVisualizer = FindFirstObjectByType<ForbiddensVisualizer>();
+            _board = FindFirstObjectByType<Board>();
+            
+            // GomokuGameLogic 생성
+            _gameLogic = new GomokuGameLogic(_gameType, _currentPlayerType/*, _board*/, _turnStateManager);
+            
             if (_turnStateManager != null)
             {
                 // GamePanelController 참조 가져오기
                 _gamePanelController = FindFirstObjectByType<GamePanelController>();
-                
-                // GomokuGameLogic 생성
-                _gameLogic = new GomokuGameLogic(_gameType, _playerType /*, _board*/, _turnStateManager);
+            }
+
+            if (_forbiddensVisualizer != null)
+            {
+                _forbiddensVisualizer.Init(forbiddenSprite);
             }
         }
     }
@@ -101,6 +188,36 @@ public class GameManager : Singleton<GameManager>
     public void ChangeToMainScene()
     {
         SceneManager.LoadScene(SCENE_MAIN);
+    }
+
+    public void OnMarkerSelected(MarkerChoice markerChoice)
+    {
+        // TODO: 유저가 돌을 선택했을 때 실행될 것
+
+        // random일 경우 랜덤 선택
+        if (markerChoice == MarkerChoice.Random)
+        {
+            int ranNum = Random.Range(1, 3);
+            _gamePlayerType = (PlayerType)ranNum;
+        }
+        else
+        {
+            _gamePlayerType = (PlayerType)markerChoice;
+        }
+        
+        bool isPlayerBlack = _gamePlayerType == PlayerType.Black; 
+
+        // 결정된 돌 색상과 유저 정보를 인게임 UI(GamePanelController)에 전달 : 수정필요?
+        UserData me = AccountManager.Instance.CurrentUser;
+        
+        if (me != null)
+        {
+
+            _gamePanelController.SetupPlayerProfile(me.nickname, $"{me.rank}급", isPlayerBlack, null);
+
+            _gamePanelController.SetupAIProfile(_aiName, _aiRank, !isPlayerBlack, null);
+
+        }
     }
 
     #endregion

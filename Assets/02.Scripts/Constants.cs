@@ -12,8 +12,10 @@ public static class Constants
     public enum GameType { SinglePlay, LocalDualPlay /*, MultiDualPlay*/ }
     public enum PlayerType { None, Black, White, Forbidden }
 
+    public enum ControllerType { None, Human, AI }
+
     public enum GameResult { None, Win, Lose }
     public enum ForbiddenType { None, DoubleThree, DoubleFour, Overline } //3-3, 4-4
 
-    public enum MarkerChoice { Black, White, Random };
+    public enum MarkerChoice { None, Black, White, Random };
 }

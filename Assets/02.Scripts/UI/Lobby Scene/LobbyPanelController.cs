@@ -1,14 +1,20 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class LobbyPanelController : MonoBehaviour
 {
+    [Header("Player Profile UI")]
+    [SerializeField] private Image profileImg;
+    [SerializeField] private TMP_Text rankText;
+    [SerializeField] private TMP_Text nicknameText;
+    
     [Header("Popups")]
     [SerializeField] private GameObject popupCanvas;
 
-    [SerializeField] private GameOptionPopup gameOptionPopup;
+    [SerializeField] private GameObject gameOptionPopup;
     // [SerializeField] private RankPopup rankPopup;
-    // [SerializeField] private SettingPopup settingPopup; >> 프리팹으로 Instantiate으로 인한 삭제
+    [SerializeField] private GameObject playerInfoPopup;
     
     [Header("Buttons")]
     [SerializeField] private Button playGameBtn;
@@ -23,13 +29,12 @@ public class LobbyPanelController : MonoBehaviour
     {
         Init();
         BindButtons();
+        UpdateUserProfile();
     }
 
     void Init()
     {
         popupCanvas.SetActive(true);
-        gameOptionPopup.Hide();
-        // settingPopup.Hide(); >> 프리팹으로 Instantiate으로 인한 삭제
     }
 
     void BindButtons()
@@ -40,12 +45,34 @@ public class LobbyPanelController : MonoBehaviour
         storeBtn.onClick.AddListener(ChangeSceneStore);
         settingBtn.onClick.AddListener(ShowSettingPopup);
         backBtn.onClick.AddListener(ChangeSceneMain);
-        playerinfoBtn.onClick.AddListener(ChangeSceneMain);
+        playerinfoBtn.onClick.AddListener(ShowPlayerInfoPopup);
+    }
+
+    private void UpdateUserProfile()
+    {
+        // AccountManager에서 현재 로그인한 유저 데이터 가져오기
+        UserData me = AccountManager.Instance.CurrentUser;
+
+        if (me != null)
+        {
+            // 데이터가 있으면 텍스트에 꽂아주기
+            rankText.text = $"{me.rank}급";
+            nicknameText.text = me.nickname;
+
+            // TODO: 프로필 이미지는 제공된 이미지 리스트에서 번호(profileId)로 가져올 예정
+            // profileImg.sprite = ProfileManager.Instance.GetSprite(me.profileId);
+        }
+        else
+        {
+            // 로그인 데이터가 없을 때의 예외 처리 (에디터 테스트용)
+            nicknameText.text = "로그인 필요";
+            rankText.text = "-";
+        }
     }
 
     private void ShowGameOptionPopup()
     {
-        gameOptionPopup.Show();
+        gameOptionPopup.SetActive(true);
     }
 
     private void ChangeScenePlayerRecode()
@@ -75,6 +102,6 @@ public class LobbyPanelController : MonoBehaviour
 
     private void ShowPlayerInfoPopup()
     {
-        // 내 정보 번경이 가능한 팝업창 띄우기
+        playerInfoPopup.SetActive(true);
     }
 }

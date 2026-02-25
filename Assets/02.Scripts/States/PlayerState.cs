@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class PlayerState : BaseState
 {
+    private GomokuGameLogic _gameLogic;
     // 턴 변경
     public PlayerState(Constants.PlayerType playerType) : base(playerType)
     {
@@ -35,12 +36,17 @@ public class PlayerState : BaseState
         GameManager.Instance.SetGameTurn(_playerType);
     }
 
-    void OnBlockClicked( /*Block block */)
+    void OnBlockClicked(/*, Block block */)
     {
         // TODO: 주석해제) 블록이 클릭되었을 때 처리할 로직
         // Vector2Int pos = block.GetBlockData().boardPos;
-        //
-        // HandleMove( /*gameLogic, */pos.y, pos.x);
+        
+        // temp
+        int tempRow = 1;
+        int tempCol = 1;
+        
+        _gameLogic = GameManager.Instance.GameLogic;
+        HandleMove(_gameLogic, tempRow, tempCol/*pos.y, pos.x*/);
     }
     
     public override void HandleMove(GomokuGameLogic gameLogic, int inRow, int inCol)

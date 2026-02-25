@@ -8,15 +8,13 @@ public class TurnStateManager : MonoBehaviour
 
     private Coroutine counterRoutine;
 
-    private BaseState currenState;
-
     public Action<BaseState, Constants.GameResult> onEndGame;
 
     public void SetState(BaseState newState)
     {
-        currenState = newState;
         if(counterRoutine !=null)
             StopCoroutine(counterRoutine);
+        
         counterRoutine = StartCoroutine(CounterRoutine(newState));
     }
 

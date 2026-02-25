@@ -51,6 +51,7 @@ public class GameManager : Singleton<GameManager>
 
     // Game Logic
     private GomokuGameLogic _gameLogic;
+    public GomokuGameLogic GameLogic => _gameLogic;
 
     private Board _board;
     

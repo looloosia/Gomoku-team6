@@ -38,7 +38,7 @@ public class LobbyPanelController : MonoBehaviour
         playerRecodeBtn.onClick.AddListener(ChangeScenePlayerRecode);
         rankBtn.onClick.AddListener(ShowRankPopup);
         storeBtn.onClick.AddListener(ChangeSceneStore);
-        // settingBtn.onClick.AddListener(ShowSettingPopup); >> 프리팹으로 Instantiate으로 인한 삭제
+        settingBtn.onClick.AddListener(ShowSettingPopup);
         backBtn.onClick.AddListener(ChangeSceneMain);
         playerinfoBtn.onClick.AddListener(ChangeSceneMain);
     }
@@ -63,10 +63,10 @@ public class LobbyPanelController : MonoBehaviour
         // 상점 씬으로 이동
     }
 
-    // private void ShowSettingPopup() >> 프리팹으로 Instantiate으로 인한 삭제
-    // {
-    //     settingPopup.Show();
-    // }
+    private void ShowSettingPopup()
+    {
+        GameManager.Instance.OpenSettingPopup();
+    }
 
     private void ChangeSceneMain()
     {

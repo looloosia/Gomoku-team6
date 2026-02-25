@@ -46,6 +46,10 @@ public class PlayerState : BaseState
         int tempCol = 1;
         
         _gameLogic = GameManager.Instance.GameLogic;
+        
+        // 타이머 멈추기
+        GameManager.Instance.TurnStateManager.StopCounterRoutine();
+        
         HandleMove(_gameLogic, tempRow, tempCol/*pos.y, pos.x*/);
     }
     

@@ -30,5 +30,11 @@ public class TurnStateManager : MonoBehaviour
         }
         onEndGame?.Invoke(playerState, GameResult.Lose);
     }
+
+    public void StopCounterRoutine()
+    {
+        StopCoroutine(counterRoutine);
+        GameManager.Instance.GameLogic.ChangeGameState();
+    }
     //TODO: 끝나면 로직에서 호출할 함수: 기능-코루틴 정지, UI숨기기
 }

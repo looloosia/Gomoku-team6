@@ -64,6 +64,8 @@ public class GameManager : Singleton<GameManager>
     private PlayerType _playerType;
     
     private TurnStateManager _turnStateManager;
+    
+    public TurnStateManager TurnStateManager => _turnStateManager;
 
     protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
     {

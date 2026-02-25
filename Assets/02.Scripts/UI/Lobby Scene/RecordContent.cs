@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -31,19 +32,23 @@ public class RecordContent : MonoBehaviour
     [SerializeField]
     private Button btnRecordPlay;
 
-    private List<ReplayFrameData> frameData;
+    private ReplaySaveData replaySaveData;
 
-    public void Init(UnityAction action)
+    public void Init(Action<ReplaySaveData> action)
     {
-        this.btnRecordPlay.onClick.AddListener(action);
+        this.btnRecordPlay.onClick.AddListener(() =>
+        {
+            action?.Invoke(this.replaySaveData);
+        });
+        Setting();
     }
 
-    public void Setting(string replayName, string player1Name, string player2Name, Constants.GameResult gameType)
+    public void Setting()
     {
-        this.txtRecordName.text = replayName;
-        this.txtRecordPlayer1.text = player1Name;
-        this.txtRecordPlayer2.text = player2Name;
-        ResultImageSetting(gameType);
+        this.txtRecordName.text = this.replaySaveData.replayName;
+        this.txtRecordPlayer1.text = this.replaySaveData.player1Name;
+        this.txtRecordPlayer2.text = this.replaySaveData.player2Name;
+        ResultImageSetting(this.replaySaveData.gameType);
     }
     private void ResultImageSetting(Constants.GameResult gameType)
     {
@@ -65,10 +70,10 @@ public class RecordContent : MonoBehaviour
     }
     public List<ReplayFrameData> GetFrameData()
     {
-        return this.frameData;
+        return this.replaySaveData.listReplayFrameData;
     }
-    public void SetFrameData(List<ReplayFrameData> frameData)
+    public void SetFrameData(ReplaySaveData replaySaveData)
     {
-        this.frameData = frameData;
+        this.replaySaveData = replaySaveData;
     }
 }

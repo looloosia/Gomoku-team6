@@ -8,9 +8,9 @@ public struct ReplaySaveData
     public string replayName;
     public string player1Name;
     public string player2Name;
-    public Constants.GameType gameType;
+    public Constants.GameResult gameType;
     public ReplaySaveData(List<ReplayFrameData> listReplayFrameData, string replayName, string player1Name,
-                            string player2Name, Constants.GameType gameType)
+                            string player2Name, Constants.GameResult gameType)
     {
         this.listReplayFrameData = listReplayFrameData;
         this.replayName = replayName;

@@ -26,6 +26,7 @@ public class ReplayBoard : MonoBehaviour
     void Awake()
     {
         this.dicBlocks = this.boardGenerator.GenerateBoard();
+
         this.onLoadReplayData = LoadReplayData;
 
         this.btnPrev.onClick.AddListener(PrevFrame);

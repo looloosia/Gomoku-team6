@@ -23,7 +23,7 @@ public class ProfilePanel : MonoBehaviour
     }
 
     // 돌 색상 설정
-    public void SetMarkerColor(bool isBlack)
+    public void SetMarkerImage(bool isBlack)
     {
         markerIcon.sprite = isBlack ? bmarkerSprite : wmarkerSprite;
         

@@ -4,13 +4,16 @@ using Unity.Burst.CompilerServices;
 using UnityEngine;
 using static Constants;
 
+/// <summary>
+/// 타이머 기능과 턴, 타이머 UI 업데이트 기능
+/// </summary>
 public class TurnStateManager : MonoBehaviour
-{
-
+{ 
     private Coroutine _counterRoutine;
 
     public Action<BaseState, Constants.GameResult> onEndGame;
     
+    // 남은 초
     private int _remainingSeconds;
     public int RemainingSeconds => _remainingSeconds;
 

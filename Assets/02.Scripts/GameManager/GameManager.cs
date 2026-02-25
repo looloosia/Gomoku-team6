@@ -49,17 +49,26 @@ public class GameManager : Singleton<GameManager>
     #endregion
 
     #region Game
-
+    
+    // 착수금지 표시 sprite
+    [SerializeField]
+    private Sprite forbiddenSprite;
+    
     // Game Logic
     private GomokuGameLogic _gameLogic;
     public GomokuGameLogic GameLogic => _gameLogic;
 
+    // Board
     private Board _board;
-    
     public Board Board => _board;
+    
+    // ForbiddenVisualizer
+    private ForbiddensVisualizer _forbiddensVisualizer;
+    public ForbiddensVisualizer ForbiddensVisualizer => _forbiddensVisualizer;
 
     // 게임의 종류 
     private GameType _gameType;
+    public GameType GameType => _gameType;
 
     // 플레이어 타입
     private PlayerType _playerType;
@@ -82,6 +91,9 @@ public class GameManager : Singleton<GameManager>
         if (scene.name == SCENE_GAME)
         {
             _turnStateManager = FindFirstObjectByType<TurnStateManager>();
+            _forbiddensVisualizer = FindFirstObjectByType<ForbiddensVisualizer>();
+            
+            _forbiddensVisualizer.Init(forbiddenSprite);
             
             if (_turnStateManager != null)
             {

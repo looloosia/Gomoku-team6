@@ -3,11 +3,13 @@ using UnityEngine;
 public abstract class BaseState
 {
     protected Constants.PlayerType _playerType;
+    protected Constants.PlayerType _ctrlPlayerType;
     public Constants.PlayerType Type => _playerType;
     protected Constants.ControllerType _controllerType;
     public  Constants.ControllerType ControllerType => _controllerType;
 
     protected Board _board;
+    protected ForbiddensVisualizer _forbiddensVisualizer;
 
     protected BaseState(Constants.PlayerType playerType, Constants.ControllerType controllerType)
     {

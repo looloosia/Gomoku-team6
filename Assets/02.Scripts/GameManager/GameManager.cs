@@ -65,6 +65,10 @@ public class GameManager : Singleton<GameManager>
     // ForbiddenVisualizer
     private ForbiddensVisualizer _forbiddensVisualizer;
     public ForbiddensVisualizer ForbiddensVisualizer => _forbiddensVisualizer;
+    
+    // TurnStateManager
+    private TurnStateManager _turnStateManager;
+    public TurnStateManager TurnStateManager => _turnStateManager;
 
     // 게임의 종류 
     private GameType _gameType;
@@ -72,36 +76,37 @@ public class GameManager : Singleton<GameManager>
 
     // 플레이어 타입
     private PlayerType _playerType;
-    
-    private TurnStateManager _turnStateManager;
-    
-    public TurnStateManager TurnStateManager => _turnStateManager;
+    public PlayerType PlayerType => _playerType;
 
     protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
     {
         // 새로운 씬에서 Canvas 참조 가져오기
         _canvas = FindFirstObjectByType<Canvas>();
         
-        // 임시로 게임 타입, 플레이어 타입 설정(추후 수정하기)
+        // TODO: 게임타입, 플레이어타입 설정기능 완성되면 설정된 대로 하게 수정
         _gameType = GameType.LocalDualPlay;
 
-        // 항상 흑이 먼저 게임 시작
+        // TODO: 플레이어의 흑백 설정에 맞게 수정
         _playerType = PlayerType.Black;
 
         if (scene.name == SCENE_GAME)
         {
             _turnStateManager = FindFirstObjectByType<TurnStateManager>();
             _forbiddensVisualizer = FindFirstObjectByType<ForbiddensVisualizer>();
+            _board = FindFirstObjectByType<Board>();
             
-            _forbiddensVisualizer.Init(forbiddenSprite);
+            // GomokuGameLogic 생성
+            _gameLogic = new GomokuGameLogic(_gameType, _playerType/*, _board*/, _turnStateManager);
             
             if (_turnStateManager != null)
             {
                 // GamePanelController 참조 가져오기
                 _gamePanelController = FindFirstObjectByType<GamePanelController>();
-                
-                // GomokuGameLogic 생성
-                _gameLogic = new GomokuGameLogic(_gameType, _playerType /*, _board*/, _turnStateManager);
+            }
+
+            if (_forbiddensVisualizer != null)
+            {
+                _forbiddensVisualizer.Init(forbiddenSprite);
             }
         }
     }

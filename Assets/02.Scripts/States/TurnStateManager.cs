@@ -33,9 +33,13 @@ public class TurnStateManager : MonoBehaviour
     {
         _remainingSeconds = TIME_LIMIT;
         
-        while (_remainingSeconds > 0)
+        while (_remainingSeconds >= 0)
         {
             _remainingSeconds--;
+            
+            // 타이머 UI 변경
+            GameManager.Instance.GamePanelController.UpdateTimerUI(_remainingSeconds);
+            
             yield return new WaitForSeconds(1f);
         }
         onEndGame?.Invoke(playerState, GameResult.Lose);
@@ -44,7 +48,6 @@ public class TurnStateManager : MonoBehaviour
     public void StopCounterRoutine()
     {
         StopCoroutine(_counterRoutine);
-        GameManager.Instance.GameLogic.ChangeGameState();
     }
     //TODO: 끝나면 로직에서 호출할 함수: 기능-코루틴 정지, UI숨기기
 }

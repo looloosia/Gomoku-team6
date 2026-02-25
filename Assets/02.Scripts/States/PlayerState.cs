@@ -16,7 +16,7 @@ public class PlayerState : BaseState
 
     public override void OnEnter(GomokuGameLogic gameLogic)
     {
-        Debug.Log("OnEnter");
+        _gameLogic = GameManager.Instance.GameLogic;
         _board = GameManager.Instance.Board;
         _board.onPlaceStone += OnStonePlace;
         
@@ -46,8 +46,6 @@ public class PlayerState : BaseState
         // temp
         int tempRow = 1;
         int tempCol = 1;
-        
-        _gameLogic = GameManager.Instance.GameLogic;
         
         // 타이머 멈추기
         GameManager.Instance.TurnStateManager.StopCounterRoutine();

@@ -26,9 +26,13 @@ public class GamePanelController : MonoBehaviour
     public event Action OnResignEvent; // 기권 확정했을 때
 
 
+
     void Start()
     {
         BindButtons();
+
+        //임시 추가
+        OnMarkerSelectedEvent += SetActionButtonsInteractable;
     }
 
     private void BindButtons()

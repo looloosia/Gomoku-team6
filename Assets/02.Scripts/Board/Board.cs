@@ -13,7 +13,9 @@ public class Board : MonoBehaviour
     [SerializeField]
     private BoardGenerator boardGenerator;
     [SerializeField]
-    private GamePanelController gamePanel;
+    private GamePanelController panel;
+    [SerializeField]
+    private GomokuGameLogic logic;
 
     //temp
     [SerializeField]
@@ -27,7 +29,8 @@ public class Board : MonoBehaviour
     
     private List<ReplayFrameData> listReplayFrame = new List<ReplayFrameData>();
 
-    public UnityAction onPlaceStone;
+    // [수정사항1] GameLogic에 row와 col 보내야 해서 Block 파라미터 추가
+    public UnityAction<Block> onPlaceStone;
 
     void Awake()
     {
@@ -56,11 +59,18 @@ public class Board : MonoBehaviour
         {
             Block clickedBlock = hit.collider.GetComponent<Block>();
 
-            if (clickedBlock != null && clickedBlock.GetBlockData().markerType == PlayerType.None)
+            if (clickedBlock != null)
             {
+                int x = clickedBlock.GetBlockData().boardPos.x;
+                int y = clickedBlock.GetBlockData().boardPos.y;
+
                 //착수 블럭
+                //[수정사항2] 클릭되었음만 알리게 수정
                 if (this.tempBlock != null)
                     this.tempBlock.ResetStone();
+
+                //[수정사항3] GameLogic의 PlaceMarker() 함수에서 룰을 체크 후 
+                this.panel.OnStoneTemporarilyPlaced();
                 this.tempBlock = clickedBlock;
                 this.tempBlock.SetPlacementImage(this.stoneChange.Type);
             }
@@ -68,11 +78,14 @@ public class Board : MonoBehaviour
     }
     private void InitEvents()
     {
-        this.gamePanel.OnConfirmMoveEvent += PutStone;
-        this.gamePanel.OnReturnMoveEvent += BoardReset;
-        this.gamePanel.OnReturnMoveEvent += SaveReplayJson;
+        this.panel.OnConfirmMoveEvent += PutStone;
+        this.panel.OnReturnMoveEvent += Return;
+        this.panel.OnResignEvent += BoardReset;
+        this.panel.OnResignEvent += SaveReplayJson;
+    }
+    private void PlaceCheck(Block block)
+    {
 
-        this.onPlaceStone = StoneOnClick;
     }
     private void PutStone()
     {
@@ -83,9 +96,19 @@ public class Board : MonoBehaviour
         else if (this.stoneChange.Type == PlayerType.White)
             this.tempBlock.SetWhiteStone();
 
+        this.onPlaceStone?.Invoke(this.tempBlock);
         this.tempBlock = null;
 
+        //저장
         SaveReplayFrame();
+    }
+    private void Return()
+    {
+        if (this.tempBlock == null)
+            return;
+
+        this.tempBlock.ResetStone();
+        this.tempBlock = null;
     }
     private void SaveReplayJson()
     {

@@ -16,9 +16,6 @@ public class Block : MonoBehaviour
     [SerializeField]
     private Sprite standbyBlackStone;
 
-
-
-
     private void SetStone(PlayerType markerType)
     {
         SetBlockType(markerType);

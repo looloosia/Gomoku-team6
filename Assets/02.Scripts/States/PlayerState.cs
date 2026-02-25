@@ -35,7 +35,7 @@ public class PlayerState : BaseState
         GameManager.Instance.SetGameTurn(_playerType);
     }
 
-    void OnBlockClicked( /*Block block */)
+    void OnBlockClicked(Block block)
     {
         // TODO: 주석해제) 블록이 클릭되었을 때 처리할 로직
         // Vector2Int pos = block.GetBlockData().boardPos;

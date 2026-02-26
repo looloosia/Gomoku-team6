@@ -62,17 +62,17 @@ public class RecordListPopup : BasePopup
             
             // 데이터에 기록된 돌 색상 확인 (예: 내가 흑돌이었는지)
             // (ReplaySaveData에 돌 색상 정보가 없다면 임시로 true/false 세팅)
-            bool isMyStoneBlack = true; 
+            // bool isMyStoneBlack = true; 
 
             // 우리가 만든 UI 함수에 데이터 꽂아주기!
-            reocordController.SetupProfiles(
-                p1Name: data.player1Name, // 상대방 이름
-                p1Rank: "18급",            // (임시) 상대방 급수
-                p1IsBlack: !isMyStoneBlack, 
-                p2Name: me.nickname,      // 내 이름
-                p2Rank: $"{me.rank}급",   // 내 급수
-                p2IsBlack: isMyStoneBlack
-            );
+            // reocordController.SetupProfiles(
+            //     p1Name: data.player1Name, // 상대방 이름
+            //     p1Rank: "18급",            // (임시) 상대방 급수
+            //     p1IsBlack: !isMyStoneBlack, 
+            //     p2Name: me.nickname,      // 내 이름
+            //     p2Rank: $"{me.rank}급",   // 내 급수
+            //     p2IsBlack: isMyStoneBlack
+            // );
         }
         });
     }

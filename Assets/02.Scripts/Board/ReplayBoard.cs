@@ -15,7 +15,7 @@ public class ReplayBoard : MonoBehaviour
     [SerializeField]
     private Button btnNext;
 
-    //key: 블럭 위치
+    //key: 블럭 위치(row, col)
     private Dictionary<(int, int), Block> dicBlocks = new Dictionary<(int, int), Block>();
 
     private List<ReplayFrameData> listRecordFrame = new List<ReplayFrameData>();
@@ -23,14 +23,15 @@ public class ReplayBoard : MonoBehaviour
     private int currentReplayframe = 0;
 
     public UnityAction<List<ReplayFrameData>> onLoadReplayData;
+
+
     void Awake()
     {
         this.dicBlocks = this.boardGenerator.GenerateBoard();
 
         this.onLoadReplayData = LoadReplayData;
 
-        this.btnPrev.onClick.AddListener(PrevFrame);
-        this.btnNext.onClick.AddListener(NextFrame);
+        EventsInit();
     }
     private void LoadReplayData(List<ReplayFrameData> frameData)
     {
@@ -40,7 +41,7 @@ public class ReplayBoard : MonoBehaviour
     {
         foreach(BlockData blockData in frameData.blockDatas)
         {
-            (int r, int c) key = (blockData.row, blockData.col);
+            (int r, int c) key = (blockData.row, blockData.row);
 
             this.dicBlocks[key].SetBlockData(blockData);
         }
@@ -62,5 +63,27 @@ public class ReplayBoard : MonoBehaviour
         this.currentReplayframe--;
         ReplayFrameData frameToPlay = this.listRecordFrame[this.currentReplayframe];
         SetBoardFromReplayData(frameToPlay);
+    }
+    private void FirstFrame()
+    {
+        if (this.listRecordFrame == null || this.listRecordFrame.Count == 0)
+            return;
+
+        this.currentReplayframe = 0; // 인덱스를 0으로 초기화
+        ReplayFrameData frameToPlay = this.listRecordFrame[this.currentReplayframe];
+        SetBoardFromReplayData(frameToPlay);
+    }
+    private void LastFrame()
+    {
+        if (this.listRecordFrame == null || this.listRecordFrame.Count == 0)
+            return;
+
+        this.currentReplayframe = this.listRecordFrame.Count - 1; // 인덱스를 마지막으로 설정
+        ReplayFrameData frameToPlay = this.listRecordFrame[this.currentReplayframe];
+        SetBoardFromReplayData(frameToPlay);
+    }
+    private void EventsInit()
+    {
+        
     }
 }

@@ -29,7 +29,6 @@ public class GamePanelController : MonoBehaviour
     void Start()
     {
         BindButtons();
-        
     }
 
     private void BindButtons()

@@ -65,8 +65,8 @@ public class Board : MonoBehaviour
 
                 this.onPlaceStone?.Invoke(clickedBlock);
 
-                // 임시
-                OnClick(clickedBlock);
+                // 외부에서 사용할 예정
+                //OnClick(clickedBlock);
             }
         }
     }

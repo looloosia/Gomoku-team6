@@ -73,9 +73,10 @@ public class GomokuGameLogic
 
     public void OnBlockClicked(Block block)
     {
+        
         int row = block.GetBlockData().row;
         int col = block.GetBlockData().col;
-
+        Debug.Log($"OnBlockClicked: {row} {col}");
         onBlockClicked?.Invoke(row, col);
     }
     //public void OnBlockClicked(int row, int col)
@@ -102,6 +103,7 @@ public class GomokuGameLogic
         currentState = newState;
         currentState?.OnEnter(this);    //새로운 스테이트 시작
 
+        Debug.Log(currentState.Type);
         //금수 자리 해제 및 새로 체크
         ClearForbiddenPositionCheck(virtualBoard);
         if (currentState.Type == PlayerType.Black)
@@ -132,9 +134,10 @@ public class GomokuGameLogic
     //턴 변경
     public void ChangeGameState()
     {
-
+        Debug.Log("ChangeGameState");
         if (currentState == playerAState)
         {
+            
             SetState(playerBState);
         }
         else

@@ -14,7 +14,7 @@ public class Board : MonoBehaviour
     private BoardGenerator boardGenerator;
     [SerializeField]
     private GamePanelController panel;
-    [SerializeField]
+    
     private GomokuGameLogic logic;
 
     //temp
@@ -36,7 +36,7 @@ public class Board : MonoBehaviour
         this.dicBlocks = this.boardGenerator.GenerateBoard();
 
         InitEvents();
-
+        BlockInit();
         SaveReplayFrame();
     }
     void Update()
@@ -44,6 +44,39 @@ public class Board : MonoBehaviour
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
             StoneOnClick();
+        }
+    }
+    public void BlockInit()
+    {
+        foreach (Block block in this.dicBlocks.Values)
+        {
+            block.Init(() =>
+            {
+                this.onPlaceStone?.Invoke(block);
+            });
+        }
+    }
+    public void UpdateBlock()
+    {
+        var virtualBoard = GameManager.Instance.GameLogic.VirtualBoard;
+        int rows = this.logic.VirtualBoard.GetLength(0);
+        int cols = this.logic.VirtualBoard.GetLength(1);
+
+        for (int row = 0; row < rows; row++)
+        {
+            for (int col = 0; col < cols; col++)
+            {
+                PlayerType type = this.logic.VirtualBoard[row, col];
+
+                if (this.dicBlocks.TryGetValue((row, col), out Block block))
+                {
+                    BlockData data = block.GetBlockData();
+
+                    data.markerType = type;
+
+                    block.SetBlockData(data);
+                }
+            }
         }
     }
 
@@ -182,8 +215,4 @@ public class Board : MonoBehaviour
             this.listReplayFrame.RemoveRange(1, this.listReplayFrame.Count - 1);
         }
     }
-
-
-
-
 }

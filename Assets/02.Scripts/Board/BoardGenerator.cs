@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class BoardGenerator : MonoBehaviour
 {
@@ -12,7 +13,6 @@ public class BoardGenerator : MonoBehaviour
     private Transform startPos;     //첫 블럭 위치
 
     private float spacing = 0.6f;   //블럭 간격
-
 
     public Dictionary<(int, int), Block> GenerateBoard()
     {

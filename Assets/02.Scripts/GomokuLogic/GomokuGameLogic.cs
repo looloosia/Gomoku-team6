@@ -10,13 +10,13 @@ public class GomokuGameLogic
     public PlayerType[,] VirtualBoard { get { return virtualBoard; } }
 
     public Action<int, int> onBlockClicked;//스테이트가 받을 액션
-
+    
     
     public BaseState playerAState;
     public BaseState playerBState;
 
     private Board gomokuBoard;
-
+   
     private BaseState currentState;
 
     private TurnStateManager turnStateManager;
@@ -47,6 +47,7 @@ public class GomokuGameLogic
         }
         
         PlayerType otherPlayerType = playerType == PlayerType.Black ? PlayerType.White : PlayerType.Black; //상대방 타입(멀티플레이일 경우 게스트)
+        gomokuBoard.onPlaceStone += OnBlockClicked;
 
         //TODO: stoneonclick에서 쏠 액션을 받을 함수 연결, (state가 연결할 함수)
 
@@ -70,10 +71,17 @@ public class GomokuGameLogic
         }
     }
 
-    public void OnBlockClicked(int row, int col)
+    public void OnBlockClicked(Block block)
     {
-        onBlockClicked?.Invoke(row, col);
+        int row = block.GetBlockData().row;
+        int col = block.GetBlockData().col;
+
+        //currentState.OnStonePlaced(row ,col);
     }
+    //public void OnBlockClicked(int row, int col)
+    //{
+    //    onBlockClicked?.Invoke(row, col);
+    //}
 
     private void StartFirstState()
     {

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 using static Constants;
 //큐로 기보 가능할지도 (포지션, 돌 타입)
 
@@ -143,7 +144,7 @@ public static class GomokuLibrary
             {
                 board[row, col] = playerType; //돌 놓아보고 미니맥스
 
-                int score = Minimax(board, playerType, 0, false, int.MinValue, int.MaxValue, row, col, boardRange);
+                int score = Minimax(board, playerType, 1, false, int.MinValue, int.MaxValue, row, col, boardRange);
 
                 if (score > bestScore)
                 {
@@ -157,16 +158,16 @@ public static class GomokuLibrary
         return (bestRow, bestCol);
     }
 
-    public static int Minimax(Constants.PlayerType[,] board, PlayerType playerType, int depth, bool isMaximizing, int alpha, int beta, int initR, int initC, int boardRange)
+    public static int Minimax(Constants.PlayerType[,] board, PlayerType playerType, int depth, bool isMaximizing, int alpha, int beta, int inRow, int inCol, int boardRange)
     {
         if (depth == 3 /*|| IsGameOver(board)*/ ) //종료 조건: 최대 깊이 도달 혹은 게임 종료
         {
-            return EvaluateScore(board, playerType, initR, initC, boardRange);
+            return EvaluateScore(board, playerType, inRow, inCol, boardRange);
         }
 
         PlayerType otherPlayer = playerType == PlayerType.Black ? PlayerType.White : PlayerType.Black;
 
-        List<(int, int)> candidates = GetCandidateMoves(board, depth + 1, boardRange);
+        List<(int, int)> candidates = GetCandidateMoves(board, depth-1, boardRange); //한 칸 위 후보
 
         if (isMaximizing) //Maximizing하는 순서
         {
@@ -179,6 +180,7 @@ public static class GomokuLibrary
 
                 if (board[row, col] == PlayerType.None)
                 {
+                    AddCandidates(board, candidatesList[depth], depth, row, col, 2); //현재 depth리스트에 한 칸 위 후보 + row, col주변 부 추가
                     board[row, col] = playerType;   //TODO: 필요 시 보드 복제하는 코드로 대체하기
 
                     int score = Minimax(board, playerType, depth + 1, false, alpha, beta, row, col, boardRange);
@@ -237,36 +239,68 @@ public static class GomokuLibrary
         List<(int, int)> candidates = candidatesList[depth];
         bool[,] visited = new bool[boardRange, boardRange];
 
-        for (int r = 0; r < boardRange; r++)
+        if (depth == 0)
         {
-            for (int c = 0; c < boardRange; c++)
+            for (int r = 0; r < boardRange; r++)
             {
-                if (board[r, c] != PlayerType.None) // 돌이 있는 곳 발견
+                for (int c = 0; c < boardRange; c++)
                 {
-                    // 주변 radius 칸을 후보지에 추가
-                    for (int dr = -RADIUS; dr <= RADIUS; dr++)
+                    if (board[r, c] != PlayerType.None) // 돌이 있는 곳 발견
                     {
-                        for (int dc = -RADIUS; dc <= RADIUS; dc++)
+                        // 주변 radius 칸을 후보지에 추가
+                        for (int dr = -RADIUS; dr <= RADIUS; dr++)
                         {
-                            int rr = r + dr;
-                            int cc = c + dc;
-
-                            if (IsInRange(rr, cc, boardRange) && board[rr, cc] == PlayerType.None && !visited[rr, cc])
+                            for (int dc = -RADIUS; dc <= RADIUS; dc++)
                             {
-                                candidates.Add((rr, cc));
-                                visited[rr, cc] = true;
+                                int rr = r + dr;
+                                int cc = c + dc;
+
+                                if (IsInRange(rr, cc, boardRange) && board[rr, cc] == PlayerType.None && !visited[rr, cc])
+                                {
+                                    candidates.Add((rr, cc));
+                                    visited[rr, cc] = true;
+                                }
                             }
                         }
                     }
                 }
-            }
 
+            }
+        }
+        else
+        {
+            return candidatesList[depth - 1];
         }
 
         // 만약 판이 비어있다면 중앙점 반환
         if (candidates.Count == 0) return new List<(int, int)> { (boardRange / 2, boardRange / 2) };
 
         return candidates;
+    }
+
+    private static void AddCandidates(PlayerType[,] board, List<(int,int)> list, int depth, int inRow, int inCol, int radius)
+    {
+        candidatesList[depth + 1].Clear();
+        candidatesList[depth + 1].AddRange(candidatesList[depth]);
+
+        int rStart = inRow - radius;
+        int rEnd = inRow + radius;
+
+        int cStart = inCol - radius;
+        int cEnd = inCol + radius;
+
+        for(int r=rStart;r<=rEnd;r++)
+        {
+            for(int c=cStart;c<=cEnd;c++)
+            {
+                if ((r == inRow && c == inCol) || !IsInRange(r, c, BOARD_SIZE) || board[r, c] != PlayerType.None)
+                    continue;
+                else
+                {
+                    candidatesList[depth + 1].Add((r, c));
+                }
+            }
+        }
     }
 
 

@@ -4,6 +4,9 @@ using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using static Constants;
 
+/// <summary>
+/// forbiddensVisualizer 임시 주석처리
+/// </summary>
 public class GameManager : Singleton<GameManager>
 {
     #region UI
@@ -69,8 +72,8 @@ public class GameManager : Singleton<GameManager>
     public Board Board => _board;
     
     // ForbiddenVisualizer
-    private ForbiddensVisualizer _forbiddensVisualizer;
-    public ForbiddensVisualizer ForbiddensVisualizer => _forbiddensVisualizer;
+    // private ForbiddensVisualizer _forbiddensVisualizer;
+    // public ForbiddensVisualizer ForbiddensVisualizer => _forbiddensVisualizer;
     
     // TurnStateManager
     private TurnStateManager _turnStateManager;
@@ -173,7 +176,7 @@ public class GameManager : Singleton<GameManager>
                 instance.name = "TurnManager";
                 
                 _turnStateManager = instance.GetComponent<TurnStateManager>();
-                _forbiddensVisualizer = instance.GetComponentInChildren<ForbiddensVisualizer>();
+                // _forbiddensVisualizer = instance.GetComponentInChildren<ForbiddensVisualizer>();
 
                 if (_turnStateManager == null)
                 {
@@ -184,14 +187,12 @@ public class GameManager : Singleton<GameManager>
         // GomokuGameLogic 생성
         _gameLogic = new GomokuGameLogic(_gameType, _gamePlayerType, _board, _turnStateManager);
         Debug.Log("GameManager에서 _gameLogic 생성함");
-        _forbiddensVisualizer = FindFirstObjectByType<ForbiddensVisualizer>();
-
-        if (_forbiddensVisualizer != null)
-        {
-            Debug.Log("forbiddenvisualizer: " + _forbiddensVisualizer);
-            Debug.Log("forbiddenSprite: " + forbiddenSprite);
-            _forbiddensVisualizer.Init(forbiddenSprite, _gameLogic);
-        }
+        // _forbiddensVisualizer = FindFirstObjectByType<ForbiddensVisualizer>();
+        //
+        // if (_forbiddensVisualizer != null)
+        // {
+        //     _forbiddensVisualizer.Init(forbiddenSprite, _gameLogic);
+        // }
     }
 
     // 씬 전환 (Main > Game)

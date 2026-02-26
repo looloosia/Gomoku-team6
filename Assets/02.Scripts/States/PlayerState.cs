@@ -28,14 +28,6 @@ public class PlayerState : BaseState
         
         _gamePlayerType = GameManager.Instance.GamePlayerType;
         
-        // demoCounter 기반 임시 테스트용
-        gameLogic.demoCounter--;
-        if (gameLogic.demoCounter == 0)
-        {
-            gameLogic.EndGame(this, Constants.GameResult.Win);
-            return;
-        }
-        
         // 흑돌일 경우 금수 표시
         if (_currentPlayerType == Constants.PlayerType.Black && _gamePlayerType == Constants.PlayerType.Black)
             _forbiddensVisualizer.VisualizeForbiddens(_currentPlayerType);

@@ -99,7 +99,7 @@ public class GameManager : Singleton<GameManager>
         set { _aiRank = value; }
     }
 
-    // temp ===========================
+    // 임시 테스트용(삭제예정) ===========================
     void Awake()
     {
         _gameType = Constants.GameType.LocalDualPlay;
@@ -110,7 +110,7 @@ public class GameManager : Singleton<GameManager>
         _board = FindFirstObjectByType<Board>();
         _gamePanelController = FindFirstObjectByType<GamePanelController>();
         
-        _gameLogic = new GomokuGameLogic(_gameType, _currentPlayerType, _turnStateManager);
+        _gameLogic = new GomokuGameLogic(_gameType, _currentPlayerType, _board, _turnStateManager);
 
         _aiName = "임시AI이름";
         _aiRank = "임시AI랭크";
@@ -162,7 +162,7 @@ public class GameManager : Singleton<GameManager>
             _board = FindFirstObjectByType<Board>();
             
             // GomokuGameLogic 생성
-            _gameLogic = new GomokuGameLogic(_gameType, _currentPlayerType/*, _board*/, _turnStateManager);
+            _gameLogic = new GomokuGameLogic(_gameType, _currentPlayerType, _board, _turnStateManager);
             
             if (_turnStateManager != null)
             {

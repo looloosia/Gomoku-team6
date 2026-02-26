@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using static Constants;
@@ -5,17 +6,20 @@ using static GomokuLibrary;
 
 public class GomokuGameLogic
 {
-    //public BlockController blockController;
-    private PlayerType[,] board;
+    private PlayerType[,] virtualBoard;
 
+    public Action<int, int> onBlockClicked;//스테이트가 받을 액션
+
+    
     public BaseState playerAState;
     public BaseState playerBState;
+
+    private Board gomokuBoard;
 
     private BaseState currentState;
 
     private TurnStateManager turnStateManager;
 
-    public PlayerType[,] Board { get { return board; } }
 
     private Coroutine counterRoutine = null;
 
@@ -24,16 +28,27 @@ public class GomokuGameLogic
     
     
     //흑돌인지 백돌인지 선택(흑: 선, 백: 후)
-    public GomokuGameLogic(GameType gameType, PlayerType playerType /*, BlockController blockController*/,TurnStateManager turnStateManager)
+    public GomokuGameLogic(GameType gameType, PlayerType playerType, Board gomokuBoard, TurnStateManager turnStateManager)
     {
-        //this.blockController = blockController;
-        board = new PlayerType[BOARD_SIZE, BOARD_SIZE];
+        virtualBoard = new PlayerType[BOARD_SIZE, BOARD_SIZE];
 
         this.turnStateManager = turnStateManager;
         this.turnStateManager.onEndGame += EndGame;
 
-        PlayerType otherPlayerType = playerType == PlayerType.Black ? PlayerType.White : PlayerType.Black; //상대방 타입(멀티플레이일 경우 게스트)
+        if (gomokuBoard != null)
+        {
+
+            this.gomokuBoard = gomokuBoard;
+        }
+        else
+        {
+            Debug.LogError("유효한 보드가 없습니다");
+        }
         
+        PlayerType otherPlayerType = playerType == PlayerType.Black ? PlayerType.White : PlayerType.Black; //상대방 타입(멀티플레이일 경우 게스트)
+
+        //TODO: stoneonclick에서 쏠 액션을 받을 함수 연결, (state가 연결할 함수)
+
         switch (gameType)
         {
             case GameType.LocalDualPlay:
@@ -54,6 +69,10 @@ public class GomokuGameLogic
         }
     }
 
+    public void OnBlockClicked(int row, int col)
+    {
+        onBlockClicked?.Invoke(row, col);
+    }
 
     private void StartFirstState()
     {
@@ -74,26 +93,36 @@ public class GomokuGameLogic
         currentState = newState;
         currentState?.OnEnter(this);    //새로운 스테이트 시작
 
+        //금수 자리 해제 및 새로 체크
+        ClearForbiddenPositionCheck(virtualBoard);
+        if(currentState.Type == PlayerType.Black)
+            CheckForbiddenPostions(virtualBoard, currentState.Type, 15);
+
         turnStateManager.SetState(newState);
     }
 
     public bool PlaceMarker(PlayerType playerType, int inRow, int inCol)
     {
-        if (board[inRow, inCol] != Constants.PlayerType.None) //무엇인가 있는 경우
+        if (virtualBoard[inRow, inCol] != Constants.PlayerType.None) //무엇인가 있는 경우
         {
-            Debug.Log("빈 칸에 돌을 놓아주세요");
+            if (virtualBoard[inRow, inCol] == Constants.PlayerType.Forbidden) {
+                Debug.Log("금수 자리");
+            }
+            else
+                Debug.Log("빈 칸에 돌을 놓아주세요");
             return false;
         }
-        if (RuleChecker(playerType, inRow, inCol) != ForbiddenType.None)
-            return false;
-        //blockController.PlaceMarker(index, playerType);
-        board[inRow, inCol] = playerType;
+        //if (RuleChecker(playerType, inRow, inCol) != ForbiddenType.None)
+        //    return false;
+
+        virtualBoard[inRow, inCol] = playerType;
         return true;
     }
 
     //턴 변경
     public void ChangeGameState()
     {
+        
         if (currentState == playerAState)
         {
             SetState(playerBState);
@@ -107,16 +136,11 @@ public class GomokuGameLogic
     public Constants.GameResult CheckGameResult(Constants.PlayerType playerType, int inRow, int inCol) //인풋: 바둑돌 놓은 좌표 
     {
         //승리 조건 확인 로직 구현
-        //if (CheckGameWin(board, PlayerType.Black,inRow, inCol))
-        //{
-        //    return Constants.GameResult.Win;
-        //}
+        if (CheckGomoku(virtualBoard, PlayerType.Black, inRow, inCol, 15))
+        {
+            return Constants.GameResult.Win;
+        }
 
-        //if (CheckGameWin(board, PlayerType.White,  inRow, inCol))
-        //{
-        //    return Constants.GameResult.Lose;
-        //}
-        
         return GameResult.None;
     }
     public void EndGame(BaseState playerState, Constants.GameResult gameResult) 
@@ -152,19 +176,20 @@ public class GomokuGameLogic
         
         //TurnStateManager에서 아예 다 꺼버리는 함수 호출
         turnStateManager.onEndGame -= EndGame;
+        //Board의 Action 해제.
 
         //GameManager.Instance.OpenConfirmPanel(resultString, () => { GameManager.Instance.ChangeToMainScene(); });
     }
 
-    public ForbiddenType RuleChecker(Constants.PlayerType playerType, int inRow, int inCol)
-    {
-        //3목인 경우 return ForbiddenType.Three;
-        //4목인 경우 return ForbiddenType.Four;
-        //장목인 경우 return ForbiddenType.Long;
+    //public ForbiddenType RuleChecker(Constants.PlayerType playerType, int inRow, int inCol)
+    //{
+    //    //3목인 경우 return ForbiddenType.Three;
+    //    //4목인 경우 return ForbiddenType.Four;
+    //    //장목인 경우 return ForbiddenType.Long;
 
 
-        return ForbiddenType.None;
-    }
+    //    return ForbiddenType.None;
+    //}
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///

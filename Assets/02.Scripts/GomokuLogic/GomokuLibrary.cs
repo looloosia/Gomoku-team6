@@ -14,6 +14,7 @@ public static class GomokuLibrary
         new List<(int, int)>(), // 1번 인덱스에 할당
         new List<(int, int)>()  // 2번 인덱스에 할당
     };
+
     private static Queue forbiddenPositions = new Queue();
     private static readonly Vector2Int[] directions = { new Vector2Int(0, 1), new Vector2Int(1, 0), new Vector2Int(1, 1), new Vector2Int(1, -1) };
     private static readonly Vector2Int[] doubleDirections =
@@ -68,8 +69,10 @@ public static class GomokuLibrary
     }
 
     //모든 칸에 IsDoubleThree, IsDoubleFour, IsOverline다 둘러보기
-    public static void CheckForbiddenPostions(Constants.PlayerType[,] board, PlayerType playerType, int boardRange)
+    public static Queue CheckForbiddenPostions(Constants.PlayerType[,] board, PlayerType playerType, int boardRange)
     {
+               
+        Queue retQueue = new Queue();
         for (int r = 0; r < boardRange; r++)
         {
             for (int c = 0; c < boardRange; c++)
@@ -81,26 +84,33 @@ public static class GomokuLibrary
                 {
                     //Debug.Log($"FORBIDDENCHECK {r}, {c}");
                     //board[r, c] = PlayerType.Forbidden; //둘 수 없도록 금수 위치 체크
-                    //forbiddenPositions.Enqueue(new Vector2Int(r, c));
+                    forbiddenPositions.Enqueue(new Vector2Int(r, c));
+                    retQueue.Enqueue(new Vector2Int(r, c));
                 }
             }
         }
+
         //Debug.Log("FORBIDDEN QUEUE START");
         //while (forbiddenPositions.Count!=0)
         //{
         //    Debug.Log(forbiddenPositions.Dequeue());
         //}
         //Debug.Log("FORBIDDEN QUEUE EMPTY");
+        return retQueue;
     }
 
-    public static void ClearForbiddenPositionCheck(Constants.PlayerType[,] board)// 차례 넘어갈 때 금수 위치 체크한 것 다 해제.
+    public static Queue ClearForbiddenPositionCheck(Constants.PlayerType[,] board)// 차례 넘어갈 때 금수 위치 체크한 것 다 해제.
     {
+        Queue retQueue = new Queue();
         while (forbiddenPositions.Count > 0)
         {
             Vector2Int position = (Vector2Int)forbiddenPositions.Dequeue();
-            board[position[0], position[1]] = PlayerType.None; //forbiddenCheck된 것 해제
+            //board[position[0], position[1]] = PlayerType.None; //forbiddenCheck된 것 해제
+            retQueue.Enqueue(new Vector2Int(position[0], position[1]));
         }
+        return retQueue;
     }
+
     //범위함수
     public static bool IsInRange(int inRow, int inCol, int boardRange)
     {

@@ -16,9 +16,6 @@ public class Block : MonoBehaviour
     [SerializeField]
     private Sprite standbyBlackStone;
 
-
-
-
     private void SetStone(PlayerType markerType)
     {
         SetBlockType(markerType);
@@ -58,10 +55,6 @@ public class Block : MonoBehaviour
     public BlockData GetBlockData()
     {
         return this.blockData;
-    }
-    public void SetBlockPosition(int x, int y)
-    {
-        this.blockData.boardPos = new Vector2Int(x, y);
     }
     public void SetBlockType(PlayerType markerType)
     {

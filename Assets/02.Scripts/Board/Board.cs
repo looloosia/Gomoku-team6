@@ -12,27 +12,24 @@ public class Board : MonoBehaviour
 {
     [SerializeField]
     private BoardGenerator boardGenerator;
+    [SerializeField]
+    private GamePanelController panel;
+    [SerializeField]
+    private GomokuGameLogic logic;
 
     //temp
     [SerializeField]
-    private PlayerChange playerChange;
-    [SerializeField]
-    private End end;
-
-    [SerializeField]
-    private Button btnPut;
-    [SerializeField]
-    private Button btnCancel;
+    private PlayerChange stoneChange;
 
     //착수 블럭
     private Block tempBlock;
 
-    //key: 블럭 위치
+    //key: 블럭 위치(col, row)
     private Dictionary<(int, int), Block> dicBlocks = new Dictionary<(int, int), Block>();
     
     private List<ReplayFrameData> listReplayFrame = new List<ReplayFrameData>();
 
-    public UnityAction onPlaceStone;
+    public UnityAction<Block> onPlaceStone;
 
     void Awake()
     {
@@ -61,47 +58,54 @@ public class Board : MonoBehaviour
         {
             Block clickedBlock = hit.collider.GetComponent<Block>();
 
-            if (clickedBlock != null && clickedBlock.GetBlockData().markerType == PlayerType.None)
+            if (clickedBlock != null)
             {
-                //착수 블럭
                 if (this.tempBlock != null)
                     this.tempBlock.ResetStone();
-                this.tempBlock = clickedBlock;
-                this.tempBlock.SetPlacementImage(this.playerChange.Type);
+
+                this.onPlaceStone?.Invoke(clickedBlock);
+
+                // 임시
+                OnClick(clickedBlock);
             }
         }
     }
+    public void OnClick(Block block)
+    {
+        this.panel.OnStoneTemporarilyPlaced();
+        this.tempBlock = block;
+        this.tempBlock.SetPlacementImage(this.stoneChange.Type);
+    }
     private void InitEvents()
     {
-        this.btnPut.onClick.AddListener(PutStone);
-        this.btnCancel.onClick.AddListener(CancelStone);
+        this.panel.OnConfirmMoveEvent += PutStone;
+        this.panel.OnReturnMoveEvent += Return;
 
-        this.onPlaceStone = StoneOnClick;
-
-        //temp
-        this.end.SetReplayCallback(() =>
-        {
-            SaveReplayJson();
-            BoardReset();
-        });
+        this.panel.OnResignEvent += BoardReset;
+        this.panel.OnResignEvent += SaveReplayJson;
     }
     private void PutStone()
     {
         if (this.tempBlock == null)
             return;
-        if (this.playerChange.Type == PlayerType.Black)
+        if (this.stoneChange.Type == PlayerType.Black)
             this.tempBlock.SetBlackStone();
-        else if (this.playerChange.Type == PlayerType.White)
+        else if (this.stoneChange.Type == PlayerType.White)
             this.tempBlock.SetWhiteStone();
+
+        this.onPlaceStone?.Invoke(this.tempBlock);
         this.tempBlock = null;
 
+        //저장
         SaveReplayFrame();
     }
-    private void CancelStone()
+    private void Return()
     {
         if (this.tempBlock == null)
             return;
+
         this.tempBlock.ResetStone();
+        this.tempBlock = null;
     }
     private void SaveReplayJson()
     {
@@ -142,13 +146,4 @@ public class Board : MonoBehaviour
             this.listReplayFrame.RemoveRange(1, this.listReplayFrame.Count - 1);
         }
     }
-
-
-    //public void DicTest()
-    //{
-    //    foreach(KeyValuePair<(int, int), Block> pair in this.dicBlocks)
-    //    {
-    //        Debug.Log($"BlockName: {pair.Value.name}, Block Position: {pair.Key.Item1}, {pair.Key.Item2}");
-    //    }
-    //}
 }

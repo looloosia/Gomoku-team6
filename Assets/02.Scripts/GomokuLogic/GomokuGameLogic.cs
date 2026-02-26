@@ -11,7 +11,7 @@ public class GomokuGameLogic
 
     public Action<int, int> onBlockClicked;//스테이트가 받을 액션
 
-    
+
     public BaseState playerAState;
     public BaseState playerBState;
 
@@ -26,8 +26,8 @@ public class GomokuGameLogic
 
     //승리, 패배 판정 용 임시 카운터 변수(삭제예정)
     public int demoCounter = 5;
-    
-    
+
+
     //흑돌인지 백돌인지 선택(흑: 선, 백: 후)
     public GomokuGameLogic(GameType gameType, PlayerType playerType, Board gomokuBoard, TurnStateManager turnStateManager)
     {
@@ -40,12 +40,13 @@ public class GomokuGameLogic
         {
 
             this.gomokuBoard = gomokuBoard;
+            gomokuBoard.onPlaceStone += OnBlockClicked;
         }
         else
         {
             Debug.LogError("유효한 보드가 없습니다");
         }
-        
+
         PlayerType otherPlayerType = playerType == PlayerType.Black ? PlayerType.White : PlayerType.Black; //상대방 타입(멀티플레이일 경우 게스트)
 
         //TODO: stoneonclick에서 쏠 액션을 받을 함수 연결, (state가 연결할 함수)
@@ -56,12 +57,12 @@ public class GomokuGameLogic
                 playerAState = new PlayerState(playerType);
                 playerBState = new PlayerState(otherPlayerType);
                 ////흑돌인 Player먼저 시작
-                StartFirstState();               
+                StartFirstState();
                 break;
 
-            //case GameType.SinglePlay:
-            //    playerAState = new PlayerState(playerType);
-            //    playerBState = new AIState(otherPlayerType);
+                //case GameType.SinglePlay:
+                //    playerAState = new PlayerState(playerType);
+                //    playerBState = new AIState(otherPlayerType);
 
                 ////첫 턴인 Player먼저 시작
                 //StartFirstState();
@@ -70,10 +71,17 @@ public class GomokuGameLogic
         }
     }
 
-    public void OnBlockClicked(int row, int col)
+    public void OnBlockClicked(Block block)
     {
-        onBlockClicked?.Invoke(row, col);
+        int row = block.GetBlockData().row;
+        int col = block.GetBlockData().col;
+
+        onBlockClicked?.Invoke(row ,col);
     }
+    //public void OnBlockClicked(int row, int col)
+    //{
+    //    onBlockClicked?.Invoke(row, col);
+    //}
 
     private void StartFirstState()
     {
@@ -93,10 +101,10 @@ public class GomokuGameLogic
         currentState?.OnExit(this); //기존 스테이트 끝
         currentState = newState;
         currentState?.OnEnter(this);    //새로운 스테이트 시작
-
+        Debug.Log("currentType: "+currentState.Type);
         //금수 자리 해제 및 새로 체크
         ClearForbiddenPositionCheck(virtualBoard);
-        if(currentState.Type == PlayerType.Black)
+        if (currentState.Type == PlayerType.Black)
             CheckForbiddenPostions(virtualBoard, currentState.Type, 15);
 
         turnStateManager.SetState(newState);
@@ -106,7 +114,8 @@ public class GomokuGameLogic
     {
         if (virtualBoard[inRow, inCol] != Constants.PlayerType.None) //무엇인가 있는 경우
         {
-            if (virtualBoard[inRow, inCol] == Constants.PlayerType.Forbidden) {
+            if (virtualBoard[inRow, inCol] == Constants.PlayerType.Forbidden)
+            {
                 Debug.Log("금수 자리");
             }
             else
@@ -123,7 +132,7 @@ public class GomokuGameLogic
     //턴 변경
     public void ChangeGameState()
     {
-        
+
         if (currentState == playerAState)
         {
             SetState(playerBState);
@@ -144,12 +153,12 @@ public class GomokuGameLogic
 
         return GameResult.None;
     }
-    public void EndGame(BaseState playerState, Constants.GameResult gameResult) 
+    public void EndGame(BaseState playerState, Constants.GameResult gameResult)
     {
-        
-        if(gameResult == Constants.GameResult.Win) //승리
+
+        if (gameResult == Constants.GameResult.Win) //승리
         {
-            if(playerState == playerAState)
+            if (playerState == playerAState)
             {
                 Debug.Log("A 승리");
                 Debug.Log("B 패배");
@@ -174,7 +183,7 @@ public class GomokuGameLogic
                 Debug.Log("B 패배");
             }
         }
-        
+
         //TurnStateManager에서 아예 다 꺼버리는 함수 호출
         turnStateManager.onEndGame -= EndGame;
         //Board의 Action 해제.
@@ -213,13 +222,13 @@ public class GomokuGameLogic
 //            //gameLogic.EndGame(this);
 //            return;
 //        }
-        
+
 //        Debug.Log($"{this} turn Enter");
 //    }
 //    public void HandleMove(GomokuGameLogic gameLogic, int index)
 //    {
 //        Debug.Log("HandleMove");
-        
+
 //    }
 //    public void OnExit(GomokuGameLogic gameLogic)
 //    {
@@ -250,5 +259,5 @@ public class GomokuGameLogic
 //            }
 //        }
 //    }
-    
+
 //}

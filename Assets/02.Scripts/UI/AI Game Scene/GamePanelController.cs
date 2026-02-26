@@ -24,9 +24,12 @@ public class GamePanelController : MonoBehaviour
     public event Action OnReturnMoveEvent; // 무르기 눌렀을 때
     public event Action OnResignEvent; // 기권 확정했을 때
 
+
+
     void Start()
     {
         BindButtons();
+        
     }
 
     private void BindButtons()

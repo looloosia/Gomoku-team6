@@ -23,18 +23,9 @@ public class PlayerState : BaseState
         _board = GameManager.Instance.Board;
         _forbiddensVisualizer = GameManager.Instance.ForbiddensVisualizer;
         
-        // TODO: Board.cs 머지되면 주석해제
-        // _board.onPlaceStone += OnStonePlace;
+        _board.onPlaceStone += OnStonePlace;
         
         _gamePlayerType = GameManager.Instance.GamePlayerType;
-        
-        // demoCounter 기반 임시 테스트용
-        gameLogic.demoCounter--;
-        if (gameLogic.demoCounter == 0)
-        {
-            gameLogic.EndGame(this, Constants.GameResult.Win);
-            return;
-        }
         
         // 흑돌일 경우 금수 표시
         if (_currentPlayerType == Constants.PlayerType.Black && _gamePlayerType == Constants.PlayerType.Black)
@@ -48,12 +39,13 @@ public class PlayerState : BaseState
     void OnStonePlace(Block block)
     {
         Debug.Log("OnStonePlace() 실행됨");
-        Vector2Int pos = block.GetBlockData().boardPos;
+        int row = block.GetBlockData().row;
+        int col = block.GetBlockData().col;
         
         // 타이머 멈추기
         GameManager.Instance.TurnStateManager.StopCounterRoutine();
         
-        HandleMove(_gameLogic, pos.y, pos.x);
+        HandleMove(_gameLogic, row, col);
     }
     
     public override void HandleMove(GomokuGameLogic gameLogic, int inRow, int inCol)
@@ -67,7 +59,7 @@ public class PlayerState : BaseState
         _forbiddensVisualizer.ClearForbiddens();
         
         // TODO: Board.cs 머지되면 주석해제
-        // _board.onPlaceStone -= OnStonePlace;
+        _board.onPlaceStone -= OnStonePlace;
     }
     
     

@@ -18,7 +18,7 @@ public class ReplayBoard : MonoBehaviour
     //key: 블럭 위치
     private Dictionary<(int, int), Block> dicBlocks = new Dictionary<(int, int), Block>();
 
-    private List<ReplayFrameData> listReplayFrame = new List<ReplayFrameData>();
+    private List<ReplayFrameData> listRecordFrame = new List<ReplayFrameData>();
 
     private int currentReplayframe = 0;
 
@@ -34,25 +34,24 @@ public class ReplayBoard : MonoBehaviour
     }
     private void LoadReplayData(List<ReplayFrameData> frameData)
     {
-        this.listReplayFrame = frameData;
+        this.listRecordFrame = frameData;
     }
     private void SetBoardFromReplayData(ReplayFrameData frameData)
     {
         foreach(BlockData blockData in frameData.blockDatas)
         {
-            Vector2Int pos = blockData.boardPos;
-            (int x, int y) key = (pos.x, pos.y);
+            (int r, int c) key = (blockData.row, blockData.col);
 
             this.dicBlocks[key].SetBlockData(blockData);
         }
     }
     private void NextFrame()
     {
-        if (this.currentReplayframe >= this.listReplayFrame.Count - 1)
+        if (this.currentReplayframe >= this.listRecordFrame.Count - 1)
             return;
 
         this.currentReplayframe++;
-        ReplayFrameData frameToPlay = this.listReplayFrame[this.currentReplayframe];
+        ReplayFrameData frameToPlay = this.listRecordFrame[this.currentReplayframe];
         SetBoardFromReplayData(frameToPlay);
     }
     private void PrevFrame()
@@ -61,7 +60,7 @@ public class ReplayBoard : MonoBehaviour
             return;
 
         this.currentReplayframe--;
-        ReplayFrameData frameToPlay = this.listReplayFrame[this.currentReplayframe];
+        ReplayFrameData frameToPlay = this.listRecordFrame[this.currentReplayframe];
         SetBoardFromReplayData(frameToPlay);
     }
 }

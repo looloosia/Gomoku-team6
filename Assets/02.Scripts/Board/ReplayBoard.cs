@@ -23,14 +23,18 @@ public class ReplayBoard : MonoBehaviour
     private int currentReplayframe = 0;
 
     public UnityAction<List<ReplayFrameData>> onLoadReplayData;
+
+    public event UnityAction OnPrevMoveEvent;
+    public event UnityAction OnNextMoveEvent;
+    public event UnityAction OnFirstMoveEvent;
+    public event UnityAction OnLastMoveEvent;
     void Awake()
     {
         this.dicBlocks = this.boardGenerator.GenerateBoard();
 
         this.onLoadReplayData = LoadReplayData;
 
-        this.btnPrev.onClick.AddListener(PrevFrame);
-        this.btnNext.onClick.AddListener(NextFrame);
+        EventsInit();
     }
     private void LoadReplayData(List<ReplayFrameData> frameData)
     {
@@ -62,5 +66,30 @@ public class ReplayBoard : MonoBehaviour
         this.currentReplayframe--;
         ReplayFrameData frameToPlay = this.listRecordFrame[this.currentReplayframe];
         SetBoardFromReplayData(frameToPlay);
+    }
+    private void FirstFrame()
+    {
+        if (this.listRecordFrame == null || this.listRecordFrame.Count == 0)
+            return;
+
+        this.currentReplayframe = 0; // 인덱스를 0으로 초기화
+        ReplayFrameData frameToPlay = this.listRecordFrame[this.currentReplayframe];
+        SetBoardFromReplayData(frameToPlay);
+    }
+    private void LastFrame()
+    {
+        if (this.listRecordFrame == null || this.listRecordFrame.Count == 0)
+            return;
+
+        this.currentReplayframe = this.listRecordFrame.Count - 1; // 인덱스를 마지막으로 설정
+        ReplayFrameData frameToPlay = this.listRecordFrame[this.currentReplayframe];
+        SetBoardFromReplayData(frameToPlay);
+    }
+    private void EventsInit()
+    {
+        this.OnFirstMoveEvent += FirstFrame;
+        this.OnLastMoveEvent += LastFrame;
+        this.OnPrevMoveEvent += PrevFrame;
+        this.OnNextMoveEvent += NextFrame;
     }
 }

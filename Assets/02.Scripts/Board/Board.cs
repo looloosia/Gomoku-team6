@@ -24,12 +24,11 @@ public class Board : MonoBehaviour
     //착수 블럭
     private Block tempBlock;
 
-    //key: 블럭 위치
+    //key: 블럭 위치(col, row)
     private Dictionary<(int, int), Block> dicBlocks = new Dictionary<(int, int), Block>();
     
     private List<ReplayFrameData> listReplayFrame = new List<ReplayFrameData>();
 
-    // [수정사항1] GameLogic에 row와 col 보내야 해서 Block 파라미터 추가
     public UnityAction<Block> onPlaceStone;
 
     void Awake()
@@ -61,31 +60,29 @@ public class Board : MonoBehaviour
 
             if (clickedBlock != null)
             {
-                int x = clickedBlock.GetBlockData().boardPos.x;
-                int y = clickedBlock.GetBlockData().boardPos.y;
-
-                //착수 블럭
-                //[수정사항2] 클릭되었음만 알리게 수정
                 if (this.tempBlock != null)
                     this.tempBlock.ResetStone();
 
-                //[수정사항3] GameLogic의 PlaceMarker() 함수에서 룰을 체크 후 
-                this.panel.OnStoneTemporarilyPlaced();
-                this.tempBlock = clickedBlock;
-                this.tempBlock.SetPlacementImage(this.stoneChange.Type);
+                this.onPlaceStone?.Invoke(clickedBlock);
+
+                // 임시
+                OnClick(clickedBlock);
             }
         }
+    }
+    public void OnClick(Block block)
+    {
+        this.panel.OnStoneTemporarilyPlaced();
+        this.tempBlock = block;
+        this.tempBlock.SetPlacementImage(this.stoneChange.Type);
     }
     private void InitEvents()
     {
         this.panel.OnConfirmMoveEvent += PutStone;
         this.panel.OnReturnMoveEvent += Return;
+
         this.panel.OnResignEvent += BoardReset;
         this.panel.OnResignEvent += SaveReplayJson;
-    }
-    private void PlaceCheck(Block block)
-    {
-
     }
     private void PutStone()
     {

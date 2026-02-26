@@ -56,10 +56,6 @@ public class Block : MonoBehaviour
     {
         return this.blockData;
     }
-    public void SetBlockPosition(int x, int y)
-    {
-        this.blockData.boardPos = new Vector2Int(x, y);
-    }
     public void SetBlockType(PlayerType markerType)
     {
         this.blockData.markerType = markerType;

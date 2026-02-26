@@ -28,6 +28,7 @@ public class ReplayBoard : MonoBehaviour
     public event UnityAction OnNextMoveEvent;
     public event UnityAction OnFirstMoveEvent;
     public event UnityAction OnLastMoveEvent;
+
     void Awake()
     {
         this.dicBlocks = this.boardGenerator.GenerateBoard();

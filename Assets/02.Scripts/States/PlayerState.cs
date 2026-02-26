@@ -39,7 +39,7 @@ public class PlayerState : BaseState
     void OnStonePlace(Block block)
     {
         Debug.Log("OnStonePlace() 실행됨");
-        int row = block.GetBlockData().col;
+        int row = block.GetBlockData().row;
         int col = block.GetBlockData().col;
         
         // 타이머 멈추기

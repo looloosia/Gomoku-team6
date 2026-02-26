@@ -85,18 +85,11 @@ public class GameManager : Singleton<GameManager>
     public PlayerType GamePlayerType => _gamePlayerType;
     
     // 현재 턴 플레이어 타입
-    public PlayerType CurrentPlayerType
-    {
-        get
-        {
-            if (_gameLogic != null && _gameLogic.CurrentState != null)
-            {
-                return _gameLogic.CurrentState.Type;
-            }
-            Debug.Log($"GameManager.cs에서 _gameLogic이 {_gameLogic}, _gameLogic.CurrentState이 {_gameLogic.CurrentState}");
-            return PlayerType.None;
-        }
-    }
+    private PlayerType _currentState;
+    public PlayerType CurrentPlayerType =>
+        (_gameLogic?.CurrentState != null) 
+            ? _gameLogic.CurrentState.Type 
+            : PlayerType.None;
     
     // AI의 이름
     private string _aiName;
@@ -158,10 +151,8 @@ public class GameManager : Singleton<GameManager>
     private void InitGameScene()
     {
         _turnStateManager = FindFirstObjectByType<TurnStateManager>();
-            
-        // 게임 시작 시 항상 흑이 먼저 둠.
-        _currentPlayerType = PlayerType.Black;
-
+        _board = FindFirstObjectByType<Board>();
+        
         if (_canvas == null)
         {
             Debug.LogError("Canvas is null!");
@@ -170,6 +161,8 @@ public class GameManager : Singleton<GameManager>
         // TurnManager가 씬에 없을 경우 생성
         if (_turnStateManager == null)
         {
+            _gamePanelController = FindFirstObjectByType<GamePanelController>();
+            
             GameObject prefab = Resources.Load<GameObject>("Prefabs/TurnManager");
             GameObject markerPanelObj = Instantiate(markerSelectPanelPrefab, _canvas.transform);
             MarkerSelectPanelController markerController = markerPanelObj.GetComponent<MarkerSelectPanelController>();
@@ -189,22 +182,15 @@ public class GameManager : Singleton<GameManager>
             }
         }
         // GomokuGameLogic 생성
-        _gameLogic = new GomokuGameLogic(_gameType, _currentPlayerType, _board, _turnStateManager);
+        _gameLogic = new GomokuGameLogic(_gameType, _gamePlayerType, _board, _turnStateManager);
         Debug.Log("GameManager에서 _gameLogic 생성함");
         _forbiddensVisualizer = FindFirstObjectByType<ForbiddensVisualizer>();
-        _board = FindFirstObjectByType<Board>();
-            
-        if (_turnStateManager != null)
-        {
-            // GamePanelController 참조 가져오기
-            _gamePanelController = FindFirstObjectByType<GamePanelController>();
-        }
 
         if (_forbiddensVisualizer != null)
         {
             Debug.Log("forbiddenvisualizer: " + _forbiddensVisualizer);
             Debug.Log("forbiddenSprite: " + forbiddenSprite);
-            _forbiddensVisualizer.Init(forbiddenSprite);
+            _forbiddensVisualizer.Init(forbiddenSprite, _gameLogic);
         }
     }
 
@@ -243,11 +229,14 @@ public class GameManager : Singleton<GameManager>
         
         if (me != null)
         {
+            if (_gamePanelController != null)
+            {
+                _gamePanelController.SetupPlayerProfile(me.nickname, $"{me.rank}급", isPlayerBlack, null);
 
-            _gamePanelController.SetupPlayerProfile(me.nickname, $"{me.rank}급", isPlayerBlack, null);
+                _gamePanelController.SetupAIProfile(_aiName, _aiRank, !isPlayerBlack, null);
 
-            _gamePanelController.SetupAIProfile(_aiName, _aiRank, !isPlayerBlack, null);
-
+            }
+            
         }
     }
 

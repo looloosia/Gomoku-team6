@@ -123,7 +123,7 @@ public class Board : MonoBehaviour
             date = DateTime.Now.ToString("yyyy-MM-dd"),
             time = DateTime.Now.ToString("HH:mm"),
 
-            //
+            // [게임 종류]
             gameType = GameType.SinglePlay, 
 
             // [상대방 정보]

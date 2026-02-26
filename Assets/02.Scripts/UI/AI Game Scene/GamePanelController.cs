@@ -29,7 +29,9 @@ public class GamePanelController : MonoBehaviour
     void Start()
     {
         BindButtons();
-        
+
+        //임시 추가
+        OnMarkerSelectedEvent += SetActionButtonsInteractable;
     }
 
     private void BindButtons()

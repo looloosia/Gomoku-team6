@@ -85,8 +85,18 @@ public class GameManager : Singleton<GameManager>
     public PlayerType GamePlayerType => _gamePlayerType;
     
     // 현재 턴 플레이어 타입
-    private PlayerType _currentPlayerType;
-    public PlayerType CurrentPlayerType => _currentPlayerType;
+    public PlayerType CurrentPlayerType
+    {
+        get
+        {
+            if (_gameLogic != null && _gameLogic.CurrentState != null)
+            {
+                return _gameLogic.CurrentState.Type;
+            }
+            Debug.Log($"GameManager.cs에서 _gameLogic이 {_gameLogic}, _gameLogic.CurrentState이 {_gameLogic.CurrentState}");
+            return PlayerType.None;
+        }
+    }
     
     // AI의 이름
     private string _aiName;
@@ -178,12 +188,9 @@ public class GameManager : Singleton<GameManager>
                 }
             }
         }
-        else
-        {
-            // GomokuGameLogic 생성
-            _gameLogic = new GomokuGameLogic(_gameType, _currentPlayerType/*, _board*/, _turnStateManager);
-        }
-            
+        // GomokuGameLogic 생성
+        _gameLogic = new GomokuGameLogic(_gameType, _currentPlayerType, _board, _turnStateManager);
+        Debug.Log("GameManager에서 _gameLogic 생성함");
         _forbiddensVisualizer = FindFirstObjectByType<ForbiddensVisualizer>();
         _board = FindFirstObjectByType<Board>();
             

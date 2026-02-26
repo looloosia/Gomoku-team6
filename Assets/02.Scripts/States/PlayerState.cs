@@ -23,8 +23,7 @@ public class PlayerState : BaseState
         _board = GameManager.Instance.Board;
         _forbiddensVisualizer = GameManager.Instance.ForbiddensVisualizer;
         
-        // TODO: Board.cs 머지되면 주석해제
-        // _board.onPlaceStone += OnStonePlace;
+        _board.onPlaceStone += OnStonePlace;
         
         _gamePlayerType = GameManager.Instance.GamePlayerType;
         
@@ -41,7 +40,7 @@ public class PlayerState : BaseState
     {
         Debug.Log("OnStonePlace() 실행됨");
         int row = block.GetBlockData().row;
-        int col = block.GetBlockData().row;
+        int col = block.GetBlockData().col;
         
         // 타이머 멈추기
         GameManager.Instance.TurnStateManager.StopCounterRoutine();
@@ -60,7 +59,7 @@ public class PlayerState : BaseState
         _forbiddensVisualizer.ClearForbiddens();
         
         // TODO: Board.cs 머지되면 주석해제
-        // _board.onPlaceStone -= OnStonePlace;
+        _board.onPlaceStone -= OnStonePlace;
     }
     
     

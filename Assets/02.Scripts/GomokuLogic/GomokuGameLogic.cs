@@ -7,6 +7,7 @@ using static GomokuLibrary;
 public class GomokuGameLogic
 {
     private PlayerType[,] virtualBoard;
+    public PlayerType[,] VirtualBoard { get { return virtualBoard; } }
 
     public Action<int, int> onBlockClicked;//스테이트가 받을 액션
 

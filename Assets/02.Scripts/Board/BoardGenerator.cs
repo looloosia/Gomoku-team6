@@ -23,12 +23,12 @@ public class BoardGenerator : MonoBehaviour
         float scaleFactor = 0.75f;
         float scaledSpacing = this.spacing * scaleFactor;
 
-        for (int col = 0; col < Constants.BOARD_SIZE; col++)
+        for (int row = 0; row < Constants.BOARD_SIZE; row++)
         {
-            for (int row = 0; row < Constants.BOARD_SIZE; row++)
+            for (int col = 0; col < Constants.BOARD_SIZE; col++)
             {
-                float posX = startPos.x + (row * scaledSpacing);
-                float posY = startPos.y - (col * scaledSpacing);
+                float posX = startPos.x + (col * scaledSpacing);
+                float posY = startPos.y - (row * scaledSpacing);
 
                 Vector2 spawnPos = new Vector2(posX, posY);
 
@@ -40,12 +40,12 @@ public class BoardGenerator : MonoBehaviour
 
                 // 블럭 세팅
                 Block block = objBlock.GetComponent<Block>();
-                BlockData data = new BlockData(Constants.PlayerType.None, col, row);
+                BlockData data = new BlockData(Constants.PlayerType.None, row, col);
                 block.SetBlockData(data);
 
-                dicBlocks.Add((col, row), block);
+                dicBlocks.Add((row, col), block);
 
-                objBlock.name = $"Block_{(col, row)}";
+                objBlock.name = $"Block_{(row, col)}";
             }
         }
         return dicBlocks;

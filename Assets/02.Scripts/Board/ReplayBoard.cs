@@ -40,7 +40,7 @@ public class ReplayBoard : MonoBehaviour
     {
         foreach(BlockData blockData in frameData.blockDatas)
         {
-            (int r, int c) key = (blockData.row, blockData.col);
+            (int r, int c) key = (blockData.row, blockData.row);
 
             this.dicBlocks[key].SetBlockData(blockData);
         }

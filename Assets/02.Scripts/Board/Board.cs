@@ -24,7 +24,7 @@ public class Board : MonoBehaviour
     //착수 블럭
     private Block tempBlock;
 
-    //key: 블럭 위치(col, row)
+    //key: 블럭 위치(row, col)
     private Dictionary<(int, int), Block> dicBlocks = new Dictionary<(int, int), Block>();
     
     private List<ReplayFrameData> listReplayFrame = new List<ReplayFrameData>();
@@ -67,7 +67,6 @@ public class Board : MonoBehaviour
 
                 // 임시
                 OnClick(clickedBlock);
-                //Debug.Log($"{clickedBlock.gameObject.name}: {clickedBlock.GetBlockData().col}, {clickedBlock.GetBlockData().row}");
             }
         }
     }
@@ -89,6 +88,7 @@ public class Board : MonoBehaviour
     {
         if (this.tempBlock == null)
             return;
+
         if (this.stoneChange.Type == PlayerType.Black)
             this.tempBlock.SetBlackStone();
         else if (this.stoneChange.Type == PlayerType.White)
@@ -112,12 +112,33 @@ public class Board : MonoBehaviour
     {
         string fileName = DateTime.Now.ToString("yy-MM-dd_HH-mm-ss");
         string replayName = DateTime.Now.ToString("(yy/MM/dd) HH:mm:ss");
-        string player1NickName = "Player1";
-        string player2NickName = "Player2";
-        GameResult result =  GameResult.Win;
 
-        ReplaySaveData data = new ReplaySaveData(this.listReplayFrame, replayName, player1NickName, 
-                                                    player2NickName, result);
+        ReplaySaveData data = new ReplaySaveData
+        {
+            // [파일 이름]
+            listRecordFrameData = this.listReplayFrame,
+            recordName = DateTime.Now.ToString("yy-MM-dd_HH-mm-ss"),
+
+            // [날짜]
+            date = DateTime.Now.ToString("yyyy-MM-dd"),
+            time = DateTime.Now.ToString("HH:mm"),
+
+            //
+            gameType = GameType.SinglePlay, 
+
+            // [상대방 정보]
+            nickName = "",              // 상대방 닉네임
+            rank = 0,                   // 상대방 급수
+
+            // [결과 및 통계]
+            result = GameResult.None,         
+            resultType = GameResultType.None, 
+
+            winStoneType = PlayerType.None,   
+            myStoneType = PlayerType.None,    
+
+            totalStone = 0
+        };
 
         string json = JsonUtility.ToJson(data, true);
 
@@ -134,6 +155,11 @@ public class Board : MonoBehaviour
         ReplayFrameData frameData = new ReplayFrameData(blocks);
 
         this.listReplayFrame.Add(frameData);
+    }
+    private int TotalStoneCount()
+    {
+        
+        return 0;
     }
     private void BoardReset()
     {

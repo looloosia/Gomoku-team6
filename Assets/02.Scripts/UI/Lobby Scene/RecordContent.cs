@@ -45,10 +45,10 @@ public class RecordContent : MonoBehaviour
 
     public void Setting()
     {
-        this.txtRecordName.text = this.replaySaveData.recordName;
-        this.txtRecordPlayer1.text = this.replaySaveData.player1Name;
-        this.txtRecordPlayer2.text = this.replaySaveData.player2Name;
-        ResultImageSetting(this.replaySaveData.gameType);
+        //this.txtRecordName.text = this.replaySaveData.recordName;
+        //this.txtRecordPlayer1.text = this.replaySaveData.player1Name;
+        //this.txtRecordPlayer2.text = this.replaySaveData.player2Name;
+        //ResultImageSetting(this.replaySaveData.gameType);
     }
     private void ResultImageSetting(Constants.GameResult gameType)
     {

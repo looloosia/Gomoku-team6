@@ -20,6 +20,8 @@ public class Board : MonoBehaviour
     //temp
     [SerializeField]
     private PlayerChange stoneChange;
+    [SerializeField]
+    private Button btnSave;
 
     //착수 블럭
     private Block tempBlock;
@@ -38,6 +40,13 @@ public class Board : MonoBehaviour
         InitEvents();
         BlockInit();
         SaveReplayFrame();
+
+        //test
+        this.btnSave.onClick.AddListener(() =>
+        {
+            SaveReplayJson();
+            BoardReset();
+        });
     }
     void Update()
     {
@@ -111,8 +120,8 @@ public class Board : MonoBehaviour
         this.panel.OnConfirmMoveEvent += PutStone;
         this.panel.OnReturnMoveEvent += Return;
 
-        this.panel.OnResignEvent += BoardReset;
         this.panel.OnResignEvent += SaveReplayJson;
+        this.panel.OnResignEvent += BoardReset;
     }
     private void PutStone()
     {
@@ -143,7 +152,7 @@ public class Board : MonoBehaviour
     {
         string fileName = DateTime.Now.ToString("yy-MM-dd_HH-mm-ss");
         string replayName = DateTime.Now.ToString("(yy/MM/dd) HH:mm:ss");
-
+        
         ReplaySaveData data = new ReplaySaveData
         {
             // [파일 이름]
@@ -170,7 +179,7 @@ public class Board : MonoBehaviour
 
             totalStone = TotalStoneCount()
         };
-
+        
         string json = JsonUtility.ToJson(data, true);
 
         string folderPath = Application.dataPath + "/Replay";

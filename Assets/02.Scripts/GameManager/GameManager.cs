@@ -86,10 +86,10 @@ public class GameManager : Singleton<GameManager>
     
     // 현재 턴 플레이어 타입
     private PlayerType _currentState;
-    public PlayerType CurrentPlayerType =>
-        (_gameLogic?.CurrentState != null) 
-            ? _gameLogic.CurrentState.Type 
-            : PlayerType.None;
+    // public PlayerType CurrentPlayerType =>
+    //     (_gameLogic?.CurrentState != null) 
+    //         ? _gameLogic.CurrentState.Type 
+    //         : PlayerType.None;
     
     // AI의 이름
     private string _aiName;

@@ -29,7 +29,7 @@ public class ForbiddensVisualizer : MonoBehaviour
         {
             Debug.Log("B: _board is null");
         }
-        _board = _gameLogic.VirtualBoard;
+        //_board = _gameLogic.VirtualBoard;
         
         // TODO: Board.cs의 dicBlocks를 프로퍼티를 통해 가져오기
         // _dicBlocks = GameManager.Instance.Board.DicBlocks;
@@ -75,11 +75,11 @@ public class ForbiddensVisualizer : MonoBehaviour
             {
                 continue;
             }
-            if (GomokuLibrary.IsForbidden(_gameLogic.VirtualBoard, currPlayerType, row,
-                    col, Constants.BOARD_SIZE) != Constants.ForbiddenType.None)
-            {
-                _spriteRenderers[(row, col)].sprite = _forbiddenSprite;
-            }
+            // if (GomokuLibrary.IsForbidden(_gameLogic.VirtualBoard, currPlayerType, row,
+            //         col, Constants.BOARD_SIZE) != Constants.ForbiddenType.None)
+            // {
+            //     _spriteRenderers[(row, col)].sprite = _forbiddenSprite;
+            // }
         }
     }
     

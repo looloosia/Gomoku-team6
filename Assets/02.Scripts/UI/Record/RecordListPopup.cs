@@ -52,7 +52,7 @@ public class RecordListPopup : BasePopup
     {
         MySceneManager.Instance.LoadSceneWithCallback<ReplayBoard>("Record", (replayBoard) =>
         {
-            replayBoard.onLoadReplayData(data.listReplayFrameData);
+            // replayBoard.onLoadReplayData(data.listReplayFrameData);
             RecordPanelController reocordController = FindAnyObjectByType<RecordPanelController>();
 
             if (reocordController != null)

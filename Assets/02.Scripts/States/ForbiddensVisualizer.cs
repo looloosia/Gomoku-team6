@@ -17,14 +17,16 @@ public class ForbiddensVisualizer : MonoBehaviour
     Dictionary<(int, int), SpriteRenderer> _spriteRenderers = new Dictionary<(int, int), SpriteRenderer>();
     
     // 이 초기화 함수는 Board.cs의 Awake() 이후에 호출되어야 함.
-    public void Init(Sprite forbiddenSprite)
+    public void Init(Sprite forbiddenSprite, GomokuGameLogic gameLogic)
     {
-        _gameLogic = GameManager.Instance.GameLogic;
-        _board = _gameLogic.Board;
+        _gameLogic = gameLogic;
+        
         if (_gameLogic == null)
         {
             Debug.Log("A: _gameLogic is null");
         }
+        _board = _gameLogic.Board;
+        
 
         if (_board == null)
         {

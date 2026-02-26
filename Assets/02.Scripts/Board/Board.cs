@@ -63,10 +63,7 @@ public class Board : MonoBehaviour
                 if (this.tempBlock != null)
                     this.tempBlock.ResetStone();
 
-                this.onPlaceStone?.Invoke(clickedBlock);
-
-                // 외부에서 사용할 예정
-                //OnClick(clickedBlock);
+                OnClick(clickedBlock);
             }
         }
     }
@@ -95,6 +92,7 @@ public class Board : MonoBehaviour
             this.tempBlock.SetWhiteStone();
 
         this.onPlaceStone?.Invoke(this.tempBlock);
+
         this.tempBlock = null;
 
         //저장
@@ -137,7 +135,7 @@ public class Board : MonoBehaviour
             winStoneType = PlayerType.None,   
             myStoneType = PlayerType.None,    
 
-            totalStone = 0
+            totalStone = TotalStoneCount()
         };
 
         string json = JsonUtility.ToJson(data, true);
@@ -158,8 +156,19 @@ public class Board : MonoBehaviour
     }
     private int TotalStoneCount()
     {
-        
-        return 0;
+        int count = 0;
+
+        foreach (Block block in this.dicBlocks.Values)
+        {
+            Constants.PlayerType type = block.GetBlockData().markerType;
+
+            if (type == Constants.PlayerType.Black || type == Constants.PlayerType.White)
+            {
+                count++;
+            }
+        }
+
+        return count;
     }
     private void BoardReset()
     {
@@ -173,4 +182,8 @@ public class Board : MonoBehaviour
             this.listReplayFrame.RemoveRange(1, this.listReplayFrame.Count - 1);
         }
     }
+
+
+
+
 }

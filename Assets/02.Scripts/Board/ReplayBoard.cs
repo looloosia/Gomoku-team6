@@ -24,10 +24,6 @@ public class ReplayBoard : MonoBehaviour
 
     public UnityAction<List<ReplayFrameData>> onLoadReplayData;
 
-    public event UnityAction OnPrevMoveEvent;
-    public event UnityAction OnNextMoveEvent;
-    public event UnityAction OnFirstMoveEvent;
-    public event UnityAction OnLastMoveEvent;
 
     void Awake()
     {
@@ -88,9 +84,6 @@ public class ReplayBoard : MonoBehaviour
     }
     private void EventsInit()
     {
-        this.OnFirstMoveEvent += FirstFrame;
-        this.OnLastMoveEvent += LastFrame;
-        this.OnPrevMoveEvent += PrevFrame;
-        this.OnNextMoveEvent += NextFrame;
+        
     }
 }

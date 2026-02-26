@@ -212,6 +212,7 @@ public static class GomokuLibrary
 
                 if (board[row, col] == PlayerType.None)
                 {
+                    AddCandidates(board, candidatesList[depth], depth, row, col, 2); //현재 depth리스트에 한 칸 위 후보 + row, col주변 부 추가
                     board[row, col] = otherPlayer;
                     int score = Minimax(board, otherPlayer, depth + 1, true, alpha, beta, row, col, boardRange);
 
@@ -280,8 +281,8 @@ public static class GomokuLibrary
 
     private static void AddCandidates(PlayerType[,] board, List<(int,int)> list, int depth, int inRow, int inCol, int radius)
     {
-        candidatesList[depth + 1].Clear();
-        candidatesList[depth + 1].AddRange(candidatesList[depth]);
+        candidatesList[depth].Clear();
+        candidatesList[depth].AddRange(candidatesList[depth-1]);
 
         int rStart = inRow - radius;
         int rEnd = inRow + radius;

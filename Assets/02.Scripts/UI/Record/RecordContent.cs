@@ -20,12 +20,31 @@ public class RecordContent : MonoBehaviour
 
     public void Init(ReplaySaveData data, Action<ReplaySaveData> onClickReview)
     {
-        // dateTxt.textStyle = data.replayName
-        // modeTxt
-        // opponentTxt
-        // resultTxt
-        // myMarkerImg
-        // totalMovesTxt
-        // reviewBtn
+        // 날짜 및 시간
+        dateTxt.text = $"{data.date}\n{data.time}";
+
+        // 게임 모드 (GameType Enum 활용)
+        modeTxt.text = (data.gameType == Constants.GameType.SinglePlay) ? "AI 전" : "멀티 전";
+
+        // 상대 정보
+        opponentTxt.text = $"vs {data.nickName} ({data.rank}급)";
+
+        // 결과 텍스트 (예: "승 (흑 기권)")
+        string resultStr = (data.result == Constants.GameResult.Win) ? "승" :
+                           (data.result == Constants.GameResult.Lose) ? "패" : "무승부";
+        string winStoneStr = (data.winStoneType == Constants.PlayerType.Black) ? "흑" : "백";
+        
+        // (GameResultType은 '5목', '기권' 등의 Enum이라고 가정)
+        resultTxt.text = $"{resultStr} ({winStoneStr} {data.resultType})";
+
+        // 내 돌 색상 이미지
+        myMarkerImg.sprite = (data.myStoneType == Constants.PlayerType.Black) ? blackMarkerSprite : whiteMarkerSprite;
+
+        // 총 턴(수)
+        totalMovesTxt.text = $"{data.totalStone}수";
+
+        // 복기 버튼 이벤트 연결
+        reviewBtn.onClick.RemoveAllListeners();
+        reviewBtn.onClick.AddListener(() => onClickReview?.Invoke(data));
     }
 }

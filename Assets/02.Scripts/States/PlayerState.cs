@@ -58,6 +58,8 @@ public class PlayerState : BaseState
     public override void OnExit(GomokuGameLogic gameLogic)
     { 
         _forbiddensVisualizer.ClearForbiddens();
+        
+        // TODO: Board.cs 머지되면 주석해제
         _board.onPlaceStone -= OnStonePlace;
     }
     

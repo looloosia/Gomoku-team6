@@ -12,9 +12,6 @@ public class GomokuGameLogic
     public BaseState playerBState;
 
     private BaseState currentState;
-    public BaseState CurrentState => currentState;
-
-    private Board _tBoard;
 
     private TurnStateManager turnStateManager;
 
@@ -22,27 +19,27 @@ public class GomokuGameLogic
 
     private Coroutine counterRoutine = null;
 
-    //ï¿½Â¸ï¿½, ï¿½Ð¹ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ó½ï¿½ Ä«ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
+    //½Â¸®, ÆÐ¹è ÆÇÁ¤ ¿ë ÀÓ½Ã Ä«¿îÅÍ º¯¼ö(»èÁ¦¿¹Á¤)
     public int demoCounter = 5;
     
     
-    //ï¿½æµ¹ï¿½ï¿½ï¿½ï¿½ ï¿½éµ¹ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½: ï¿½ï¿½, ï¿½ï¿½: ï¿½ï¿½)
-    public GomokuGameLogic(GameType gameType, PlayerType playerType, Board tBoard,TurnStateManager turnStateManager)
+    //Èæµ¹ÀÎÁö ¹éµ¹ÀÎÁö ¼±ÅÃ(Èæ: ¼±, ¹é: ÈÄ)
+    public GomokuGameLogic(GameType gameType, PlayerType playerType /*, BlockController blockController*/,TurnStateManager turnStateManager)
     {
-        _tBoard = tBoard;
+        //this.blockController = blockController;
         board = new PlayerType[BOARD_SIZE, BOARD_SIZE];
 
         this.turnStateManager = turnStateManager;
         this.turnStateManager.onEndGame += EndGame;
 
-        PlayerType otherPlayerType = playerType == PlayerType.Black ? PlayerType.White : PlayerType.Black; //ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½(ï¿½ï¿½Æ¼ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ô½ï¿½Æ®)
+        PlayerType otherPlayerType = playerType == PlayerType.Black ? PlayerType.White : PlayerType.Black; //»ó´ë¹æ Å¸ÀÔ(¸ÖÆ¼ÇÃ·¹ÀÌÀÏ °æ¿ì °Ô½ºÆ®)
         
         switch (gameType)
         {
             case GameType.LocalDualPlay:
                 playerAState = new PlayerState(playerType);
                 playerBState = new PlayerState(otherPlayerType);
-                ////ï¿½æµ¹ï¿½ï¿½ Playerï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+                ////Èæµ¹ÀÎ Player¸ÕÀú ½ÃÀÛ
                 StartFirstState();               
                 break;
 
@@ -50,7 +47,7 @@ public class GomokuGameLogic
             //    playerAState = new PlayerState(playerType);
             //    playerBState = new AIState(otherPlayerType);
 
-                ////Ã¹ ï¿½ï¿½ï¿½ï¿½ Playerï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+                ////Ã¹ ÅÏÀÎ Player¸ÕÀú ½ÃÀÛ
                 //StartFirstState();
                 //break;
 
@@ -60,7 +57,6 @@ public class GomokuGameLogic
 
     private void StartFirstState()
     {
-        Debug.Log("StartFirstState");
         if (playerAState.Type == Constants.PlayerType.Black)
         {
             SetState(playerAState);
@@ -71,35 +67,33 @@ public class GomokuGameLogic
         }
     }
 
-    //ï¿½ï¿½ È¤ï¿½ï¿½ ï¿½ï¿½ï¿½Â°ï¿½ ï¿½Ù²ï¿½ ï¿½ï¿½ È£ï¿½ï¿½Ç´ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½
+    //ÅÏ È¤Àº »óÅÂ°¡ ¹Ù²ð ¶§ È£ÃâµÇ´Â ¸Þ¼­µå
     public void SetState(BaseState newState)
     {
-        currentState?.OnExit(this); //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½
+        currentState?.OnExit(this); //±âÁ¸ ½ºÅ×ÀÌÆ® ³¡
         currentState = newState;
-        currentState?.OnEnter(this);    //ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
+        currentState?.OnEnter(this);    //»õ·Î¿î ½ºÅ×ÀÌÆ® ½ÃÀÛ
 
         turnStateManager.SetState(newState);
     }
 
     public bool PlaceMarker(PlayerType playerType, int inRow, int inCol)
     {
-        if (board[inRow, inCol] != Constants.PlayerType.None) //ï¿½ï¿½ï¿½ï¿½ï¿½Î°ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½
+        if (board[inRow, inCol] != Constants.PlayerType.None) //¹«¾ùÀÎ°¡ ÀÖ´Â °æ¿ì
         {
-            Debug.Log("ï¿½ï¿½ Ä­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½");
+            Debug.Log("ºó Ä­¿¡ µ¹À» ³õ¾ÆÁÖ¼¼¿ä");
             return false;
         }
         if (RuleChecker(playerType, inRow, inCol) != ForbiddenType.None)
             return false;
-        
         //blockController.PlaceMarker(index, playerType);
         board[inRow, inCol] = playerType;
         return true;
     }
 
-    //ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    //ÅÏ º¯°æ
     public void ChangeGameState()
     {
-        Debug.Log("ChangeGameState");
         if (currentState == playerAState)
         {
             SetState(playerBState);
@@ -110,9 +104,9 @@ public class GomokuGameLogic
         }
     }
 
-    public Constants.GameResult CheckGameResult(Constants.PlayerType playerType, int inRow, int inCol) //ï¿½ï¿½Ç²: ï¿½ÙµÏµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ 
+    public Constants.GameResult CheckGameResult(Constants.PlayerType playerType, int inRow, int inCol) //ÀÎÇ²: ¹ÙµÏµ¹ ³õÀº ÁÂÇ¥ 
     {
-        //ï¿½Â¸ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        //½Â¸® Á¶°Ç È®ÀÎ ·ÎÁ÷ ±¸Çö
         //if (CheckGameWin(board, PlayerType.Black,inRow, inCol))
         //{
         //    return Constants.GameResult.Win;
@@ -128,35 +122,35 @@ public class GomokuGameLogic
     public void EndGame(BaseState playerState, Constants.GameResult gameResult) 
     {
         
-        if(gameResult == Constants.GameResult.Win) //ï¿½Â¸ï¿½
+        if(gameResult == Constants.GameResult.Win) //½Â¸®
         {
             if(playerState == playerAState)
             {
-                Debug.Log("A ï¿½Â¸ï¿½");
-                Debug.Log("B ï¿½Ð¹ï¿½");
+                Debug.Log("A ½Â¸®");
+                Debug.Log("B ÆÐ¹è");
             }
             else
             {
-                Debug.Log("B ï¿½Â¸ï¿½");
-                Debug.Log("A ï¿½Ð¹ï¿½");
+                Debug.Log("B ½Â¸®");
+                Debug.Log("A ÆÐ¹è");
             }
         }
 
-        else if (gameResult == Constants.GameResult.Lose) //ï¿½Ð¹ï¿½(ï¿½Ã°ï¿½ ï¿½Ê°ï¿½ ï¿½ï¿½)
+        else if (gameResult == Constants.GameResult.Lose) //ÆÐ¹è(½Ã°£ ÃÊ°ú µî)
         {
             if (playerState == playerAState)
             {
-                Debug.Log("B ï¿½Â¸ï¿½");
-                Debug.Log("A ï¿½Ð¹ï¿½");
+                Debug.Log("B ½Â¸®");
+                Debug.Log("A ÆÐ¹è");
             }
             else
             {
-                Debug.Log("A ï¿½Â¸ï¿½");
-                Debug.Log("B ï¿½Ð¹ï¿½");
+                Debug.Log("A ½Â¸®");
+                Debug.Log("B ÆÐ¹è");
             }
         }
         
-        //TurnStateManagerï¿½ï¿½ï¿½ï¿½ ï¿½Æ¿ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ È£ï¿½ï¿½
+        //TurnStateManager¿¡¼­ ¾Æ¿¹ ´Ù ²¨¹ö¸®´Â ÇÔ¼ö È£Ãâ
         turnStateManager.onEndGame -= EndGame;
 
         //GameManager.Instance.OpenConfirmPanel(resultString, () => { GameManager.Instance.ChangeToMainScene(); });
@@ -164,9 +158,9 @@ public class GomokuGameLogic
 
     public ForbiddenType RuleChecker(Constants.PlayerType playerType, int inRow, int inCol)
     {
-        //3ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ return ForbiddenType.Three;
-        //4ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ return ForbiddenType.Four;
-        //ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ return ForbiddenType.Long;
+        //3¸ñÀÎ °æ¿ì return ForbiddenType.Three;
+        //4¸ñÀÎ °æ¿ì return ForbiddenType.Four;
+        //Àå¸ñÀÎ °æ¿ì return ForbiddenType.Long;
 
 
         return ForbiddenType.None;
@@ -182,7 +176,7 @@ public class GomokuGameLogic
 //    public DemoBaseState(PlayerType playerType)
 //    {
 //        this.playerType = playerType;
-//        Debug.Log(playerType+"ï¿½ï¿½ï¿½ï¿½");
+//        Debug.Log(playerType+"»ý¼º");
 
 //    }
 //    public  void OnEnter(GomokuGameLogic gameLogic)
@@ -215,7 +209,7 @@ public class GomokuGameLogic
 //    public void ProcessMove(GomokuGameLogic gameLogic, Constants.PlayerType playerType, int inRow, int inCol)
 //    {
 //        Debug.Log("ProcessMove");
-//        //ï¿½ï¿½ È®ï¿½ï¿½
+//        //·ê È®ÀÎ
 //        if (gameLogic.PlaceMarker(playerType, inRow, inCol))
 //        {
 //            Constants.GameResult gameResult = gameLogic.CheckGameResult(playerType, inRow, inCol);

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.InputSystem.XR.Haptics;
 using UnityEngine.SceneManagement;
 using static Constants;
 
@@ -87,19 +86,7 @@ public class GameManager : Singleton<GameManager>
     
     // 현재 턴 플레이어 타입
     private PlayerType _currentPlayerType;
-
-    public PlayerType CurrentPlayerType
-    {
-        get
-        {
-            if (_gameLogic != null && _gameLogic.CurrentState != null)
-            {
-                return _gameLogic.CurrentState.Type;
-            }
-            Debug.Log($"GameManager.cs에서 _gameLogic이 {_gameLogic}, _gameLogic.CurrentState이 {_gameLogic.CurrentState}");
-            return PlayerType.None;
-        }
-    }
+    public PlayerType CurrentPlayerType => _currentPlayerType;
     
     // AI의 이름
     private string _aiName;
@@ -191,14 +178,15 @@ public class GameManager : Singleton<GameManager>
                 }
             }
         }
+        else
+        {
+            // GomokuGameLogic 생성
+            _gameLogic = new GomokuGameLogic(_gameType, _currentPlayerType/*, _board*/, _turnStateManager);
+        }
             
         _forbiddensVisualizer = FindFirstObjectByType<ForbiddensVisualizer>();
         _board = FindFirstObjectByType<Board>();
-        
-        // GomokuGameLogic 생성
-        _gameLogic = new GomokuGameLogic(_gameType, _currentPlayerType, _board, _turnStateManager);
-        Debug.Log("GameManager에서 _gameLogic 생성함");
-        
+            
         if (_turnStateManager != null)
         {
             // GamePanelController 참조 가져오기
@@ -207,7 +195,9 @@ public class GameManager : Singleton<GameManager>
 
         if (_forbiddensVisualizer != null)
         {
-            _forbiddensVisualizer.Init(forbiddenSprite, _gameLogic);
+            Debug.Log("forbiddenvisualizer: " + _forbiddensVisualizer);
+            Debug.Log("forbiddenSprite: " + forbiddenSprite);
+            _forbiddensVisualizer.Init(forbiddenSprite);
         }
     }
 

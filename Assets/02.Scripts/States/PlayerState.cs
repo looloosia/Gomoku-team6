@@ -1,10 +1,12 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerState : BaseState
 {
+    private GomokuGameLogic _gameLogic;
     // 턴 변경
-    public PlayerState(Constants.PlayerType playerType) : base(playerType)
+    public PlayerState(Constants.PlayerType playerType) : base(playerType, Constants.ControllerType.Human)
     {
     }
 
@@ -13,34 +15,45 @@ public class PlayerState : BaseState
         gameLogic.ChangeGameState();
     }
 
+    // 한 턴이 시작될 때
     public override void OnEnter(GomokuGameLogic gameLogic)
     {
-        Debug.Log("OnEnter");
+        Debug.Log("OnEnter() 실행됨");
+        _gameLogic = gameLogic;
         _board = GameManager.Instance.Board;
-        _board.onPlaceStone += OnBlockClicked;
+        _forbiddensVisualizer = GameManager.Instance.ForbiddensVisualizer;
+        
+        // TODO: Board.cs 머지되면 주석해제
+        // _board.onPlaceStone += OnStonePlace;
+        
+        _gamePlayerType = GameManager.Instance.GamePlayerType;
         
         // demoCounter 기반 임시 테스트용
         gameLogic.demoCounter--;
-         if (gameLogic.demoCounter == 0)
-         {
-             gameLogic.EndGame(this, Constants.GameResult.Win);
-             return;
-         }
-        Debug.Log($"{this} turn Enter");
+        if (gameLogic.demoCounter == 0)
+        {
+            gameLogic.EndGame(this, Constants.GameResult.Win);
+            return;
+        }
         
-        // 상태 진입 시 로직 구현
-        
+        // 흑돌일 경우 금수 표시
+        if (_currentPlayerType == Constants.PlayerType.Black && _gamePlayerType == Constants.PlayerType.Black)
+            _forbiddensVisualizer.VisualizeForbiddens(_currentPlayerType);
 
         // Turn UI 업데이트
-        GameManager.Instance.SetGameTurn(_playerType);
+        GameManager.Instance.SetGameTurn(_currentPlayerType);
     }
 
-    void OnBlockClicked(Block block)
+    // 블록이 놓아질 때 처리할 로직
+    void OnStonePlace(Block block)
     {
-        // TODO: 주석해제) 블록이 클릭되었을 때 처리할 로직
-        // Vector2Int pos = block.GetBlockData().boardPos;
-        //
-        // HandleMove( /*gameLogic, */pos.y, pos.x);
+        Debug.Log("OnStonePlace() 실행됨");
+        Vector2Int pos = block.GetBlockData().boardPos;
+        
+        // 타이머 멈추기
+        GameManager.Instance.TurnStateManager.StopCounterRoutine();
+        
+        HandleMove(_gameLogic, pos.y, pos.x);
     }
     
     public override void HandleMove(GomokuGameLogic gameLogic, int inRow, int inCol)
@@ -48,8 +61,14 @@ public class PlayerState : BaseState
         ProcessMove(gameLogic, inRow, inCol);
     }
 
+    // 한 턴이 끝날 때
     public override void OnExit(GomokuGameLogic gameLogic)
     { 
-        _board.onPlaceStone -= OnBlockClicked;
+        _forbiddensVisualizer.ClearForbiddens();
+        
+        // TODO: Board.cs 머지되면 주석해제
+        // _board.onPlaceStone -= OnStonePlace;
     }
+    
+    
 }

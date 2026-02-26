@@ -8,17 +8,33 @@ public class GameOptionPopup : BasePopup
 
     protected override void Init()
     {
+        BindButtons();
+    }
+    
+    public override void Show()
+    {
+        base.Show();
+    }
+
+    public override void Hide(PopupHideDelegate onComplete = null)
+    {
+        onComplete?.Invoke();
+        gameObject.SetActive(false);
+    }
+
+    private void BindButtons()
+    {
         playAiBtn.onClick.AddListener(OnClickPlayAi);
         playMultiBtn.onClick.AddListener(OnClickPlayMulti);
     }
 
     private void OnClickPlayAi()
     {
-        // 게임 씬 이동
+        GameManager.Instance.ChangeToGameScene(Constants.GameType.SinglePlay);
     }
 
     private void OnClickPlayMulti()
     {
-        // 게임 씬 이동
+        GameManager.Instance.ChangeToGameScene(Constants.GameType.LocalDualPlay);
     }
 }

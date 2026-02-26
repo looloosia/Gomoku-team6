@@ -28,14 +28,6 @@ public class PlayerState : BaseState
         
         _gamePlayerType = GameManager.Instance.GamePlayerType;
         
-        // demoCounter 기반 임시 테스트용
-        gameLogic.demoCounter--;
-        if (gameLogic.demoCounter == 0)
-        {
-            gameLogic.EndGame(this, Constants.GameResult.Win);
-            return;
-        }
-        
         // 흑돌일 경우 금수 표시
         if (_currentPlayerType == Constants.PlayerType.Black && _gamePlayerType == Constants.PlayerType.Black)
             _forbiddensVisualizer.VisualizeForbiddens(_currentPlayerType);
@@ -48,12 +40,13 @@ public class PlayerState : BaseState
     void OnStonePlace(Block block)
     {
         Debug.Log("OnStonePlace() 실행됨");
-        Vector2Int pos = block.GetBlockData().boardPos;
+        int row = block.GetBlockData().col;
+        int col = block.GetBlockData().col;
         
         // 타이머 멈추기
         GameManager.Instance.TurnStateManager.StopCounterRoutine();
         
-        HandleMove(_gameLogic, pos.y, pos.x);
+        HandleMove(_gameLogic, row, col);
     }
     
     public override void HandleMove(GomokuGameLogic gameLogic, int inRow, int inCol)

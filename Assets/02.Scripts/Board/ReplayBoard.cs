@@ -15,7 +15,7 @@ public class ReplayBoard : MonoBehaviour
     [SerializeField]
     private Button btnNext;
 
-    //key: 블럭 위치
+    //key: 블럭 위치(row, col)
     private Dictionary<(int, int), Block> dicBlocks = new Dictionary<(int, int), Block>();
 
     private List<ReplayFrameData> listRecordFrame = new List<ReplayFrameData>();

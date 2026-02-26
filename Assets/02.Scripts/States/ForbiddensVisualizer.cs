@@ -21,6 +21,15 @@ public class ForbiddensVisualizer : MonoBehaviour
     {
         _gameLogic = GameManager.Instance.GameLogic;
         _board = _gameLogic.Board;
+        if (_gameLogic == null)
+        {
+            Debug.Log("A: _gameLogic is null");
+        }
+
+        if (_board == null)
+        {
+            Debug.Log("B: _board is null");
+        }
         
         // TODO: Board.cs의 dicBlocks를 프로퍼티를 통해 가져오기
         // _dicBlocks = GameManager.Instance.Board.DicBlocks;

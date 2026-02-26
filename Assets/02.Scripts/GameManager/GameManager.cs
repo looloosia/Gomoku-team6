@@ -51,6 +51,11 @@ public class GameManager : Singleton<GameManager>
 
     #region Game
     
+    // temp(게임 씬에서 바로 테스트 위한 변수)
+    private bool _isStartedinMain = false;
+    public bool IsStartedinMain =>  _isStartedinMain;
+    
+    
     // 착수금지 표시 sprite
     [SerializeField]
     private Sprite forbiddenSprite;
@@ -99,26 +104,22 @@ public class GameManager : Singleton<GameManager>
         set { _aiRank = value; }
     }
 
-    // 임시 테스트용(삭제예정) ===========================
-    void Awake()
+    // 게임 씬에서 시작할 때를 위한 테스트용(추후 삭제예정) ===========================
+    void Start()
     {
-        _gameType = Constants.GameType.LocalDualPlay;
-        _currentPlayerType = PlayerType.Black; 
+        // Start 시 Main 씬인지 확인(메인 hierarchy에만 GameManager 오브젝트 있어서)
+        _isStartedinMain = SceneManager.GetActiveScene().name == SCENE_MAIN;
         
-        _turnStateManager = FindFirstObjectByType<TurnStateManager>();
-        _forbiddensVisualizer = FindFirstObjectByType<ForbiddensVisualizer>();
-        _board = FindFirstObjectByType<Board>();
-        _gamePanelController = FindFirstObjectByType<GamePanelController>();
+        if (_isStartedinMain)
+            return;
         
-        _gameLogic = new GomokuGameLogic(_gameType, _currentPlayerType/*, _board*/, _turnStateManager);
-
-        _aiName = "임시AI이름";
-        _aiRank = "임시AI랭크";
-        
-        if (_forbiddensVisualizer != null)
+        _canvas = FindFirstObjectByType<Canvas>();
+        if (_canvas == null)
         {
-            _forbiddensVisualizer.Init(forbiddenSprite);
+            Debug.LogError("Canvas is null!");
         }
+        
+        InitGameScene();
     }
     // ================================
     
@@ -133,47 +134,70 @@ public class GameManager : Singleton<GameManager>
         // TODO: 플레이어의 흑백 설정에 맞게 수정
         _gamePlayerType = PlayerType.Black;
         
+        
         // TODO: 돌 색상 선택되면 돌의 정보와 함께 유저 닉네임과 급수 인게임 메인 UI에 띄워야
         // 유저 정보는 DB에서 꺼내 쓰기
         // 프로필 이미지는 아직 구현안돼서 null처리
 
         if (scene.name == SCENE_GAME)
         {
-            _turnStateManager = FindFirstObjectByType<TurnStateManager>();
+            InitGameScene();
+        }
+    }
+
+    private void InitGameScene()
+    {
+        _turnStateManager = FindFirstObjectByType<TurnStateManager>();
             
-            // TurnManager가 씬에 없을 경우 생성
-            if (_turnStateManager == null)
+        // 게임 시작 시 항상 흑이 먼저 둠.
+        _currentPlayerType = PlayerType.Black;
+
+        if (_canvas == null)
+        {
+            Debug.LogError("Canvas is null!");
+        }
+            
+        // TurnManager가 씬에 없을 경우 생성
+        if (_turnStateManager == null)
+        {
+            GameObject prefab = Resources.Load<GameObject>("Prefabs/TurnManager");
+            GameObject markerPanelObj = Instantiate(markerSelectPanelPrefab, _canvas.transform);
+            MarkerSelectPanelController markerController = markerPanelObj.GetComponent<MarkerSelectPanelController>();
+            markerController.OnMarkerSelectedEvent += OnMarkerSelected;
+            if (prefab != null)
             {
-                GameObject prefab = Resources.Load<GameObject>("Prefabs/TurnManager");
-                GameObject markerPanelObj = Instantiate(markerSelectPanelPrefab, _canvas.transform);
-                MarkerSelectPanelController markerController = markerPanelObj.GetComponent<MarkerSelectPanelController>();
-                markerController.OnMarkerSelectedEvent += OnMarkerSelected;
-                if (prefab != null)
-                {
-                    GameObject instance = Instantiate(prefab);
-                    instance.name = "TurnManager";
+                GameObject instance = Instantiate(prefab);
+                instance.name = "TurnManager";
                 
-                    _turnStateManager = instance.GetComponent<TurnStateManager>();
-                    _forbiddensVisualizer = instance.GetComponentInChildren<ForbiddensVisualizer>();
+                _turnStateManager = instance.GetComponent<TurnStateManager>();
+                _forbiddensVisualizer = instance.GetComponentInChildren<ForbiddensVisualizer>();
+
+                if (_turnStateManager == null)
+                {
+                    Debug.Log("TurnManager is null!");
                 }
             }
-            
-            _forbiddensVisualizer = FindFirstObjectByType<ForbiddensVisualizer>();
-            _board = FindFirstObjectByType<Board>();
-            
+        }
+        else
+        {
             // GomokuGameLogic 생성
             _gameLogic = new GomokuGameLogic(_gameType, _currentPlayerType/*, _board*/, _turnStateManager);
+        }
             
-            if (_turnStateManager != null)
-            {
-                // GamePanelController 참조 가져오기
-                _gamePanelController = FindFirstObjectByType<GamePanelController>();
-            }
+        _forbiddensVisualizer = FindFirstObjectByType<ForbiddensVisualizer>();
+        _board = FindFirstObjectByType<Board>();
+            
+        if (_turnStateManager != null)
+        {
+            // GamePanelController 참조 가져오기
+            _gamePanelController = FindFirstObjectByType<GamePanelController>();
+        }
 
-            if (_forbiddensVisualizer != null)
-            {
-                _forbiddensVisualizer.Init(forbiddenSprite);
-            }
+        if (_forbiddensVisualizer != null)
+        {
+            Debug.Log("forbiddenvisualizer: " + _forbiddensVisualizer);
+            Debug.Log("forbiddenSprite: " + forbiddenSprite);
+            _forbiddensVisualizer.Init(forbiddenSprite);
         }
     }
 

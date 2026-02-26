@@ -13,6 +13,7 @@ public class LobbyPanelController : MonoBehaviour
     [SerializeField] private GameObject popupCanvas;
 
     [SerializeField] private GameObject gameOptionPopup;
+    [SerializeField] private GameObject gameRecordPopup;
     // [SerializeField] private RankPopup rankPopup;
     [SerializeField] private GameObject playerInfoPopup;
     
@@ -39,13 +40,13 @@ public class LobbyPanelController : MonoBehaviour
 
     void BindButtons()
     {
-        playGameBtn.onClick.AddListener(ShowGameOptionPopup);
-        playerRecodeBtn.onClick.AddListener(ChangeScenePlayerRecode);
+        playGameBtn.onClick.AddListener(() => {gameOptionPopup.SetActive(true);});
+        playerRecodeBtn.onClick.AddListener(() => {gameRecordPopup.SetActive(true);});
         rankBtn.onClick.AddListener(ShowRankPopup);
         storeBtn.onClick.AddListener(ChangeSceneStore);
         settingBtn.onClick.AddListener(ShowSettingPopup);
         backBtn.onClick.AddListener(ChangeSceneMain);
-        playerinfoBtn.onClick.AddListener(ShowPlayerInfoPopup);
+        playerinfoBtn.onClick.AddListener(() => {playerInfoPopup.SetActive(true);});
     }
 
     private void UpdateUserProfile()
@@ -70,16 +71,6 @@ public class LobbyPanelController : MonoBehaviour
         }
     }
 
-    private void ShowGameOptionPopup()
-    {
-        gameOptionPopup.SetActive(true);
-    }
-
-    private void ChangeScenePlayerRecode()
-    {
-        // 내 기보 씬으로 이동
-    }
-
     private void ShowRankPopup()
     {
         // 서버내 플레이어들의 랭킹 팝업창 띄우기
@@ -97,11 +88,6 @@ public class LobbyPanelController : MonoBehaviour
 
     private void ChangeSceneMain()
     {
-        // 메인 씬으로 이동
-    }
-
-    private void ShowPlayerInfoPopup()
-    {
-        playerInfoPopup.SetActive(true);
+        GameManager.Instance.ChangeToMainScene();
     }
 }

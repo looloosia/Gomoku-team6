@@ -40,12 +40,13 @@ public class PlayerState : BaseState
     void OnStonePlace(Block block)
     {
         Debug.Log("OnStonePlace() 실행됨");
-        Vector2Int pos = block.GetBlockData().boardPos;
+        int row = block.GetBlockData().col;
+        int col = block.GetBlockData().col;
         
         // 타이머 멈추기
         GameManager.Instance.TurnStateManager.StopCounterRoutine();
         
-        HandleMove(_gameLogic, pos.y, pos.x);
+        HandleMove(_gameLogic, row, col);
     }
     
     public override void HandleMove(GomokuGameLogic gameLogic, int inRow, int inCol)

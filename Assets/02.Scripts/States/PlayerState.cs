@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// forbiddensVisualizer 임시 주석처리
+/// </summary>
 public class PlayerState : BaseState
 {
     private GomokuGameLogic _gameLogic;
@@ -21,26 +24,24 @@ public class PlayerState : BaseState
         Debug.Log("OnEnter() 실행됨");
         _gameLogic = gameLogic;
         _board = GameManager.Instance.Board;
-        _forbiddensVisualizer = GameManager.Instance.ForbiddensVisualizer;
-        
-        _board.onPlaceStone += OnStonePlace;
+        // _forbiddensVisualizer = GameManager.Instance.ForbiddensVisualizer;
+
+        _gameLogic.onBlockClicked = OnStonePlace;
         
         _gamePlayerType = GameManager.Instance.GamePlayerType;
         
         // 흑돌일 경우 금수 표시
-        if (_currentPlayerType == Constants.PlayerType.Black && _gamePlayerType == Constants.PlayerType.Black)
-            _forbiddensVisualizer.VisualizeForbiddens(_currentPlayerType);
+        // if (_currentPlayerType == Constants.PlayerType.Black && _gamePlayerType == Constants.PlayerType.Black)
+        //     _forbiddensVisualizer.VisualizeForbiddens(_currentPlayerType);
 
         // Turn UI 업데이트
         GameManager.Instance.SetGameTurn(_currentPlayerType);
     }
 
     // 블록이 놓아질 때 처리할 로직
-    void OnStonePlace(Block block)
+    void OnStonePlace(int row, int col)
     {
         Debug.Log("OnStonePlace() 실행됨");
-        int row = block.GetBlockData().row;
-        int col = block.GetBlockData().col;
         
         // 타이머 멈추기
         GameManager.Instance.TurnStateManager.StopCounterRoutine();
@@ -56,10 +57,7 @@ public class PlayerState : BaseState
     // 한 턴이 끝날 때
     public override void OnExit(GomokuGameLogic gameLogic)
     { 
-        _forbiddensVisualizer.ClearForbiddens();
-        
-        // TODO: Board.cs 머지되면 주석해제
-        _board.onPlaceStone -= OnStonePlace;
+        // _forbiddensVisualizer.ClearForbiddens();
     }
     
     

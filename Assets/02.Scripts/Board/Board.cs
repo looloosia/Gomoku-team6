@@ -67,6 +67,7 @@ public class Board : MonoBehaviour
 
                 // юс╫ц
                 OnClick(clickedBlock);
+                //Debug.Log($"{clickedBlock.gameObject.name}: {clickedBlock.GetBlockData().col}, {clickedBlock.GetBlockData().row}");
             }
         }
     }

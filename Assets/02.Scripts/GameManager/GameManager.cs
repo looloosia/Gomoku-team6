@@ -111,26 +111,28 @@ public class GameManager : Singleton<GameManager>
     }
 
     // 게임 씬에서 시작할 때를 위한 테스트용(추후 삭제예정) ===========================
-    void Start()
-    {
-        // Start 시 Main 씬인지 확인(메인 hierarchy에만 GameManager 오브젝트 있어서)
-        _isStartedinMain = SceneManager.GetActiveScene().name == SCENE_MAIN;
-        
-        if (_isStartedinMain)
-            return;
-        
-        _canvas = FindFirstObjectByType<Canvas>();
-        if (_canvas == null)
-        {
-            Debug.LogError("Canvas is null!");
-        }
-        
-        InitGameScene();
-    }
+    // void Start()
+    // {
+    //     Debug.Log("GameManager: Start()");
+    //     // Start 시 Main 씬인지 확인(메인 hierarchy에만 GameManager 오브젝트 있어서)
+    //     _isStartedinMain = SceneManager.GetActiveScene().name == SCENE_MAIN;
+    //     
+    //     if (_isStartedinMain)
+    //         return;
+    //     
+    //     _canvas = FindFirstObjectByType<Canvas>();
+    //     if (_canvas == null)
+    //     {
+    //         Debug.LogError("Canvas is null!");
+    //     }
+    //     
+    //     InitGameScene();
+    // }
     // ================================
     
     protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
     {
+        Debug.Log("GameManager: OnSceneLoad()");
         // 새로운 씬에서 Canvas 참조 가져오기
         _canvas = FindFirstObjectByType<Canvas>();
         

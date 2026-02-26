@@ -1,12 +1,24 @@
 using System.Linq;
-using UnityEngine.SceneManagement;
 using UnityEngine;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
-public class AccountManager : Singleton<AccountManager>
+public class AccountManager
 {
+    private static AccountManager instance;
+    public static AccountManager Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = new AccountManager();
+            }
+            return instance;
+        }
+    }
+
     private AccountRepository repository = new AccountRepository();
 
     public UserData CurrentUser { get; private set; }
@@ -169,10 +181,5 @@ public class AccountManager : Singleton<AccountManager>
         if (rank >= 5 && rank <= 9) return 5;
         if (rank >= 1 && rank <= 4) return 10;
         return 3;
-    }
-
-    protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
-    {
-        // AccountManager는 씬 로드 시 할 일 없음
     }
 }

@@ -26,7 +26,7 @@ public class UserData
     public int rankPoint; // 승급 포인트
 
     // 내 기보 리스트
-    public List<MatchRecord> matchHistory;
+    public List<ReplaySaveData> replayList;
 
     public UserData(string id, string pwHash, string nickname)
     {
@@ -37,6 +37,6 @@ public class UserData
         this.coin = 0;
         this.rank = 18;     // 18급부터 시작
         this.rankPoint = 0;
-        this.matchHistory = new List<MatchRecord>();
+        this.replayList = new List<ReplaySaveData>();
     }
 }

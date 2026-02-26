@@ -5,10 +5,12 @@ using static Constants;
 public struct BlockData
 {
     public PlayerType markerType;
-    public Vector2Int boardPos;
-    public BlockData(PlayerType markerType, Vector2Int boardPos)
+    public int col;
+    public int row;
+    public BlockData(PlayerType markerType, int col, int row)
     {
         this.markerType = markerType;
-        this.boardPos = boardPos;
+        this.col = row;
+        this.row = col;
     }
 }

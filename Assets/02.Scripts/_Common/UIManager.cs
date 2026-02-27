@@ -12,15 +12,30 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] private Transform popupCanvasTransform;
 
     private GamePanelController _gamePanelController; 
-    public GamePanelController GamePanelController => _gamePanelController;
+    public GamePanelController GamePanelController 
+    {
+        get 
+        {
+            // 만약 참조가 없다면 실시간으로 다시 한번 찾아봅니다.
+            if (_gamePanelController == null)
+            {
+                _gamePanelController = FindAnyObjectByType<GamePanelController>();
+            }
+            return _gamePanelController;
+        }
+    }
+
 
     protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
     {
         // 팝업 캔버스는 UIManager가 직접 들고 다니니까 놔두고,
         // 씬 안에 배치되어 있는 메인 게임 패널만 여기서 새로 찾아줍니다!
+        // 씬이 바뀔 때마다 참조를 초기화하여 이전 씬의 파괴된 오브젝트를 가리키지 않게 합니다.
+        _gamePanelController = null; 
+
         if (scene.name == Constants.SCENE_GAME)
         {
-            _gamePanelController = FindFirstObjectByType<GamePanelController>();
+            _gamePanelController = FindAnyObjectByType<GamePanelController>();
         }
     }
 

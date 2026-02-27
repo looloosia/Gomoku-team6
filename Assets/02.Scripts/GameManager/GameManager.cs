@@ -160,19 +160,6 @@ public class GameManager : Singleton<GameManager>
 
     public void OnMarkerSelected(MarkerChoice markerChoice)
     {
-        // TODO: 유저가 돌을 선택했을 때 실행될 것
-
-        // random일 경우 랜덤 선택
-        if (markerChoice == MarkerChoice.Random)
-        {
-            int ranNum = Random.Range(1, 3);
-            _gamePlayerType = (PlayerType)ranNum;
-        }
-        else
-        {
-            _gamePlayerType = (PlayerType)markerChoice;
-        }
-        
         NewGameLogic();
     }
 }

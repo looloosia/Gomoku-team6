@@ -38,6 +38,7 @@ public class GameManager : Singleton<GameManager>
             _canvas = FindFirstObjectByType<Canvas>();
         }
         var settingsPopupObject = Instantiate(settingsPopupPrefab, _canvas.transform);
+        settingsPopupObject.name = "[Panel] Settings";
         settingsPopupObject.GetComponent<SettingPopup>();
     }
 
@@ -50,6 +51,7 @@ public class GameManager : Singleton<GameManager>
             _canvas = FindFirstObjectByType<Canvas>();
         }
         var confirmPanelObject = Instantiate(confirmPopupPrefab, _canvas.transform);
+        confirmPanelObject.name = "[Panel] Confirm";
         return confirmPanelObject.GetComponent<ConfirmPopup>();
     }
 

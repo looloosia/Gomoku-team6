@@ -18,12 +18,6 @@ public class Block : MonoBehaviour
     [SerializeField]
     private Sprite standbyBlackStone;
 
-    public UnityAction onBlockClicked;
-
-    public void Init(UnityAction onBlockClicked)
-    {
-        this.onBlockClicked = onBlockClicked;
-    }
     private void SetStone(PlayerType markerType)
     {
         SetBlockType(markerType);
@@ -91,7 +85,6 @@ public class Block : MonoBehaviour
         {
             return;
         }
-        this.onBlockClicked?.Invoke();
         Debug.Log(this.gameObject.name);
     }
 }

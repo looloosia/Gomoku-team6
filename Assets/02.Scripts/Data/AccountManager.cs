@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System;
 
 public class AccountManager
 {
@@ -20,6 +21,8 @@ public class AccountManager
     }
 
     private AccountRepository repository = new AccountRepository();
+
+    public Action OnUserDataUpdated;
 
     public UserData CurrentUser { get; private set; }
 
@@ -69,9 +72,9 @@ public class AccountManager
             return false;
 
         // 닉네임 자동 생성 및 중복 방지 (실제 서버이선 DB 유니크 키로 처리)
-        string generatedNickname = "User_" + Random.Range(1000, 9999);
+        string generatedNickname = "User_" + UnityEngine.Random.Range(1000, 9999);
         while(repository.IsNicknameExists(generatedNickname))
-            generatedNickname = "User_" + Random.Range(1000, 9999);
+            generatedNickname = "User_" + UnityEngine.Random.Range(1000, 9999);
 
         // 비밀번호 암호화 후 저장
         string hashedPw = HashPassword(pw);
@@ -131,6 +134,9 @@ public class AccountManager
 
         // 3. 통과! 데이터 업데이트
         repository.UpdateNickname(CurrentUser, newNickname);
+
+        OnUserDataUpdated?.Invoke();
+
         errorMsg = "닉네임이 성공적으로 변경되었습니다!";
         return true;
     }

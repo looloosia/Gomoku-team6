@@ -38,6 +38,14 @@ public class ConfirmPopup : BasePopup
         // 1. 텍스트 세팅
         msgText.text = msg;
 
+        if (string.IsNullOrEmpty(msg))
+            msgText.gameObject.SetActive(false);
+        else
+        {
+            msgText.gameObject.SetActive(true);
+            msgText.text = msg;
+        }
+
         // 부제목이 비어있으면(null이거나 "") 오브젝트 끄기
         if (string.IsNullOrEmpty(submsg))
             submsgText.gameObject.SetActive(false);

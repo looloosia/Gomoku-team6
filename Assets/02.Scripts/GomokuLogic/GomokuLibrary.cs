@@ -9,12 +9,35 @@ using static Constants;
 
 public static class GomokuLibrary
 {
+    private static readonly int WHITEOVERLINE = 10000;
+    private static readonly int WHITEDOUBLEFOUR = 9000;
+    private static readonly int WHITEDOUBLETHREE = 9000;
+    private static readonly int FIVE = 10000;
+    private static readonly int OPEN_FOUR = 10000;
+    private static readonly int FOUR = 1000;
+    private static readonly int OPEN_THREE = 500;
+    private static readonly int THREE = 100;
+    private static readonly int OPEN_TWO = 50;
+    private static readonly int TWO = 10;
+    private static readonly int FAILURE = -10000;
+
+
+    public static List<HashSet<(int, int)>> candidatesByDepth = new List<HashSet<(int, int)>>
+    {
+        new HashSet<(int, int)>(),
+        new HashSet<(int, int)>(),
+        new HashSet<(int, int)>(),
+        new HashSet<(int, int)>()
+    };
+
     private static List<List<(int, int)>> candidatesList = new List<List<(int, int)>> //DFS용 리스트
     {
         new List<(int, int)>(), // 0번 인덱스에 할당
         new List<(int, int)>(), // 1번 인덱스에 할당
+        new List<(int, int)>(),  // 2번 인덱스에 할당
         new List<(int, int)>()  // 2번 인덱스에 할당
     };
+    private static bool[,] visited = new bool[15, 15];
 
     private static Queue forbiddenPositions = new Queue();
     private static readonly Vector2Int[] directions = { new Vector2Int(0, 1), new Vector2Int(1, 0), new Vector2Int(1, 1), new Vector2Int(1, -1) };
@@ -126,14 +149,81 @@ public static class GomokuLibrary
 
     private static int EvaluateScore(PlayerType[,] board, PlayerType playerType, int inRow, int inCol, int boardRange)
     {
-        return 0;
+        int score = 0;
+
+        int stoneCount = 0;
+
+        foreach (var dir in directions)
+        {
+            //연속된 돌의 개수
+            stoneCount = Math.Max(stoneCount, CountStones(board, playerType, inRow, inCol, boardRange, dir[0], dir[1]) + CountStones(board, playerType, inRow, inCol, boardRange, -dir[0], -dir[1]));
+            if (stoneCount == 2) //openThree인지 체크(방향마다 체크하는 함수이므로 foreach문에서 실행)
+            {
+                if (CheckOpenThree(board, playerType, inRow, inCol, boardRange, dir[0], dir[1]) || CheckOpenThree(board, playerType, inRow, inCol, boardRange, -dir[0], -dir[1]))
+                {
+                    score = OPEN_THREE;
+                }
+            }
+        }
+
+        if (stoneCount == 1)
+        {
+            score = TWO;
+        }
+        else if (stoneCount == 2)
+        {
+            score = Math.Max(score, THREE);
+
+            if (CheckDoubleThree(board, playerType, inRow, inCol, boardRange))
+            {
+                if (playerType == PlayerType.Black)
+                    return FAILURE;
+                else
+                    score = WHITEDOUBLETHREE;
+            }
+        }
+        else if (stoneCount == 3)
+        {
+            score = FOUR;
+            if (CheckFour(board, playerType, inRow, inCol, boardRange))
+            {
+                score = OPEN_FOUR;
+
+                if (CheckDoubleFour(board, playerType, inRow, inCol, boardRange))
+                {
+                    if (playerType == PlayerType.Black)
+                        return FAILURE;
+                    else
+                        score = WHITEDOUBLEFOUR;
+                }
+            }
+        }
+        else if (stoneCount == 4)
+        {
+            score = FIVE;
+        }
+        else if (stoneCount == 5)
+        {
+            if (playerType == PlayerType.Black)
+                return FAILURE;
+            else
+                score = WHITEOVERLINE;
+        }
+        else
+        {
+            score = 10;
+        }
+        return score;
     }
-    public static (int, int)? GetBestMove(PlayerType[,] board, PlayerType playerType, int boardRange)
+
+
+    public static (int, int)? GetBestMove(PlayerType[,] board, PlayerType aiType, int boardRange)
     {
+        //playerType은 AI의 Type
         int bestScore = int.MinValue;
         int bestRow = -1, bestCol = -1;
 
-        List<(int, int)> candidates = GetCandidateMoves(board, 0, boardRange);
+        HashSet<(int, int)> candidates = GetCandidateMoves(board, 0, boardRange);
 
         foreach ((int, int) pos in candidates)
         {
@@ -142,12 +232,13 @@ public static class GomokuLibrary
 
             if (board[row, col] == PlayerType.None) //빈 칸
             {
-                board[row, col] = playerType; //돌 놓아보고 미니맥스
+                board[row, col] = aiType; //돌 놓아보고 미니맥스
 
-                int score = Minimax(board, playerType, 1, false, int.MinValue, int.MaxValue, row, col, boardRange);
+                int score = Minimax2(board, aiType, 1, false, int.MinValue, int.MaxValue, row, col, boardRange);
 
                 if (score > bestScore)
                 {
+                    Debug.Log($"besrRow: {row} bestCol: {col} bestScore: {score}");
                     bestScore = score;
                     bestRow = row;
                     bestCol = col;
@@ -158,16 +249,19 @@ public static class GomokuLibrary
         return (bestRow, bestCol);
     }
 
-    public static int Minimax(Constants.PlayerType[,] board, PlayerType playerType, int depth, bool isMaximizing, int alpha, int beta, int inRow, int inCol, int boardRange)
+    public static int Minimax(Constants.PlayerType[,] board, PlayerType aiType, int depth, bool isMaximizing, int alpha, int beta, int inRow, int inCol, int boardRange)
     {
         if (depth == 3 /*|| IsGameOver(board)*/ ) //종료 조건: 최대 깊이 도달 혹은 게임 종료
         {
-            return EvaluateScore(board, playerType, inRow, inCol, boardRange);
+            int a = EvaluateScore(board, aiType, inRow, inCol, boardRange);
+            //Debug.Log($"{inRow} {inCol}: score: {a}");
+
+            return a;
         }
 
-        PlayerType otherPlayer = playerType == PlayerType.Black ? PlayerType.White : PlayerType.Black;
+        PlayerType otherPlayer = aiType == PlayerType.Black ? PlayerType.White : PlayerType.Black;
 
-        List<(int, int)> candidates = GetCandidateMoves(board, depth - 1, boardRange); //한 칸 위 후보
+        HashSet<(int, int)> candidates = GetCandidateMoves(board, depth, boardRange); //한 칸 위 후보
 
         if (isMaximizing) //Maximizing하는 순서
         {
@@ -180,10 +274,10 @@ public static class GomokuLibrary
 
                 if (board[row, col] == PlayerType.None)
                 {
-                    AddCandidates(board, candidatesList[depth], depth, row, col, 2); //현재 depth리스트에 한 칸 위 후보 + row, col주변 부 추가
-                    board[row, col] = playerType;   //TODO: 필요 시 보드 복제하는 코드로 대체하기
+                    AddCandidates(board, depth, row, col, 2); //현재 depth리스트에 한 칸 위 후보 + row, col주변 부 추가
+                    board[row, col] = aiType;   //TODO: 필요 시 보드 복제하는 코드로 대체하기
 
-                    int score = Minimax(board, playerType, depth + 1, false, alpha, beta, row, col, boardRange);
+                    int score = Minimax(board, otherPlayer, depth + 1, false, alpha, beta, row, col, boardRange);
 
                     maxScore = Math.Max(maxScore, score); // 최댓값 비교
 
@@ -212,9 +306,86 @@ public static class GomokuLibrary
 
                 if (board[row, col] == PlayerType.None)
                 {
-                    AddCandidates(board, candidatesList[depth], depth, row, col, 2); //현재 depth리스트에 한 칸 위 후보 + row, col주변 부 추가
+                    AddCandidates(board, depth, row, col, 2); //현재 depth리스트에 한 칸 위 후보 + row, col주변 부 추가
                     board[row, col] = otherPlayer;
-                    int score = Minimax(board, otherPlayer, depth + 1, true, alpha, beta, row, col, boardRange);
+                    int score = Minimax(board, aiType, depth + 1, true, alpha, beta, row, col, boardRange);
+
+                    minScore = Math.Min(minScore, score);
+                    beta = Math.Min(beta, score);
+
+                    board[row, col] = PlayerType.None;
+
+                    if (beta <= alpha)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            return minScore;
+        }
+
+    }
+
+    public static int Minimax2(Constants.PlayerType[,] board, PlayerType aiType, int depth, bool isMaximizing, int alpha, int beta, int initRow, int initCol, int boardRange)
+    {
+        if (depth == 3 /*|| IsGameOver(board)*/ ) //종료 조건: 최대 깊이 도달 혹은 게임 종료
+        {
+            int a = EvaluateScore(board, aiType, initRow, initCol, boardRange);
+            //Debug.Log($"{inRow} {inCol}: score: {a}");
+            return a;
+        }
+
+        PlayerType otherPlayer = aiType == PlayerType.Black ? PlayerType.White : PlayerType.Black;
+
+        HashSet<(int, int)> candidates = GetCandidateMoves(board, depth, boardRange); //한 칸 위 후보
+
+        if (isMaximizing) //Maximizing하는 순서
+        {
+            int maxScore = int.MinValue;
+
+            foreach ((int, int) pos in candidates)
+            {
+                int row = pos.Item1;
+                int col = pos.Item2;
+
+                if (board[row, col] == PlayerType.None)
+                {
+                    AddCandidates(board, depth, row, col, 2); //현재 depth리스트에 한 칸 위 후보 + row, col주변 부 추가
+                    board[row, col] = aiType;   //TODO: 필요 시 보드 복제하는 코드로 대체하기
+
+                    int score = Minimax2(board, otherPlayer, depth + 1, false, alpha, beta, initRow, initCol, boardRange);
+
+                    maxScore = Math.Max(maxScore, score); // 최댓값 비교
+
+                    alpha = Math.Max(alpha, score);
+
+                    board[row, col] = PlayerType.None;
+
+                    if (beta <= alpha)
+                    {
+                        break;
+                    }
+
+                }
+
+            }
+            return maxScore;
+        }
+        else
+        {
+            int minScore = int.MaxValue;
+
+            foreach ((int, int) pos in candidates)
+            {
+                int row = pos.Item1;
+                int col = pos.Item2;
+
+                if (board[row, col] == PlayerType.None)
+                {
+                    AddCandidates(board, depth, row, col, 2); //현재 depth리스트에 한 칸 위 후보 + row, col주변 부 추가
+                    board[row, col] = otherPlayer;
+                    int score = Minimax2(board, aiType, depth + 1, true, alpha, beta, initRow, initCol, boardRange);
 
                     minScore = Math.Min(minScore, score);
                     beta = Math.Min(beta, score);
@@ -234,11 +405,11 @@ public static class GomokuLibrary
     }
 
     //Minimax범위 제한 함수. 돌이 많이 있는 곳이 돌을 놓기 유리할 자리일 확률이 높다는 것을 전제
-    private static List<(int, int)> GetCandidateMoves(PlayerType[,] board, int depth, int boardRange)
+    private static HashSet<(int, int)> GetCandidateMoves(PlayerType[,] board, int depth, int boardRange)
     {
         const int RADIUS = 2;
         List<(int, int)> candidates = candidatesList[depth];
-        bool[,] visited = new bool[boardRange, boardRange];
+        HashSet<(int, int)> candidates2 = candidatesByDepth[depth];
 
         if (depth == 0)
         {
@@ -256,10 +427,11 @@ public static class GomokuLibrary
                                 int rr = r + dr;
                                 int cc = c + dc;
 
-                                if (IsInRange(rr, cc, boardRange) && board[rr, cc] == PlayerType.None && !visited[rr, cc])
+                                if (IsInRange(rr, cc, boardRange) && board[rr, cc] == PlayerType.None /*&&!visited[rr, cc]*/)
                                 {
-                                    candidates.Add((rr, cc));
-                                    visited[rr, cc] = true;
+                                    candidates2.Add((rr, cc));
+                                    //candidates.Add((rr, cc));
+                                    //visited[rr, cc] = true;
                                 }
                             }
                         }
@@ -270,19 +442,24 @@ public static class GomokuLibrary
         }
         else
         {
-            return candidatesList[depth - 1];
+            return /*candidatesList[depth - 1]*/candidatesByDepth[depth - 1];
         }
 
         // 만약 판이 비어있다면 중앙점 반환
-        if (candidates.Count == 0) return new List<(int, int)> { (boardRange / 2, boardRange / 2) };
-
-        return candidates;
+        if (candidates.Count == 0)
+        {
+            candidates2.Add((boardRange / 2, boardRange / 2));
+        }
+        return candidates2;
     }
 
-    private static void AddCandidates(PlayerType[,] board, List<(int, int)> list, int depth, int inRow, int inCol, int radius)
+    private static void AddCandidates(PlayerType[,] board, int depth, int inRow, int inCol, int radius)
     {
-        candidatesList[depth].Clear();
-        candidatesList[depth].AddRange(candidatesList[depth - 1]);
+        /*candidatesList[depth].Clear();
+        candidatesList[depth].AddRange(candidatesList[depth - 1]);*/
+
+        candidatesByDepth[depth].Clear();
+        candidatesByDepth[depth].UnionWith(candidatesByDepth[depth - 1]);
 
         int rStart = inRow - radius;
         int rEnd = inRow + radius;
@@ -294,11 +471,13 @@ public static class GomokuLibrary
         {
             for (int c = cStart; c <= cEnd; c++)
             {
-                if ((r == inRow && c == inCol) || !IsInRange(r, c, BOARD_SIZE) || board[r, c] != PlayerType.None)
+                if ((r == inRow && c == inCol) || !IsInRange(r, c, BOARD_SIZE) || board[r, c] != PlayerType.None /*|| visited[r,c]*/)
                     continue;
                 else
                 {
-                    candidatesList[depth + 1].Add((r, c));
+                    visited[r, c] = true;
+                    //candidatesList[depth].Add((r, c));
+                    candidatesByDepth[depth].Add((r, c));
                 }
             }
         }

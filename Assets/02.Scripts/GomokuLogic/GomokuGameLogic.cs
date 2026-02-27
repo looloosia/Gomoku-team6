@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using static Constants;
 using static GomokuLibrary;
 
@@ -10,7 +11,7 @@ public class GomokuGameLogic
     public PlayerType[,] VirtualBoard { get { return virtualBoard; } }
 
     public Action<int, int> onBlockClicked;//스테이트가 받을 액션
-
+    bool isStart = false;
 
     public BaseState playerAState;
     public BaseState playerBState;
@@ -60,28 +61,25 @@ public class GomokuGameLogic
                 StartFirstState();
                 break;
 
-                //case GameType.SinglePlay:
-                //    playerAState = new PlayerState(playerType);
-                //    playerBState = new AIState(otherPlayerType);
+            case GameType.SinglePlay:
+                playerAState = new PlayerState(playerType);
+                playerBState = new _02.Scripts.States.AIState(otherPlayerType);
 
-                ////첫 턴인 Player먼저 시작
-                //StartFirstState();
-                //break;
+                //첫 턴인 Player먼저 시작
+                StartFirstState();
+                break;
 
         }
     }
 
     public void OnBlockClicked(Block block)
     {
+        Debug.Log("ONBLOCKCLICKED");
         int row = block.GetBlockData().row;
         int col = block.GetBlockData().col;
 
-        onBlockClicked?.Invoke(row ,col);
+        onBlockClicked?.Invoke(row, col);
     }
-    //public void OnBlockClicked(int row, int col)
-    //{
-    //    onBlockClicked?.Invoke(row, col);
-    //}
 
     private void StartFirstState()
     {
@@ -93,19 +91,29 @@ public class GomokuGameLogic
         {
             SetState(playerBState);
         }
+        isStart = true;
     }
 
     //턴 혹은 상태가 바뀔 때 호출되는 메서드
     public void SetState(BaseState newState)
     {
+
         currentState?.OnExit(this); //기존 스테이트 끝
         currentState = newState;
         currentState?.OnEnter(this);    //새로운 스테이트 시작
-        Debug.Log("currentType: "+currentState.Type);
+
+        if (isStart)
+        {
+            gomokuBoard.UpdateBlock();
+            isStart = true;
+        }
+        Debug.Log($"{currentState.Type}: CURRENTONENTER");
+        gomokuBoard.SetCurrentStone(currentState.Type);
+
         //금수 자리 해제 및 새로 체크
         ClearForbiddenPositionCheck(virtualBoard);
         if (currentState.Type == PlayerType.Black)
-            CheckForbiddenPostions(virtualBoard, currentState.Type, 15);
+            CheckForbiddenPostions(virtualBoard, currentState.Type, BOARD_SIZE);
 
         turnStateManager.SetState(newState);
     }
@@ -146,7 +154,7 @@ public class GomokuGameLogic
     public Constants.GameResult CheckGameResult(Constants.PlayerType playerType, int inRow, int inCol) //인풋: 바둑돌 놓은 좌표 
     {
         //승리 조건 확인 로직 구현
-        if (CheckGomoku(virtualBoard, PlayerType.Black, inRow, inCol, 15))
+        if (CheckGomoku(virtualBoard, playerType, inRow, inCol, 15))
         {
             return Constants.GameResult.Win;
         }

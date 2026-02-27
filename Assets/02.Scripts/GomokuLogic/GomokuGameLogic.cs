@@ -21,7 +21,6 @@ public class GomokuGameLogic
 
     private TurnStateManager turnStateManager;
 
-
     private Coroutine counterRoutine = null;
 
     //승리, 패배 판정 용 임시 카운터 변수(삭제예정)

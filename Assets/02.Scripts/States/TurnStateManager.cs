@@ -24,10 +24,10 @@ public class TurnStateManager : MonoBehaviour
         
         // 턴 UI 변경
         string uiMessage = newState.ControllerType == ControllerType.Human ? "Player의 턴" : "AI의 턴";
-        GameManager.Instance.GamePanelController.UpdateTurnUI(uiMessage);
+        UIManager.Instance.GamePanelController.UpdateTurnUI(uiMessage);
         
         // 타이머 UI 변경
-        GameManager.Instance.GamePanelController.UpdateTimerUI(_remainingSeconds);
+        UIManager.Instance.GamePanelController.UpdateTimerUI(_remainingSeconds);
         
         _counterRoutine = StartCoroutine(CounterRoutine(newState));
     }
@@ -41,7 +41,7 @@ public class TurnStateManager : MonoBehaviour
             _remainingSeconds--;
             
             // 타이머 UI 변경
-            GameManager.Instance.GamePanelController.UpdateTimerUI(_remainingSeconds);
+            UIManager.Instance.GamePanelController.UpdateTimerUI(_remainingSeconds);
             
             yield return new WaitForSeconds(1f);
         }

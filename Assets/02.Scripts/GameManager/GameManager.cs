@@ -10,71 +10,16 @@ using static Constants;
 /// </summary>
 public class GameManager : Singleton<GameManager>
 {
-    #region UI
-
-    [SerializeField] private GameObject settingsPopupPrefab;
-    [SerializeField] private GameObject confirmPopupPrefab;
-    [SerializeField] private GameObject markerSelectPanelPrefab;
-    
     // 캔버스
     private Canvas _canvas;
     
-    // 게임 화면의 UI 컨트롤러
-    private GamePanelController _gamePanelController; 
-    public GamePanelController GamePanelController => _gamePanelController;
+    // private GamePanelController _gamePanelController;
     
     // Game Turn UI 업데이트
-    public void SetGameTurn(Constants.PlayerType playerTurnType)
-    {
-        // _gamePanelController.SetPlayerTurnPanel(playerTurnType);
-    }
-    
-    // Settings 팝업 열기
-    public void OpenSettingPopup()
-    {
-        Debug.Log("GameManager: OpenSettingPopup() 실행됨");
-        if (_canvas == null)
-        {
-            _canvas = FindFirstObjectByType<Canvas>();
-        }
-        var settingsPopupObject = Instantiate(settingsPopupPrefab, _canvas.transform);
-        settingsPopupObject.name = "[Panel] Settings";
-        settingsPopupObject.GetComponent<SettingPopup>();
-    }
-    
-    // Confirm 팝업 열기
-    public ConfirmPopup OpenConfirmPopup()
-    {
-        Debug.Log("GameManager: OpenSettingPopup() 실행됨");
-        if (_canvas == null)
-        {
-            _canvas = FindFirstObjectByType<Canvas>();
-        }
-        var confirmPanelObject = Instantiate(confirmPopupPrefab, _canvas.transform);
-        confirmPanelObject.name = "[Panel] Confirm";
-        return confirmPanelObject.GetComponent<ConfirmPopup>();
-    }
-    
-    public MarkerSelectPanelController OpenMarkerSelectPanel()
-    {
-        Debug.Log("GameManager: OpenMarkerSelectPopup() 실행됨");
-        if (_canvas == null)
-        {
-            _canvas = FindFirstObjectByType<Canvas>();
-        }
-        var markerPanelObject = Instantiate(markerSelectPanelPrefab, _canvas.transform);
-        markerPanelObject.name = "[Panel] Marker Select";
-        return markerPanelObject.GetComponent<MarkerSelectPanelController>();
-    }
-
-    #endregion
-
-    #region Game
-    
-    // temp(게임 씬에서 바로 테스트 위한 변수)
-    private bool _isStartedinMain = false;
-    public bool IsStartedinMain =>  _isStartedinMain;
-    
+    // public void SetGameTurn(Constants.PlayerType playerTurnType)
+    // {
+    //     _gamePanelController.SetPlayerTurnPanel(playerTurnType);
+    // }
     
     // 착수금지 표시 sprite
     [SerializeField]
@@ -159,19 +104,8 @@ public class GameManager : Singleton<GameManager>
         // TurnManager가 씬에 없을 경우 생성
         if (_turnStateManager == null)
         {
-            _gamePanelController = FindFirstObjectByType<GamePanelController>();
-            
             GameObject prefab = Resources.Load<GameObject>("Prefabs/TurnManager");
-                
-            MarkerSelectPanelController markerController = OpenMarkerSelectPanel();
-            if (markerController == null)
-            {
-                Debug.Log("Marker Controller is null!");
-            }
-            else
-            {
-                markerController.OnMarkerSelectedEvent += OnMarkerSelected; 
-            }
+            
             if (prefab != null)
             {
                 GameObject instance = Instantiate(prefab);
@@ -238,7 +172,4 @@ public class GameManager : Singleton<GameManager>
         
         NewGameLogic();
     }
-
-    #endregion
-    
 }

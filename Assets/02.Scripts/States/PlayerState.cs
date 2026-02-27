@@ -21,7 +21,6 @@ public class PlayerState : BaseState
     // 한 턴이 시작될 때
     public override void OnEnter(GomokuGameLogic gameLogic)
     {
-        Debug.Log("OnEnter() 실행됨");
         _gameLogic = gameLogic;
         _board = GameManager.Instance.Board;
         // _forbiddensVisualizer = GameManager.Instance.ForbiddensVisualizer;
@@ -41,8 +40,6 @@ public class PlayerState : BaseState
     // 블록이 놓아질 때 처리할 로직
     void OnStonePlace(int row, int col)
     {
-        Debug.Log("OnStonePlace() 실행됨");
-        
         // 타이머 멈추기
         GameManager.Instance.TurnStateManager.StopCounterRoutine();
         

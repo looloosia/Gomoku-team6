@@ -9,11 +9,9 @@ public class ReplayBoard : MonoBehaviour
 {
     [SerializeField]
     private BoardGenerator boardGenerator;
+    [SerializeField]
+    private RecordPanelController recordPanelCR;
 
-    [SerializeField]
-    private Button btnPrev;
-    [SerializeField]
-    private Button btnNext;
 
     //key: 블럭 위치(row, col)
     private Dictionary<(int, int), Block> dicBlocks = new Dictionary<(int, int), Block>();
@@ -32,6 +30,21 @@ public class ReplayBoard : MonoBehaviour
         this.onLoadReplayData = LoadReplayData;
 
         EventsInit();
+
+        //Test
+        TestReadJson();
+    }
+    //Test
+    private void TestReadJson()
+    {
+        string fileName = "Replay_26-02-26_22-51-34";
+        string folderPath = Application.dataPath + "/Replay";
+        string filePath = folderPath + $"/{fileName}.json";
+
+        string json = File.ReadAllText(filePath);
+        ReplaySaveData loadData = JsonUtility.FromJson<ReplaySaveData>(json);
+        
+        LoadReplayData(loadData.listRecordFrameData);
     }
     private void LoadReplayData(List<ReplayFrameData> frameData)
     {
@@ -41,7 +54,7 @@ public class ReplayBoard : MonoBehaviour
     {
         foreach(BlockData blockData in frameData.blockDatas)
         {
-            (int r, int c) key = (blockData.row, blockData.row);
+            (int r, int c) key = (blockData.row, blockData.col);
 
             this.dicBlocks[key].SetBlockData(blockData);
         }
@@ -84,6 +97,9 @@ public class ReplayBoard : MonoBehaviour
     }
     private void EventsInit()
     {
-        
+        this.recordPanelCR.OnFirstMoveEvent += FirstFrame;
+        this.recordPanelCR.OnLastMoveEvent += LastFrame;
+        this.recordPanelCR.OnNextMoveEvent += NextFrame;
+        this.recordPanelCR.OnPrevMoveEvent += PrevFrame;
     }
 }

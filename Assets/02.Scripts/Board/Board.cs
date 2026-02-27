@@ -15,14 +15,14 @@ public class Board : MonoBehaviour
     [SerializeField]
     private GamePanelController panel;
     
-    private GomokuGameLogic logic;
-
     //temp
     [SerializeField]
     private PlayerChange stoneChange;
+    [SerializeField]
+    private Button btnSave;
 
     //착수 블럭
-    private Block tempBlock;
+    private Block currentBlock;
 
     //key: 블럭 위치(row, col)
     private Dictionary<(int, int), Block> dicBlocks = new Dictionary<(int, int), Block>();
@@ -38,6 +38,13 @@ public class Board : MonoBehaviour
         InitEvents();
         BlockInit();
         SaveReplayFrame();
+
+        //test
+        this.btnSave.onClick.AddListener(() =>
+        {
+            SaveReplayJson();
+            BoardReset();
+        });
     }
     void Update()
     {
@@ -59,14 +66,14 @@ public class Board : MonoBehaviour
     public void UpdateBlock()
     {
         var virtualBoard = GameManager.Instance.GameLogic.VirtualBoard;
-        int rows = this.logic.VirtualBoard.GetLength(0);
-        int cols = this.logic.VirtualBoard.GetLength(1);
+        int rows = virtualBoard.GetLength(0);
+        int cols = virtualBoard.GetLength(1);
 
         for (int row = 0; row < rows; row++)
         {
             for (int col = 0; col < cols; col++)
             {
-                PlayerType type = this.logic.VirtualBoard[row, col];
+                PlayerType type = virtualBoard[row, col];
 
                 if (this.dicBlocks.TryGetValue((row, col), out Block block))
                 {
@@ -93,8 +100,8 @@ public class Board : MonoBehaviour
 
             if (clickedBlock != null)
             {
-                if (this.tempBlock != null)
-                    this.tempBlock.ResetStone();
+                if (this.currentBlock != null)
+                    this.currentBlock.ResetStone();
 
                 OnClick(clickedBlock);
             }
@@ -103,47 +110,47 @@ public class Board : MonoBehaviour
     public void OnClick(Block block)
     {
         this.panel.OnStoneTemporarilyPlaced();
-        this.tempBlock = block;
-        this.tempBlock.SetPlacementImage(this.stoneChange.Type);
+        this.currentBlock = block;
+        this.currentBlock.SetPlacementImage(this.stoneChange.Type);
     }
     private void InitEvents()
     {
         this.panel.OnConfirmMoveEvent += PutStone;
         this.panel.OnReturnMoveEvent += Return;
 
-        this.panel.OnResignEvent += BoardReset;
         this.panel.OnResignEvent += SaveReplayJson;
+        this.panel.OnResignEvent += BoardReset;
     }
     private void PutStone()
     {
-        if (this.tempBlock == null)
+        if (this.currentBlock == null)
             return;
 
         if (this.stoneChange.Type == PlayerType.Black)
-            this.tempBlock.SetBlackStone();
+            this.currentBlock.SetBlackStone();
         else if (this.stoneChange.Type == PlayerType.White)
-            this.tempBlock.SetWhiteStone();
+            this.currentBlock.SetWhiteStone();
 
-        this.onPlaceStone?.Invoke(this.tempBlock);
+        this.onPlaceStone?.Invoke(this.currentBlock);
 
-        this.tempBlock = null;
+        this.currentBlock = null;
 
         //저장
         SaveReplayFrame();
     }
     private void Return()
     {
-        if (this.tempBlock == null)
+        if (this.currentBlock == null)
             return;
 
-        this.tempBlock.ResetStone();
-        this.tempBlock = null;
+        this.currentBlock.ResetStone();
+        this.currentBlock = null;
     }
     private void SaveReplayJson()
     {
         string fileName = DateTime.Now.ToString("yy-MM-dd_HH-mm-ss");
         string replayName = DateTime.Now.ToString("(yy/MM/dd) HH:mm:ss");
-
+        
         ReplaySaveData data = new ReplaySaveData
         {
             // [파일 이름]
@@ -159,7 +166,7 @@ public class Board : MonoBehaviour
 
             // [상대방 정보]
             nickName = "",              // 상대방 닉네임
-            rank = 0,                   // 상대방 급수
+            rank = "",                   // 상대방 급수
 
             // [결과 및 통계]
             result = GameResult.None,         
@@ -170,7 +177,7 @@ public class Board : MonoBehaviour
 
             totalStone = TotalStoneCount()
         };
-
+        
         string json = JsonUtility.ToJson(data, true);
 
         string folderPath = Application.dataPath + "/Replay";

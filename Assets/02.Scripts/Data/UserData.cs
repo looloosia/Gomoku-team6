@@ -2,16 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-// 기보 데이터를 담을 클래스
-[Serializable]
-public class MatchRecord
-{
-    public string data; // 대국 날짜
-    public string opponentName; // 상대 닉네임 
-    public string result; // 결과 (win, lose, draw)
-    public List<int> moves; // 착수 기록 (예:바둑판의 1차원 인덱스 순서)
-}
-
 [Serializable]
 public class UserData
 {
@@ -26,7 +16,12 @@ public class UserData
     public int rankPoint; // 승급 포인트
 
     // 내 기보 리스트
-    public List<ReplaySaveData> replayList;
+    public List<ReplaySaveData> replayHistory = new List<ReplaySaveData>();
+
+    public UserData() 
+    {
+        replayHistory = new List<ReplaySaveData>();
+    }
 
     public UserData(string id, string pwHash, string nickname)
     {
@@ -34,9 +29,9 @@ public class UserData
         this.pwHash = pwHash;
         this.nickname = nickname;
         this.profileId = 0; // 기본 이미지 인덱스
-        this.coin = 0;
+        this.coin = 100;
         this.rank = 18;     // 18급부터 시작
         this.rankPoint = 0;
-        this.replayList = new List<ReplaySaveData>();
+        this.replayHistory = new List<ReplaySaveData>();
     }
 }

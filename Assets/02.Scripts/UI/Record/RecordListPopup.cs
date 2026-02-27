@@ -29,12 +29,12 @@ public class RecordListPopup : BasePopup
 
         // 2. AccountManager에서 내 데이터 가져오기
         UserData me = AccountManager.Instance.CurrentUser;
-        if (me == null || me.replayList == null || me.replayList.Count == 0)
+        if (me == null || me.replayHistory == null || me.replayHistory.Count == 0)
             return;
 
         // 최신 데이터가 위로 오게 정렬 (리스트 뒤집기)
         // 만약 날짜순 정렬이 필요하면 me.replayList.OrderByDescending(...)사용
-        List<ReplaySaveData> sortedList = me.replayList.AsEnumerable().Reverse().ToList();
+        List<ReplaySaveData> sortedList = me.replayHistory.AsEnumerable().Reverse().ToList();
 
         // 프리팹 생성 및 데이터 주입
         foreach (ReplaySaveData data in sortedList)

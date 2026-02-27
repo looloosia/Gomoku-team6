@@ -43,7 +43,7 @@ public class LoginPanelController : MonoBehaviour
         else
         {
             loginErrorText.text = "";
-            // Lobby씬으로 전환
+            GameManager.Instance.ChangeToLobbyScene();
         }
     }
 }

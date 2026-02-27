@@ -21,10 +21,31 @@ public class PlayerProfilePopup : BasePopup
         BindButtons();
     }
     
+    private void OnEnable()
+    {
+        RefreshUI(); // 켤 때 일단 한 번 갱신
+
+        // AccountManager의 닉네임 변경 알람 구독
+        if (AccountManager.Instance != null)
+        {
+            AccountManager.Instance.OnUserDataUpdated += RefreshUI;
+        }
+    }
+
+    private void OnDisable()
+    {
+        // 팝업 꺼질 때 알람 구독 취소
+        if (AccountManager.Instance != null)
+        {
+            AccountManager.Instance.OnUserDataUpdated -= RefreshUI;
+        }
+    }
+
+
+    
     public override void Show()
     {
         base.Show();
-        RefreshUI();
     }
 
     public override void Hide(PopupHideDelegate onComplete = null)

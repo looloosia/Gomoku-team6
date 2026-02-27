@@ -49,7 +49,7 @@ public class RecordPanelController : MonoBehaviour
         ConfirmPopup popup = UIManager.Instance.OpenConfirmPopup();
         popup.Show("복기를 종료하시겠습니까?", "", "취소", null, "확인", () => 
         {
-            // 확인 누르면 로비 씬으로 이동!
+            GameManager.Instance.ChangeToLobbyScene();
         });
     }
 

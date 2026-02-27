@@ -40,16 +40,18 @@ public class TurnStateManager : MonoBehaviour
     IEnumerator CounterRoutine(BaseState playerState)
     {
         _remainingSeconds = TIME_LIMIT;
+        UIManager.Instance.GamePanelController.UpdateTimerUI(_remainingSeconds);
         
-        while (_remainingSeconds >= 0)
+        while (_remainingSeconds > 0)
         {
+            yield return new WaitForSeconds(1f);
             _remainingSeconds--;
             
             // 타이머 UI 변경
             UIManager.Instance.GamePanelController.UpdateTimerUI(_remainingSeconds);
-            
-            yield return new WaitForSeconds(1f);
         }
+
+        _remainingSeconds = 0;
         onEndGame?.Invoke(playerState, GameResult.Lose);
     }
 

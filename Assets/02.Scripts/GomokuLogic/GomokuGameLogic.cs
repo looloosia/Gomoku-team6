@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using static Constants;
 using static GomokuLibrary;
 
@@ -20,6 +21,7 @@ public class GomokuGameLogic
     private BaseState currentState;
 
     private TurnStateManager turnStateManager;
+
 
     private Coroutine counterRoutine = null;
 
@@ -72,15 +74,12 @@ public class GomokuGameLogic
 
     public void OnBlockClicked(Block block)
     {
+        Debug.Log("ONBLOCKCLICKED");
         int row = block.GetBlockData().row;
         int col = block.GetBlockData().col;
 
-        onBlockClicked?.Invoke(row ,col);
+        onBlockClicked?.Invoke(row, col);
     }
-    //public void OnBlockClicked(int row, int col)
-    //{
-    //    onBlockClicked?.Invoke(row, col);
-    //}
 
     private void StartFirstState()
     {
@@ -100,13 +99,17 @@ public class GomokuGameLogic
         currentState?.OnExit(this); //기존 스테이트 끝
         currentState = newState;
         currentState?.OnEnter(this);    //새로운 스테이트 시작
-        Debug.Log("currentType: "+currentState.Type);
+
+        Debug.Log("currentType: " + currentState.Type);
+        gomokuBoard.SetCurrentStone(currentState.Type);
+
         //금수 자리 해제 및 새로 체크
         ClearForbiddenPositionCheck(virtualBoard);
         if (currentState.Type == PlayerType.Black)
-            CheckForbiddenPostions(virtualBoard, currentState.Type, 15);
+            CheckForbiddenPostions(virtualBoard, currentState.Type, BOARD_SIZE);
 
         turnStateManager.SetState(newState);
+
     }
 
     public bool PlaceMarker(PlayerType playerType, int inRow, int inCol)
@@ -131,7 +134,7 @@ public class GomokuGameLogic
     //턴 변경
     public void ChangeGameState()
     {
-
+        Debug.Log("CHANGESTATE");
         if (currentState == playerAState)
         {
             SetState(playerBState);
@@ -145,7 +148,7 @@ public class GomokuGameLogic
     public Constants.GameResult CheckGameResult(Constants.PlayerType playerType, int inRow, int inCol) //인풋: 바둑돌 놓은 좌표 
     {
         //승리 조건 확인 로직 구현
-        if (CheckGomoku(virtualBoard, PlayerType.Black, inRow, inCol, 15))
+        if (CheckGomoku(virtualBoard, playerType, inRow, inCol, 15))
         {
             return Constants.GameResult.Win;
         }

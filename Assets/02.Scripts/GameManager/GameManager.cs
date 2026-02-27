@@ -10,6 +10,7 @@ using static Constants;
 /// </summary>
 public class GameManager : Singleton<GameManager>
 {
+    private bool isStoneSelected = false;
     // 캔버스
     private Canvas _canvas;
     
@@ -120,7 +121,6 @@ public class GameManager : Singleton<GameManager>
                 }
             }
         }
-        
         UIManager.Instance.OpenMarkerSelectPanel();
         
         // TODO: 금수표시관련
@@ -152,15 +152,27 @@ public class GameManager : Singleton<GameManager>
     }
     
     // GomokuGameLogic 생성
-    public void NewGameLogic()
+    public void NewGameLogic(PlayerType playerType = PlayerType.None)
     {
+        if (playerType != PlayerType.None)
+        {
+            Debug.Log("None이아님");
+            _gamePlayerType = playerType;
+        }
+            
         _gameLogic = new GomokuGameLogic(_gameType, _gamePlayerType, _board, _turnStateManager);
         Debug.Log("<color=yellow>GameManager에서 GomokuGameLogic 생성함</color>");
     }
 
     public void OnMarkerSelected(PlayerType finalType)
     {
+        isStoneSelected = true;
         _gamePlayerType = finalType;
+
+        if (UIManager.Instance.GamePanelController == null)
+        {
+            Debug.LogError("로직 생성 전 GamePanel 참조없음");
+        }
         NewGameLogic();
     }
 }

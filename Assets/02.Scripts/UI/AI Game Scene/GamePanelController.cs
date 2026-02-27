@@ -46,13 +46,13 @@ public class GamePanelController : MonoBehaviour
 
     private void OnClickResign()
     {
-        ConfirmPopup popup = GameManager.Instance.OpenConfirmPopup();
+        ConfirmPopup popup = UIManager.Instance.OpenConfirmPopup();
         popup.Show("기권 하시겠습니까?", "기권할 경우 코인과 승급 포인트를 잃습니다.", "취소", null, "확인", () => {OnResignEvent?.Invoke();});
     }
 
     private void OnClickSetting()
     {
-        GameManager.Instance.OpenSettingPopup();
+        UIManager.Instance.OpenSettingPopup();
     }
 
     public void SetupPlayerProfile(string nickname, string rankData, bool isBlack, Sprite profileSprite)

@@ -43,7 +43,7 @@ public class LoginPanelController : MonoBehaviour
         else
         {
             loginErrorText.text = "";
-            // 씬 전환
+            // Lobby씬으로 전환
         }
     }
 }

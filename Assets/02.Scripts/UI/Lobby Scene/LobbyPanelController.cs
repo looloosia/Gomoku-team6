@@ -83,7 +83,7 @@ public class LobbyPanelController : MonoBehaviour
 
     private void ShowSettingPopup()
     {
-        GameManager.Instance.OpenSettingPopup();
+        UIManager.Instance.OpenSettingPopup();
     }
 
     private void ChangeSceneMain()

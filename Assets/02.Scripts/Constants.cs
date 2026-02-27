@@ -5,6 +5,7 @@ public static class Constants
 
     public const string SCENE_MAIN = "Main";
     public const string SCENE_GAME = "Game";
+    public const string SCENE_LOBBY = "Lobby";
 
     public const int BOARD_SIZE = 15;
 

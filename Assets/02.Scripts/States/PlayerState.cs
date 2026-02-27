@@ -7,17 +7,11 @@ using UnityEngine;
 /// </summary>
 public class PlayerState : BaseState
 {
-    private GomokuGameLogic _gameLogic;
     // 턴 변경
     public PlayerState(Constants.PlayerType playerType) : base(playerType, Constants.ControllerType.Human)
     {
     }
-
-    public override void HandleNextTurn(GomokuGameLogic gameLogic)
-    {
-        gameLogic.ChangeGameState();
-    }
-
+    
     // 한 턴이 시작될 때
     public override void OnEnter(GomokuGameLogic gameLogic)
     {
@@ -29,21 +23,17 @@ public class PlayerState : BaseState
         
         _gamePlayerType = GameManager.Instance.GamePlayerType;
         
-        // 흑돌일 경우 금수 표시
+        // TODO: 흑돌일 경우 금수 표시
         // if (_currentPlayerType == Constants.PlayerType.Black && _gamePlayerType == Constants.PlayerType.Black)
         //     _forbiddensVisualizer.VisualizeForbiddens(_currentPlayerType);
 
         // Turn UI 업데이트
-        GameManager.Instance.SetGameTurn(_currentPlayerType);
+        // GameManager.Instance.SetGameTurn(_currentPlayerType);
     }
 
-    // 블록이 놓아질 때 처리할 로직
-    void OnStonePlace(int row, int col)
+    public override void HandleNextTurn(GomokuGameLogic gameLogic)
     {
-        // 타이머 멈추기
-        GameManager.Instance.TurnStateManager.StopCounterRoutine();
-        
-        HandleMove(_gameLogic, row, col);
+        gameLogic.ChangeGameState();
     }
     
     public override void HandleMove(GomokuGameLogic gameLogic, int inRow, int inCol)
@@ -56,6 +46,4 @@ public class PlayerState : BaseState
     { 
         // _forbiddensVisualizer.ClearForbiddens();
     }
-    
-    
 }

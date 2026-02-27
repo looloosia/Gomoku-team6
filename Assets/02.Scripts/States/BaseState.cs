@@ -6,6 +6,7 @@ public abstract class BaseState
     protected Constants.PlayerType _gamePlayerType;
     public Constants.PlayerType Type => _currentPlayerType;
     protected Constants.ControllerType _controllerType;
+    protected GomokuGameLogic _gameLogic;
     public  Constants.ControllerType ControllerType => _controllerType;
 
     protected Board _board;
@@ -39,4 +40,12 @@ public abstract class BaseState
         }
     }
     
+    // 블록이 놓아질 때 처리할 로직
+    protected void OnStonePlace(int row, int col)
+    {
+        // 타이머 멈추기
+        GameManager.Instance.TurnStateManager.StopCounterRoutine();
+        
+        HandleMove(_gameLogic, row, col);
+    }
 }

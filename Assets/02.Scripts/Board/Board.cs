@@ -17,9 +17,9 @@ public class Board : MonoBehaviour
     
     //temp
     [SerializeField]
-    private PlayerChange stoneChange;
-    [SerializeField]
     private Button btnSave;
+
+    private PlayerType currentType;
 
     //Âø¼ö ºí·°
     private Block currentBlock;
@@ -36,7 +36,6 @@ public class Board : MonoBehaviour
         this.dicBlocks = this.boardGenerator.GenerateBoard();
 
         InitEvents();
-        BlockInit();
         SaveReplayFrame();
 
         //test
@@ -53,15 +52,9 @@ public class Board : MonoBehaviour
             StoneOnClick();
         }
     }
-    public void BlockInit()
+    public void SetCurrentStone(PlayerType type)
     {
-        foreach (Block block in this.dicBlocks.Values)
-        {
-            block.Init(() =>
-            {
-                this.onPlaceStone?.Invoke(block);
-            });
-        }
+        this.currentType = type;
     }
     public void UpdateBlock()
     {
@@ -111,7 +104,7 @@ public class Board : MonoBehaviour
     {
         this.panel.OnStoneTemporarilyPlaced();
         this.currentBlock = block;
-        this.currentBlock.SetPlacementImage(this.stoneChange.Type);
+        this.currentBlock.SetPlacementImage(this.currentType);
     }
     private void InitEvents()
     {
@@ -126,9 +119,9 @@ public class Board : MonoBehaviour
         if (this.currentBlock == null)
             return;
 
-        if (this.stoneChange.Type == PlayerType.Black)
+        if (this.currentType == PlayerType.Black)
             this.currentBlock.SetBlackStone();
-        else if (this.stoneChange.Type == PlayerType.White)
+        else if (this.currentType == PlayerType.White)
             this.currentBlock.SetWhiteStone();
 
         this.onPlaceStone?.Invoke(this.currentBlock);
@@ -200,9 +193,9 @@ public class Board : MonoBehaviour
 
         foreach (Block block in this.dicBlocks.Values)
         {
-            Constants.PlayerType type = block.GetBlockData().markerType;
+            PlayerType type = block.GetBlockData().markerType;
 
-            if (type == Constants.PlayerType.Black || type == Constants.PlayerType.White)
+            if (type == PlayerType.Black || type == PlayerType.White)
             {
                 count++;
             }

@@ -41,11 +41,11 @@ public class MarkerSelectPanelController : MonoBehaviour
         GamePanelController gamePanel = FindFirstObjectByType<GamePanelController>();
         if (gamePanel != null && me != null)
         {
-            gamePanel.SetupPlayerProfile(me.nickname, $"(me.rank)급", isPlayerBlack, null);
+            gamePanel.SetupPlayerProfile(me.nickname, $"{me.rank}급", isPlayerBlack, null);
             gamePanel.SetupAIProfile("알파고(AI)", "18급",  !isPlayerBlack, null);
         }
 
-        // GameManager.Instance.OnMarkerSelected(finalType);
+        GameManager.Instance.OnMarkerSelected(finalType);
 
         gameObject.SetActive(false);
     }

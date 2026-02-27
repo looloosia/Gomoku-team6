@@ -5975,7 +5975,7 @@ GameObject:
   - component: {fileID: 1704914830}
   - component: {fileID: 1704914832}
   m_Layer: 5
-  m_Name: '[Panel] Player Info Popup'
+  m_Name: '[Panel] Player Profile Popup'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

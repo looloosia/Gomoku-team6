@@ -24,8 +24,6 @@ public class GamePanelController : MonoBehaviour
     public event Action OnReturnMoveEvent; // 무르기 눌렀을 때
     public event Action OnResignEvent; // 기권 확정했을 때
 
-
-
     void Start()
     {
         BindButtons();
@@ -47,7 +45,11 @@ public class GamePanelController : MonoBehaviour
     private void OnClickResign()
     {
         ConfirmPopup popup = UIManager.Instance.OpenConfirmPopup();
-        popup.Show("기권 하시겠습니까?", "기권할 경우 코인과 승급 포인트를 잃습니다.", "취소", null, "확인", () => {OnResignEvent?.Invoke();});
+        popup.Show("기권 하시겠습니까?", "기권할 경우 코인과 승급 포인트를 잃습니다.", "취소", null, "확인", () => 
+        {
+            OnResignEvent?.Invoke();
+            GameManager.Instance.ChangeToLobbyScene();
+        });
     }
 
     private void OnClickSetting()

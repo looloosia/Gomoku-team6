@@ -38,6 +38,23 @@ public class LobbyPanelController : MonoBehaviour
         popupCanvas.SetActive(true);
     }
 
+    private void OnEnable()
+    {
+        // 켜질 때 일단 내 정보로 한 번 세팅
+        UpdateUserProfile();
+
+        // AccountManager가"정보 바뀌었다고 방송하면 내 UpdateUserProfile을 다시 실행하도록 연결
+        if (AccountManager.Instance != null)
+            AccountManager.Instance.OnUserDataUpdated += UpdateUserProfile;
+    }
+
+    // 스크립트(또는 로비 화면)가 꺼질 때 알람 구독을 취소
+    private void OnDisable()
+    {
+        if (AccountManager.Instance != null)
+            AccountManager.Instance.OnUserDataUpdated -= UpdateUserProfile;
+    }
+
     void BindButtons()
     {
         playGameBtn.onClick.AddListener(() => {gameOptionPopup.SetActive(true);});

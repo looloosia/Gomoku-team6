@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using static Constants;
 
@@ -31,6 +32,7 @@ public class GameManager : Singleton<GameManager>
     // Settings 팝업 열기
     public void OpenSettingPopup()
     {
+        Debug.Log("GameManager: OpenSettingPopup() 실행됨");
         if (_canvas == null)
         {
             _canvas = FindFirstObjectByType<Canvas>();
@@ -42,12 +44,25 @@ public class GameManager : Singleton<GameManager>
     // Confirm 팝업 열기
     public ConfirmPopup OpenConfirmPopup()
     {
+        Debug.Log("GameManager: OpenSettingPopup() 실행됨");
         if (_canvas == null)
         {
             _canvas = FindFirstObjectByType<Canvas>();
         }
         var confirmPanelObject = Instantiate(confirmPopupPrefab, _canvas.transform);
         return confirmPanelObject.GetComponent<ConfirmPopup>();
+    }
+
+    public MarkerSelectPanelController OpenMarkerSelectPanel()
+    {
+        Debug.Log("GameManager: OpenMarkerSelectPopup() 실행됨");
+        if (_canvas == null)
+        {
+            _canvas = FindFirstObjectByType<Canvas>();
+        }
+        var markerPanelObject = Instantiate(markerSelectPanelPrefab, _canvas.transform);
+        markerPanelObject.name = "[Panel] Marker Select";
+        return markerPanelObject.GetComponent<MarkerSelectPanelController>();
     }
 
     #endregion
@@ -111,35 +126,33 @@ public class GameManager : Singleton<GameManager>
     }
 
     // 게임 씬에서 시작할 때를 위한 테스트용(추후 삭제예정) ===========================
-    void Start()
-    {
-        // Start 시 Main 씬인지 확인(메인 hierarchy에만 GameManager 오브젝트 있어서)
-        _isStartedinMain = SceneManager.GetActiveScene().name == SCENE_MAIN;
-        
-        if (_isStartedinMain)
-            return;
-        
-        _canvas = FindFirstObjectByType<Canvas>();
-        if (_canvas == null)
-        {
-            Debug.LogError("Canvas is null!");
-        }
-        
-        InitGameScene();
-    }
+    // void Start()
+    // {
+    //     Debug.Log("GameManager: Start()");
+    //     // Start 시 Main 씬인지 확인(메인 hierarchy에만 GameManager 오브젝트 있어서)
+    //     _isStartedinMain = SceneManager.GetActiveScene().name == SCENE_MAIN;
+    //     
+    //     if (_isStartedinMain)
+    //         return;
+    //     
+    //     _canvas = FindFirstObjectByType<Canvas>();
+    //     if (_canvas == null)
+    //     {
+    //         Debug.LogError("Canvas is null!");
+    //     }
+    //     
+    //     InitGameScene();
+    // }
     // ================================
     
     protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
     {
+        Debug.Log("GameManager: OnSceneLoad()");
         // 새로운 씬에서 Canvas 참조 가져오기
         _canvas = FindFirstObjectByType<Canvas>();
         
         // TODO: 게임타입, 플레이어타입 설정기능 완성되면 설정된 대로 하게 수정
         _gameType = GameType.LocalDualPlay;
-
-        // TODO: 플레이어의 흑백 설정에 맞게 수정
-        _gamePlayerType = PlayerType.Black;
-        
         
         // TODO: 돌 색상 선택되면 돌의 정보와 함께 유저 닉네임과 급수 인게임 메인 UI에 띄워야
         // 유저 정보는 DB에서 꺼내 쓰기
@@ -167,9 +180,16 @@ public class GameManager : Singleton<GameManager>
             _gamePanelController = FindFirstObjectByType<GamePanelController>();
             
             GameObject prefab = Resources.Load<GameObject>("Prefabs/TurnManager");
-            GameObject markerPanelObj = Instantiate(markerSelectPanelPrefab, _canvas.transform);
-            MarkerSelectPanelController markerController = markerPanelObj.GetComponent<MarkerSelectPanelController>();
-            markerController.OnMarkerSelectedEvent += OnMarkerSelected;
+                
+            MarkerSelectPanelController markerController = OpenMarkerSelectPanel();
+            if (markerController == null)
+            {
+                Debug.Log("Marker Controller is null!");
+            }
+            else
+            {
+                markerController.OnMarkerSelectedEvent += OnMarkerSelected; 
+            }
             if (prefab != null)
             {
                 GameObject instance = Instantiate(prefab);
@@ -184,9 +204,7 @@ public class GameManager : Singleton<GameManager>
                 }
             }
         }
-        // GomokuGameLogic 생성
-        _gameLogic = new GomokuGameLogic(_gameType, _gamePlayerType, _board, _turnStateManager);
-        Debug.Log("GameManager에서 _gameLogic 생성함");
+        
         // _forbiddensVisualizer = FindFirstObjectByType<ForbiddensVisualizer>();
         //
         // if (_forbiddensVisualizer != null)
@@ -208,8 +226,16 @@ public class GameManager : Singleton<GameManager>
         SceneManager.LoadScene(SCENE_MAIN);
     }
 
+    public void NewGameLogic()
+    {
+        // GomokuGameLogic 생성
+        _gameLogic = new GomokuGameLogic(_gameType, _gamePlayerType, _board, _turnStateManager);
+        Debug.Log("GameManager에서 _gameLogic 생성함");
+    }
+
     public void OnMarkerSelected(MarkerChoice markerChoice)
     {
+        Debug.Log("GameManager: OnMarkerSelected() 실행됨");
         // TODO: 유저가 돌을 선택했을 때 실행될 것
 
         // random일 경우 랜덤 선택
@@ -224,21 +250,8 @@ public class GameManager : Singleton<GameManager>
         }
         
         bool isPlayerBlack = _gamePlayerType == PlayerType.Black; 
-
-        // 결정된 돌 색상과 유저 정보를 인게임 UI(GamePanelController)에 전달 : 수정필요?
-        UserData me = AccountManager.Instance.CurrentUser;
         
-        if (me != null)
-        {
-            if (_gamePanelController != null)
-            {
-                _gamePanelController.SetupPlayerProfile(me.nickname, $"{me.rank}급", isPlayerBlack, null);
-
-                _gamePanelController.SetupAIProfile(_aiName, _aiRank, !isPlayerBlack, null);
-
-            }
-            
-        }
+        NewGameLogic();
     }
 
     #endregion

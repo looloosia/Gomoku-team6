@@ -158,8 +158,9 @@ public class GameManager : Singleton<GameManager>
         Debug.Log("<color=yellow>GameManager에서 GomokuGameLogic 생성함</color>");
     }
 
-    public void OnMarkerSelected(MarkerChoice markerChoice)
+    public void OnMarkerSelected(PlayerType finalType)
     {
+        _gamePlayerType = finalType;
         NewGameLogic();
     }
 }

@@ -54,7 +54,7 @@ public class NicknameEditPopup : BasePopup
             onNicknameChangedCallback?.Invoke();
 
             // 만능 알림창 띄워서 "성공했습니다!" 확인 도장 찍어주기
-            ConfirmPopup popup = GameManager.Instance.OpenConfirmPopup();
+            ConfirmPopup popup = UIManager.Instance.OpenConfirmPopup();
             popup.Show("닉네임 변경이 완료되었습니다!", "", "", null, "확인", null);
         }
         else

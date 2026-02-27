@@ -41,12 +41,12 @@ public class RecordPanelController : MonoBehaviour
         exitReviewBtn.onClick.AddListener(OnClickExitReview);
         
         // 설정 버튼
-        settingBtn.onClick.AddListener(() => GameManager.Instance.OpenSettingPopup());
+        settingBtn.onClick.AddListener(() => UIManager.Instance.OpenSettingPopup());
     }
 
     private void OnClickExitReview()
     {
-        ConfirmPopup popup = GameManager.Instance.OpenConfirmPopup();
+        ConfirmPopup popup = UIManager.Instance.OpenConfirmPopup();
         popup.Show("복기를 종료하시겠습니까?", "", "취소", null, "확인", () => 
         {
             // 확인 누르면 로비 씬으로 이동!

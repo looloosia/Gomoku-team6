@@ -19,6 +19,7 @@ public class Board : MonoBehaviour
     [SerializeField]
     private Button btnSave;
 
+    [SerializeField]
     private PlayerType currentType;
 
     //Âø¼ö ºí·°
@@ -45,6 +46,7 @@ public class Board : MonoBehaviour
             BoardReset();
         });
     }
+    
     void Update()
     {
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
@@ -58,7 +60,7 @@ public class Board : MonoBehaviour
     }
     public void UpdateBlock()
     {
-        var virtualBoard = GameManager.Instance.GameLogic.VirtualBoard;
+        PlayerType[,] virtualBoard = GameManager.Instance.GameLogic.VirtualBoard;
         int rows = virtualBoard.GetLength(0);
         int cols = virtualBoard.GetLength(1);
 
@@ -79,7 +81,7 @@ public class Board : MonoBehaviour
             }
         }
     }
-
+    
     private void StoneOnClick()
     {
         Vector2 screenPosition = Mouse.current.position.ReadValue();

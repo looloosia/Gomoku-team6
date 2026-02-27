@@ -50,7 +50,7 @@ public class GameManager : Singleton<GameManager>
     public PlayerType GamePlayerType => _gamePlayerType;
     
     // 현재 턴 플레이어 타입
-    private PlayerType _currentState;
+    // private PlayerType _currentState;
     // public PlayerType CurrentPlayerType =>
     //     (_gameLogic?.CurrentState != null) 
     //         ? _gameLogic.CurrentState.Type 
@@ -121,6 +121,9 @@ public class GameManager : Singleton<GameManager>
             }
         }
         
+        UIManager.Instance.OpenMarkerSelectPanel();
+        
+        // TODO: 금수표시관련
         // _forbiddensVisualizer = FindFirstObjectByType<ForbiddensVisualizer>();
         //
         // if (_forbiddensVisualizer != null)

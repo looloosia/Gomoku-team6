@@ -16,7 +16,7 @@ public struct ReplaySaveData
 
     [Header("상대방 정보")]
     public string nickName;             // 상대방 닉네임
-    public int rank;                    // 상대방 급수
+    public string rank;                    // 상대방 급수
 
     [Header("결과 및 통계")]
     public GameResult result;           // 승패 판정

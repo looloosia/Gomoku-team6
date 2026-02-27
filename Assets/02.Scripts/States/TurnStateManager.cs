@@ -22,12 +22,17 @@ public class TurnStateManager : MonoBehaviour
         if(_counterRoutine !=null)
             StopCoroutine(_counterRoutine);
         
-        // 턴 UI 변경
-        string uiMessage = newState.ControllerType == ControllerType.Human ? "Player의 턴" : "AI의 턴";
-        UIManager.Instance.GamePanelController.UpdateTurnUI(uiMessage);
+        var panel = UIManager.Instance.GamePanelController;
+
+        if (panel != null)
+        {
+            // 턴 UI 변경
+            string uiMessage = newState.ControllerType == ControllerType.Human ? "Player의 턴" : "AI의 턴";
+            panel.UpdateTurnUI(uiMessage);
         
-        // 타이머 UI 변경
-        UIManager.Instance.GamePanelController.UpdateTimerUI(_remainingSeconds);
+            // 타이머 UI 변경
+            panel.UpdateTimerUI(_remainingSeconds);
+        }
         
         _counterRoutine = StartCoroutine(CounterRoutine(newState));
     }

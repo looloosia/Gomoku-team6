@@ -29,7 +29,7 @@ public class RecordListPopup : BasePopup
 
         // 2. AccountManager에서 내 데이터 가져오기
         UserData me = AccountManager.Instance.CurrentUser;
-        if (me == null || me.replayList.Count == 0)
+        if (me == null || me.replayList == null || me.replayList.Count == 0)
             return;
 
         // 최신 데이터가 위로 오게 정렬 (리스트 뒤집기)
@@ -52,28 +52,29 @@ public class RecordListPopup : BasePopup
     {
         MySceneManager.Instance.LoadSceneWithCallback<ReplayBoard>("Record", (replayBoard) =>
         {
-            // replayBoard.onLoadReplayData(data.listReplayFrameData);
-            RecordPanelController reocordController = FindAnyObjectByType<RecordPanelController>();
+            // 1. 로직 스크립트(ReplayBoard)에 프레임 데이터 전달
+            replayBoard.onLoadReplayData?.Invoke(data.listRecordFrameData);
 
-            if (reocordController != null)
-        {
-            // 내 데이터 가져오기
-            UserData me = AccountManager.Instance.CurrentUser;
-            
-            // 데이터에 기록된 돌 색상 확인 (예: 내가 흑돌이었는지)
-            // (ReplaySaveData에 돌 색상 정보가 없다면 임시로 true/false 세팅)
-            // bool isMyStoneBlack = true; 
+            // 2. UI 세팅
+            RecordPanelController recordController = FindAnyObjectByType<RecordPanelController>();
 
-            // 우리가 만든 UI 함수에 데이터 꽂아주기!
-            // reocordController.SetupProfiles(
-            //     p1Name: data.player1Name, // 상대방 이름
-            //     p1Rank: "18급",            // (임시) 상대방 급수
-            //     p1IsBlack: !isMyStoneBlack, 
-            //     p2Name: me.nickname,      // 내 이름
-            //     p2Rank: $"{me.rank}급",   // 내 급수
-            //     p2IsBlack: isMyStoneBlack
-            // );
-        }
+            if (recordController != null)
+            {
+                UserData me = AccountManager.Instance.CurrentUser;
+                
+                // 데이터에 저장된 '내 돌 색상'이 흑돌인지 판별
+                bool isMyStoneBlack = (data.myStoneType == Constants.PlayerType.Black);
+
+                // UI 컨트롤러에 데이터 꽂아주기
+                recordController.SetupProfiles(
+                    p1Name: data.nickName,               // 상대방 닉네임
+                    p1Rank: $"{data.rank}급",            // 상대방 급수
+                    p1IsBlack: !isMyStoneBlack,          // 상대방 돌 색상 (내 돌의 반대)
+                    p2Name: me.nickname,                 // 내 닉네임
+                    p2Rank: $"{me.rank}급",              // 내 급수
+                    p2IsBlack: isMyStoneBlack            // 내 돌 색상
+                );
+            }
         });
     }
 }

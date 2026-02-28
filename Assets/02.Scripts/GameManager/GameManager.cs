@@ -11,16 +11,6 @@ using static Constants;
 public class GameManager : Singleton<GameManager>
 {
     private bool isStoneSelected = false;
-    // 캔버스
-    private Canvas _canvas;
-    
-    // private GamePanelController _gamePanelController;
-    
-    // Game Turn UI 업데이트
-    // public void SetGameTurn(Constants.PlayerType playerTurnType)
-    // {
-    //     _gamePanelController.SetPlayerTurnPanel(playerTurnType);
-    // }
     
     // 착수금지 표시 sprite
     [SerializeField]
@@ -35,8 +25,8 @@ public class GameManager : Singleton<GameManager>
     public Board Board => _board;
     
     // ForbiddenVisualizer
-    // private ForbiddensVisualizer _forbiddensVisualizer;
-    // public ForbiddensVisualizer ForbiddensVisualizer => _forbiddensVisualizer;
+    private ForbiddensVisualizer _forbiddensVisualizer;
+    public ForbiddensVisualizer ForbiddensVisualizer => _forbiddensVisualizer;
     
     // TurnStateManager
     private TurnStateManager _turnStateManager;
@@ -49,13 +39,6 @@ public class GameManager : Singleton<GameManager>
     // 게임의 플레이어 타입
     private PlayerType _gamePlayerType;
     public PlayerType GamePlayerType => _gamePlayerType;
-    
-    // 현재 턴 플레이어 타입
-    // private PlayerType _currentState;
-    // public PlayerType CurrentPlayerType =>
-    //     (_gameLogic?.CurrentState != null) 
-    //         ? _gameLogic.CurrentState.Type 
-    //         : PlayerType.None;
     
     // AI의 이름
     private string _aiName;
@@ -75,13 +58,6 @@ public class GameManager : Singleton<GameManager>
     
     protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log("GameManager: OnSceneLoad() 실행됨");
-        // 새로운 씬에서 Canvas 참조 가져오기
-        _canvas = FindFirstObjectByType<Canvas>();
-        
-        // TODO: 게임타입, 플레이어타입 설정기능 완성되면 설정된 대로 하게 수정
-        _gameType = GameType.LocalDualPlay;
-        
         // TODO: 돌 색상 선택되면 돌의 정보와 함께 유저 닉네임과 급수 인게임 메인 UI에 띄워야
         // 유저 정보는 DB에서 꺼내 쓰기
         // 프로필 이미지는 아직 구현안돼서 null처리
@@ -96,11 +72,6 @@ public class GameManager : Singleton<GameManager>
     {
         _turnStateManager = FindFirstObjectByType<TurnStateManager>();
         _board = FindFirstObjectByType<Board>();
-        
-        if (_canvas == null)
-        {
-            Debug.LogError("Canvas is null!");
-        }
             
         // TurnManager가 씬에 없을 경우 생성
         if (_turnStateManager == null)
@@ -113,7 +84,7 @@ public class GameManager : Singleton<GameManager>
                 instance.name = "TurnManager";
                 
                 _turnStateManager = instance.GetComponent<TurnStateManager>();
-                // _forbiddensVisualizer = instance.GetComponentInChildren<ForbiddensVisualizer>();
+                _forbiddensVisualizer = instance.GetComponentInChildren<ForbiddensVisualizer>();
 
                 if (_turnStateManager == null)
                 {
@@ -123,13 +94,8 @@ public class GameManager : Singleton<GameManager>
         }
         UIManager.Instance.OpenMarkerSelectPanel();
         
-        // TODO: 금수표시관련
-        // _forbiddensVisualizer = FindFirstObjectByType<ForbiddensVisualizer>();
-        //
-        // if (_forbiddensVisualizer != null)
-        // {
-        //     _forbiddensVisualizer.Init(forbiddenSprite, _gameLogic);
-        // }
+        // 금수표시관련
+        _forbiddensVisualizer = FindFirstObjectByType<ForbiddensVisualizer>();
     }
 
     // 씬 전환 (Game으로)
@@ -154,14 +120,24 @@ public class GameManager : Singleton<GameManager>
     // GomokuGameLogic 생성
     public void NewGameLogic(PlayerType playerType = PlayerType.None)
     {
+        if (_gameType != GameType.LocalDualPlay && _gameType != GameType.SinglePlay)
+        {
+            Debug.LogError("게임 타입 설정이 안 되어 SinglePlay로 설정. 현재 게임 타입: " + _gameType);
+            _gameType = GameType.SinglePlay;
+        }
         if (playerType != PlayerType.None)
         {
             Debug.Log("None이아님");
             _gamePlayerType = playerType;
         }
-            
         _gameLogic = new GomokuGameLogic(_gameType, _gamePlayerType, _board, _turnStateManager);
-        Debug.Log("<color=yellow>GameManager에서 GomokuGameLogic 생성함</color>");
+        Debug.Log($"<color=yellow>GameManager에서 GomokuGameLogic 생성함: {_gameType} gameType</color>");
+        
+        // 금수스크립트 Init
+        if (_forbiddensVisualizer != null)
+        {
+            _forbiddensVisualizer.Init(forbiddenSprite);
+        }
     }
 
     public void OnMarkerSelected(PlayerType finalType)

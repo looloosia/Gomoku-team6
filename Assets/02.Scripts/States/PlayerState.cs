@@ -15,20 +15,22 @@ public class PlayerState : BaseState
     // 한 턴이 시작될 때
     public override void OnEnter(GomokuGameLogic gameLogic)
     {
+        // Debug.Log("<color=red>OnEnter</color>");
         _gameLogic = gameLogic;
         _board = GameManager.Instance.Board;
-        // _forbiddensVisualizer = GameManager.Instance.ForbiddensVisualizer;
+        _forbiddensVisualizer = GameManager.Instance.ForbiddensVisualizer;
 
         _gameLogic.onBlockClicked = OnStonePlace;
         
         _gamePlayerType = GameManager.Instance.GamePlayerType;
         
-        // TODO: 흑돌일 경우 금수 표시
-        // if (_currentPlayerType == Constants.PlayerType.Black && _gamePlayerType == Constants.PlayerType.Black)
-        //     _forbiddensVisualizer.VisualizeForbiddens(_currentPlayerType);
-
-        // Turn UI 업데이트
-        // GameManager.Instance.SetGameTurn(_currentPlayerType);
+        // 흑돌일 경우 금수 표시
+        if (_currentPlayerType == Constants.PlayerType.Black && _gamePlayerType == Constants.PlayerType.Black)
+        {
+            _forbiddensVisualizer.VisualizeForbiddens(_currentPlayerType, gameLogic);
+        }
+        // TODO: Turn UI 업데이트?
+        // UIManager.Instance.SetGameTurn(_currentPlayerType);
     }
 
     public override void HandleNextTurn(GomokuGameLogic gameLogic)
@@ -44,6 +46,6 @@ public class PlayerState : BaseState
     // 한 턴이 끝날 때
     public override void OnExit(GomokuGameLogic gameLogic)
     { 
-        // _forbiddensVisualizer.ClearForbiddens();
+        _forbiddensVisualizer.ClearForbiddens();
     }
 }

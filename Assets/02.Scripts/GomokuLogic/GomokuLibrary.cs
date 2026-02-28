@@ -1,9 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 using static Constants;
+using static UnityEditor.PlayerSettings;
 //큐로 기보 가능할지도 (포지션, 돌 타입)
 
 
@@ -96,7 +97,7 @@ public static class GomokuLibrary
     public static Queue<Vector2Int> CheckForbiddenPostions(Constants.PlayerType[,] board, PlayerType playerType, int boardRange)
     {
 
-        Queue<Vector2Int> retQueue = new Queue<Vector2Int> ();
+        Queue<Vector2Int> retQueue = new Queue<Vector2Int>();
         for (int r = 0; r < boardRange; r++)
         {
             for (int c = 0; c < boardRange; c++)
@@ -129,7 +130,7 @@ public static class GomokuLibrary
         while (forbiddenPositions.Count > 0)
         {
             Vector2Int position = (Vector2Int)forbiddenPositions.Dequeue();
-            if (board[position[0], position[1]]!=PlayerType.Forbidden)
+            if (board[position[0], position[1]] != PlayerType.Forbidden)
             {
                 continue;
             }
@@ -227,7 +228,13 @@ public static class GomokuLibrary
         int bestScore = int.MinValue;
         int bestRow = -1, bestCol = -1;
 
+        
         HashSet<(int, int)> candidates = GetCandidateMoves(board, 0, boardRange);
+        
+        if (aiType == PlayerType.Black && candidates.Count==1)// 첫 시작은 7,7
+        {
+            return (7, 7);
+        }
 
         foreach ((int, int) pos in candidates)
         {
@@ -236,18 +243,26 @@ public static class GomokuLibrary
 
             if (board[row, col] == PlayerType.None) //빈 칸
             {
+
                 board[row, col] = aiType; //돌 놓아보고 미니맥스
+                int score = Minimax2(board, aiType, 1, true, int.MinValue, int.MaxValue, row, col, boardRange);
 
-                int score = Minimax2(board, aiType, 1, false, int.MinValue, int.MaxValue, row, col, boardRange);
-
+                
                 if (score > bestScore)
                 {
-                    Debug.Log($"besrRow: {row} bestCol: {col} bestScore: {score}");
+                    //if (IsForbidden(board, aiType, row, col, boardRange) != ForbiddenType.None || board[row, col] != PlayerType.None)
+                    //{
+                    //    board[row, col] = PlayerType.None;
+                    //    continue;
+                    //}
+                    //Debug.Log($"besrRow: {row} bestCol: {col} bestScore: {score}");
                     bestScore = score;
                     bestRow = row;
                     bestCol = col;
+                    
                 }
                 board[row, col] = PlayerType.None;//놓은 돌 초기화
+                
             }
         }
         return (bestRow, bestCol);
@@ -333,16 +348,60 @@ public static class GomokuLibrary
 
     public static int Minimax2(Constants.PlayerType[,] board, PlayerType aiType, int depth, bool isMaximizing, int alpha, int beta, int initRow, int initCol, int boardRange)
     {
-        if (depth == 3 /*|| IsGameOver(board)*/ ) //종료 조건: 최대 깊이 도달 혹은 게임 종료
-        {
-            int a = EvaluateScore(board, aiType, initRow, initCol, boardRange);
-            //Debug.Log($"{inRow} {inCol}: score: {a}");
-            return a;
-        }
-
         PlayerType otherPlayer = aiType == PlayerType.Black ? PlayerType.White : PlayerType.Black;
 
         HashSet<(int, int)> candidates = GetCandidateMoves(board, depth, boardRange); //한 칸 위 후보
+
+        if (depth == 3) //종료 조건: 최대 깊이 도달 혹은 게임 종료
+        {
+
+            bool isEnemyWin = false;
+            //for (int r= 0;r<15;r++)
+            //{
+            //    for(int c=0;c<15;c++)
+            //    {
+            //        if (board[r, c] == PlayerType.None)
+            //        {
+            //            board[r, c] = aiType;
+            //            isEnemyWin = CheckGomoku(board, aiType, r, c, boardRange);
+            //            Debug.Log($"상대: {aiType}: {r} {c}");
+            //            board[r, c] = PlayerType.None;
+
+            //            if (isEnemyWin)
+            //            {
+            //                break;
+            //            }
+            //        }
+            //    }
+            //}
+            foreach (var pos in candidates)
+            {
+                int r = pos.Item1;
+                int c = pos.Item2;
+                if (board[r, c] == PlayerType.None)
+                {
+                    board[r, c] = aiType;
+                    isEnemyWin = CheckGomoku(board, aiType, r, c, boardRange);
+                    board[r, c] = PlayerType.None;
+
+                    if (isEnemyWin)
+                    {
+                        //Debug.Log($"상대: {aiType}: {r} {c}");
+                        break;
+                    }
+                }
+            }
+            int finalScore = EvaluateScore(board, aiType, initRow, initCol, boardRange);
+
+            if (isEnemyWin)
+            {
+                finalScore += 10000;
+                //Debug.Log($"{initRow} {initCol}: FAILURE");
+            }
+            return finalScore;
+        }
+
+
 
         if (isMaximizing) //Maximizing하는 순서
         {
@@ -355,9 +414,11 @@ public static class GomokuLibrary
 
                 if (board[row, col] == PlayerType.None)
                 {
-                    AddCandidates(board, depth, row, col, 2); //현재 depth리스트에 한 칸 위 후보 + row, col주변 부 추가
-                    board[row, col] = aiType;   //TODO: 필요 시 보드 복제하는 코드로 대체하기
 
+                    board[row, col] = aiType;   //TODO: 필요 시 보드 복제하는 코드로 대체하기
+                    
+                    AddCandidates(board, depth, row, col, 2); //현재 depth리스트에 한 칸 위 후보 + row, col주변 부 추가
+                 
                     int score = Minimax2(board, otherPlayer, depth + 1, false, alpha, beta, initRow, initCol, boardRange);
 
                     maxScore = Math.Max(maxScore, score); // 최댓값 비교
@@ -370,9 +431,7 @@ public static class GomokuLibrary
                     {
                         break;
                     }
-
                 }
-
             }
             return maxScore;
         }
@@ -387,8 +446,8 @@ public static class GomokuLibrary
 
                 if (board[row, col] == PlayerType.None)
                 {
-                    AddCandidates(board, depth, row, col, 2); //현재 depth리스트에 한 칸 위 후보 + row, col주변 부 추가
                     board[row, col] = otherPlayer;
+                    AddCandidates(board, depth, row, col, 2); //현재 depth리스트에 한 칸 위 후보 + row, col주변 부 추가
                     int score = Minimax2(board, aiType, depth + 1, true, alpha, beta, initRow, initCol, boardRange);
 
                     minScore = Math.Min(minScore, score);
@@ -450,7 +509,7 @@ public static class GomokuLibrary
         }
 
         // 만약 판이 비어있다면 중앙점 반환
-        if (candidates.Count == 0)
+        if (candidates2.Count == 0)
         {
             candidates2.Add((boardRange / 2, boardRange / 2));
         }
@@ -479,7 +538,6 @@ public static class GomokuLibrary
                     continue;
                 else
                 {
-                    visited[r, c] = true;
                     //candidatesList[depth].Add((r, c));
                     candidatesByDepth[depth].Add((r, c));
                 }

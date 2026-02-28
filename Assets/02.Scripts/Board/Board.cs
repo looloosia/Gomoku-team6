@@ -94,6 +94,10 @@ public class Board : MonoBehaviour
 
             if (clickedBlock != null)
             {
+                if(clickedBlock.GetBlockData().markerType !=PlayerType.None)
+                {
+                    return;
+                }
                 if (this.currentBlock != null)
                     this.currentBlock.ResetStone();
 

@@ -111,11 +111,10 @@ public class GomokuGameLogic
             CheckForbiddenPostions(virtualBoard, currentState.Type, BOARD_SIZE);
 
 
-        if (isStart)
-        {
-            gomokuBoard.UpdateBlock(virtualBoard);
-            isStart = true;
-        }
+
+        gomokuBoard.UpdateBlock(virtualBoard);
+        isStart = true;
+        
 
         turnStateManager.SetState(newState);
     }
@@ -175,17 +174,9 @@ public class GomokuGameLogic
             ConfirmPopup popup = UIManager.Instance.OpenConfirmPopup();
             popup.Show(colorOfWinner + "승리!", "오목을 완성하여 승리하였습니다.", "", null, "확인", () =>
             {
-                GameManager.Instance.ChangeToMainScene();
+                GameManager.Instance.ChangeToLobbyScene();
             });
-            //if (playerState == playerAState)
-            //{
-                
-            //}
-            //else
-            //{
-            //    Debug.Log("B 승리");
-            //    Debug.Log("A 패배");
-            //}
+
         }
 
         else if (gameResult == Constants.GameResult.Lose) //패배(시간 초과 등)
@@ -195,24 +186,12 @@ public class GomokuGameLogic
             ConfirmPopup popup = UIManager.Instance.OpenConfirmPopup();
             popup.Show(colorOfWinner+" 승리!", "상대가 시간 내에 착수하지 못해 승리하였습니다.", "", null, "확인", () =>
             {
-                GameManager.Instance.ChangeToMainScene();
+                GameManager.Instance.ChangeToLobbyScene();
             });
 
-            //if (playerState == playerAState)
-            //{
-                
-
-            //    Debug.Log("B 승리");
-            //    Debug.Log("A 패배");
-            //}
-            //else
-            //{
-            //    Debug.Log("A 승리");
-            //    Debug.Log("B 패배");
-            //}
         }
 
-        //TurnStateManager에서 아예 다 꺼버리는 함수 호출
+
         turnStateManager.onEndGame -= EndGame;
         //Board의 Action 해제.
 
@@ -229,63 +208,3 @@ public class GomokuGameLogic
     //    return ForbiddenType.None;
     //}
 }
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///
-//public class DemoBaseState
-//{
-//    private PlayerType playerType;
-//    public PlayerType Type { get { return playerType; }}
-
-//    public DemoBaseState(PlayerType playerType)
-//    {
-//        this.playerType = playerType;
-//        Debug.Log(playerType+"생성");
-
-//    }
-//    public  void OnEnter(GomokuGameLogic gameLogic)
-//    {
-//        gameLogic.demoCounter--;
-//        if (gameLogic.demoCounter ==0)
-//        {
-//            //gameLogic.EndGame(this);
-//            return;
-//        }
-
-//        Debug.Log($"{this} turn Enter");
-//    }
-//    public void HandleMove(GomokuGameLogic gameLogic, int index)
-//    {
-//        Debug.Log("HandleMove");
-
-//    }
-//    public void OnExit(GomokuGameLogic gameLogic)
-//    {
-//        Debug.Log("OnExit");
-//    }
-//    public void HandleNextTurn(GomokuGameLogic gameLogic)
-//    {
-//        Debug.Log("HandleNextTurn");
-//        gameLogic.ChangeGameState();
-
-//    }
-
-//    public void ProcessMove(GomokuGameLogic gameLogic, Constants.PlayerType playerType, int inRow, int inCol)
-//    {
-//        Debug.Log("ProcessMove");
-//        //룰 확인
-//        if (gameLogic.PlaceMarker(playerType, inRow, inCol))
-//        {
-//            Constants.GameResult gameResult = gameLogic.CheckGameResult(playerType, inRow, inCol);
-
-//            if (gameResult == Constants.GameResult.None)
-//            {
-//                HandleNextTurn(gameLogic);
-//            }
-//            else
-//            {
-//                gameLogic.EndGame(this, gameResult);
-//            }
-//        }
-//    }
-
-//}

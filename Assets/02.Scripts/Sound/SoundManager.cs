@@ -1,24 +1,27 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public enum BGM
 {
+    //background_music,
     COUNT
 }
 
 public enum SFX
 {
     baduck_button_click,
+    징소리E,
     COUNT
 }
 
 
 public class SoundManager : Singleton<SoundManager>
 {
-    [SerializeField] private GameObject soundPanelPrefab;
-    private SoundPanelController soundPanelController;
+    //[SerializeField] private GameObject soundPanelPrefab;
+    // private SoundPanelController soundPanelController;
 
     private const string SOUND_PATH = "Sound";
 
@@ -37,20 +40,20 @@ public class SoundManager : Singleton<SoundManager>
 
     void Start()
     {
-        soundPanelController = Instantiate(soundPanelPrefab, transform).GetComponent<SoundPanelController>();
+        //soundPanelController = Instantiate(soundPanelPrefab, transform).GetComponent<SoundPanelController>();
 
         /*순서문제 생길 수 있는 코드*/
-        foreach (var audio in m_BGMPlayer)
-        {
-            soundPanelController.bgmVolume.value = audio.Value.volume;
-            soundPanelController.bgmMute.isOn = audio.Value.mute;
-        }
+        //foreach (var audio in m_BGMPlayer)
+        //{
+        //    soundPanelController.bgmVolume.value = audio.Value.volume;
+        //    soundPanelController.bgmMute.isOn = audio.Value.mute;
+        //}
 
-        foreach (var audio in m_SFXPlayer)
-        {
-            soundPanelController.eventVolume.value = audio.Value.volume;
-            soundPanelController.eventMute.isOn = audio.Value.mute;
-        }
+        //foreach (var audio in m_SFXPlayer)
+        //{
+        //    soundPanelController.eventVolume.value = audio.Value.volume;
+        //    soundPanelController.eventMute.isOn = audio.Value.mute;
+        //}
         ////////////////////////////////////////////////////////////////
 
         //연결 후, AddListener에 연결
@@ -58,16 +61,47 @@ public class SoundManager : Singleton<SoundManager>
 
     }
 
-    void ConnectToUI()
+    public float GetSFXVolume()
     {
-        soundPanelController.bgmVolume.onValueChanged.AddListener(BGMVolume);
-        soundPanelController.eventVolume.onValueChanged.AddListener(SFXVolume);
+        float volume = 0.5f;
+        foreach (var audio in m_SFXPlayer)
+        {
+            volume = audio.Value.volume;
 
-        soundPanelController.bgmMute.onValueChanged.AddListener(BGMMute);
-        soundPanelController.eventMute.onValueChanged.AddListener(SFXMute);
+        }
+        return volume;
+
     }
 
-    
+    public float GetBGMVolume()
+    {
+        float volume = 0.5f;
+        foreach (var audio in m_BGMPlayer)
+        {
+            volume = audio.Value.volume;
+        }
+        return volume;
+
+    }
+    public bool IsSoundMute()
+    {
+        bool isMute = false;
+        foreach (var audio in m_BGMPlayer)
+        {
+            isMute = audio.Value.mute;
+        }
+        return isMute;
+    }
+    void ConnectToUI()
+    {
+        // soundPanelController.bgmVolume.onValueChanged.AddListener(BGMVolume);
+        // soundPanelController.eventVolume.onValueChanged.AddListener(SFXVolume);
+
+        //soundPanelController.bgmMute.onValueChanged.AddListener(BGMMute);
+        //soundPanelController.eventMute.onValueChanged.AddListener(SFXMute);
+    }
+
+
 
     //BGM파일 로드
     private void LoadBGMPlayer()
@@ -77,10 +111,10 @@ public class SoundManager : Singleton<SoundManager>
             var audioName = ((BGM)i).ToString();
             var pathStr = $"{SOUND_PATH}/BGM/{audioName}";
             var audioClip = Resources.Load(pathStr, typeof(AudioClip)) as AudioClip;
-
+            Debug.Log(pathStr);
             if (!audioClip)
             {
-                Debug.LogError($"{audioClip} clip does not exist.");
+                Debug.LogError($"{audioClip} clip does not exist.LoadBGMPlayer");
                 continue;
             }
 
@@ -88,9 +122,9 @@ public class SoundManager : Singleton<SoundManager>
             var newaudioSource = newGo.AddComponent<AudioSource>();
             newaudioSource.clip = audioClip;
             newaudioSource.loop = true;
-            newaudioSource.playOnAwake = false; 
-            
+            newaudioSource.playOnAwake = false;
             newGo.transform.SetParent(this.transform);
+
             m_BGMPlayer[(BGM)i] = newaudioSource;
         }
     }
@@ -115,7 +149,7 @@ public class SoundManager : Singleton<SoundManager>
             newAudioSource.loop = false;
             newAudioSource.playOnAwake = false;
             newGo.transform.SetParent(this.transform);
- 
+
             m_SFXPlayer[(SFX)i] = newAudioSource;
         }
 
@@ -129,7 +163,7 @@ public class SoundManager : Singleton<SoundManager>
             m_CurrBGMSource = null;
         }
 
-        if (m_BGMPlayer.ContainsKey(bgm))
+        if (!m_BGMPlayer.ContainsKey(bgm))
         {
             Debug.LogError($"Invalid clip name.{bgm}");
             return;
@@ -164,7 +198,6 @@ public class SoundManager : Singleton<SoundManager>
 
         m_SFXPlayer[sfx].Play();
     }
-
     public void BGMMute(bool isMute)
     {
         foreach (var audioSourceItem in m_BGMPlayer)
@@ -184,7 +217,7 @@ public class SoundManager : Singleton<SoundManager>
     }
 
 
-    private void BGMVolume(float volume)
+    public void BGMVolume(float volume)
     {
         foreach (var audioSourceItem in m_BGMPlayer)
         {
@@ -192,7 +225,7 @@ public class SoundManager : Singleton<SoundManager>
         }
     }
 
-    private void SFXVolume(float volume)
+    public void SFXVolume(float volume)
     {
         foreach (var audioSourceItem in m_SFXPlayer)
         {
@@ -202,7 +235,7 @@ public class SoundManager : Singleton<SoundManager>
 
     protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
     {
-        Debug.LogWarning($"SFX소스 개수: " + m_SFXPlayer.Count);
+
     }
 }
 

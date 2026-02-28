@@ -102,11 +102,6 @@ public class GomokuGameLogic
         currentState = newState;
         currentState?.OnEnter(this);    //새로운 스테이트 시작
 
-        if (isStart)
-        {
-            gomokuBoard.UpdateBlock();
-            isStart = true;
-        }
         Debug.Log($"{currentState.Type}: CURRENTONENTER");
         gomokuBoard.SetCurrentStone(currentState.Type);
 
@@ -114,6 +109,13 @@ public class GomokuGameLogic
         ClearForbiddenPositionCheck(virtualBoard);
         if (currentState.Type == PlayerType.Black)
             CheckForbiddenPostions(virtualBoard, currentState.Type, BOARD_SIZE);
+
+
+        if (isStart)
+        {
+            gomokuBoard.UpdateBlock(virtualBoard);
+            isStart = true;
+        }
 
         turnStateManager.SetState(newState);
     }
@@ -164,32 +166,50 @@ public class GomokuGameLogic
     public void EndGame(BaseState playerState, Constants.GameResult gameResult)
     {
 
+        string colorOfWinner = "";
+
         if (gameResult == Constants.GameResult.Win) //승리
         {
-            if (playerState == playerAState)
+            colorOfWinner = playerState.Type == PlayerType.Black ? "흑" : "백"; //승리자 색
+
+            ConfirmPopup popup = UIManager.Instance.OpenConfirmPopup();
+            popup.Show(colorOfWinner + "승리!", "오목을 완성하여 승리하였습니다.", "", null, "확인", () =>
             {
-                Debug.Log("A 승리");
-                Debug.Log("B 패배");
-            }
-            else
-            {
-                Debug.Log("B 승리");
-                Debug.Log("A 패배");
-            }
+                GameManager.Instance.ChangeToMainScene();
+            });
+            //if (playerState == playerAState)
+            //{
+                
+            //}
+            //else
+            //{
+            //    Debug.Log("B 승리");
+            //    Debug.Log("A 패배");
+            //}
         }
 
         else if (gameResult == Constants.GameResult.Lose) //패배(시간 초과 등)
         {
-            if (playerState == playerAState)
+            colorOfWinner = playerState.Type == PlayerType.Black ? "백" : "흑"; //패배자의 상태 반대 색
+
+            ConfirmPopup popup = UIManager.Instance.OpenConfirmPopup();
+            popup.Show(colorOfWinner+" 승리!", "상대가 시간 내에 착수하지 못해 승리하였습니다.", "", null, "확인", () =>
             {
-                Debug.Log("B 승리");
-                Debug.Log("A 패배");
-            }
-            else
-            {
-                Debug.Log("A 승리");
-                Debug.Log("B 패배");
-            }
+                GameManager.Instance.ChangeToMainScene();
+            });
+
+            //if (playerState == playerAState)
+            //{
+                
+
+            //    Debug.Log("B 승리");
+            //    Debug.Log("A 패배");
+            //}
+            //else
+            //{
+            //    Debug.Log("A 승리");
+            //    Debug.Log("B 패배");
+            //}
         }
 
         //TurnStateManager에서 아예 다 꺼버리는 함수 호출

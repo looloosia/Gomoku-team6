@@ -17,6 +17,9 @@ public class Block : MonoBehaviour
     private Sprite blackStone;
     [SerializeField]
     private Sprite standbyBlackStone;
+    //ÀÌ½Â¿ø
+    [SerializeField]
+    private Sprite forbiddenStone;
 
     private void SetStone(PlayerType markerType)
     {
@@ -28,6 +31,10 @@ public class Block : MonoBehaviour
                 break;
             case PlayerType.Black:
                 this.stone.sprite = this.blackStone;
+                break;
+                //ÀÌ½Â¿ø
+            case PlayerType.Forbidden:
+                this.stone.sprite = this.forbiddenStone;
                 break;
             case PlayerType.None:
                 this.stone.sprite = null;
@@ -73,6 +80,11 @@ public class Block : MonoBehaviour
     public void SetBlackStone()
     {
         SetStone(PlayerType.Black);
+    }
+    //ÀÌ½Â¿ø
+    public void SetForbiddenStone()
+    {
+        SetStone(PlayerType.Forbidden);
     }
     public void UpdateBlock()
     {

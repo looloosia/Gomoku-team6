@@ -156,3 +156,4 @@ MonoBehaviour:
   standbyWhiteStone: {fileID: 9185100545972174240, guid: 2fb990d3e12091b47a6fa0aed324fa5d, type: 3}
   blackStone: {fileID: -824027187401283259, guid: 4bb33df469e3e3842a56a55d28f6b048, type: 3}
   standbyBlackStone: {fileID: -824027187401283259, guid: 67e685ea9f8c92f43922e5b8eafc5eeb, type: 3}
+  forbiddenStone: {fileID: 6383278143045528611, guid: e3a83ca4b77bc28419e15009db374654, type: 3}

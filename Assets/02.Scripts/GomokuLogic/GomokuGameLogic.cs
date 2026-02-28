@@ -142,6 +142,7 @@ public class GomokuGameLogic
     public void ChangeGameState()
     {
 
+        SoundManager.Instance.PlaySFX(SFX.baduck_button_click);
         if (currentState == playerAState)
         {
             SetState(playerBState);

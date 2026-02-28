@@ -24,10 +24,6 @@ public class GameManager : Singleton<GameManager>
     private Board _board;
     public Board Board => _board;
     
-    // ForbiddenVisualizer
-    private ForbiddensVisualizer _forbiddensVisualizer;
-    public ForbiddensVisualizer ForbiddensVisualizer => _forbiddensVisualizer;
-    
     // TurnStateManager
     private TurnStateManager _turnStateManager;
     public TurnStateManager TurnStateManager => _turnStateManager;
@@ -84,7 +80,6 @@ public class GameManager : Singleton<GameManager>
                 instance.name = "TurnManager";
                 
                 _turnStateManager = instance.GetComponent<TurnStateManager>();
-                _forbiddensVisualizer = instance.GetComponentInChildren<ForbiddensVisualizer>();
 
                 if (_turnStateManager == null)
                 {
@@ -93,9 +88,6 @@ public class GameManager : Singleton<GameManager>
             }
         }
         UIManager.Instance.OpenMarkerSelectPanel();
-        
-        // 금수표시관련
-        _forbiddensVisualizer = FindFirstObjectByType<ForbiddensVisualizer>();
     }
 
     // 씬 전환 (Game으로)
@@ -132,12 +124,6 @@ public class GameManager : Singleton<GameManager>
         }
         _gameLogic = new GomokuGameLogic(_gameType, _gamePlayerType, _board, _turnStateManager);
         Debug.Log($"<color=yellow>GameManager에서 GomokuGameLogic 생성함: {_gameType} gameType</color>");
-        
-        // 금수스크립트 Init
-        if (_forbiddensVisualizer != null)
-        {
-            _forbiddensVisualizer.Init(forbiddenSprite);
-        }
     }
 
     public void OnMarkerSelected(PlayerType finalType)

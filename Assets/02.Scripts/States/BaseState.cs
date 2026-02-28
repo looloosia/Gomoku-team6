@@ -10,7 +10,7 @@ public abstract class BaseState
     public  Constants.ControllerType ControllerType => _controllerType;
 
     protected Board _board;
-    // protected ForbiddensVisualizer _forbiddensVisualizer;
+    protected ForbiddensVisualizer _forbiddensVisualizer;
 
     protected BaseState(Constants.PlayerType playerType, Constants.ControllerType controllerType)
     {

@@ -9,89 +9,67 @@ using UnityEngine;
 public class ForbiddensVisualizer : MonoBehaviour
 {
     private Dictionary<(int, int), Block> _dicBlocks = new Dictionary<(int, int), Block>();
-    
-    private Sprite _forbiddenSprite;
-    private Constants.PlayerType[,] _board;
+    private Constants.PlayerType[,] _virtualBoard;
     
     GomokuGameLogic _gameLogic;
-    Dictionary<(int, int), SpriteRenderer> _spriteRenderers = new Dictionary<(int, int), SpriteRenderer>();
     
     // 이 초기화 함수는 Board.cs의 Awake() 이후에 호출되어야 함.
-    public void Init(Sprite forbiddenSprite, GomokuGameLogic gameLogic)
+    public void Init(Sprite forbiddenSprite)
     {
-        _gameLogic = gameLogic;
-        if (_gameLogic == null)
+        _virtualBoard = GameManager.Instance.GameLogic.VirtualBoard;
+        if (_virtualBoard == null)
         {
-            Debug.Log("A: _gameLogic is null");
-        }
-
-        if (_board == null)
-        {
-            Debug.Log("B: _board is null");
-        }
-        //_board = _gameLogic.VirtualBoard;
-        
-        // TODO: Board.cs의 dicBlocks를 프로퍼티를 통해 가져오기
-        // _dicBlocks = GameManager.Instance.Board.DicBlocks;
-        
-        _spriteRenderers = GetSpriteRenderers();
-        _forbiddenSprite = forbiddenSprite;
-    }
-
-    private Dictionary<(int, int), SpriteRenderer> GetSpriteRenderers()
-    {
-        if (_dicBlocks == null || _dicBlocks.Count == 0)
-        {
-            return new Dictionary<(int, int), SpriteRenderer>();
+            Debug.LogError("ForbiddenVisualizer: _board is null");
         }
         
-        Dictionary<(int, int), SpriteRenderer> spriteRenderers = new Dictionary<(int, int), SpriteRenderer>();
-        foreach (var dicBlock in _dicBlocks)
-        {
-            int row = dicBlock.Key.Item2;
-            int col = dicBlock.Key.Item1;
-            Block block = dicBlock.Value;
-            spriteRenderers[(row, col)] = block.gameObject.GetComponent<SpriteRenderer>();
-        }
-        return spriteRenderers;
+        _dicBlocks = GameManager.Instance.Board.DicBlocks;
     }
 
     // 금수 표시 기능
-    public void VisualizeForbiddens(Constants.PlayerType currPlayerType)
+    public void VisualizeForbiddens(Constants.PlayerType currPlayerType, GomokuGameLogic gameLogic)
     {
-        
-        if (_spriteRenderers == null || _spriteRenderers.Count == 0)
+        _virtualBoard = gameLogic.VirtualBoard;
+        if (_virtualBoard == null)
         {
-            Debug.Log("<color=yellow>Cannot visualize forbiddens because _spriteRenderers is empty</color>");
+            Debug.LogError("ForbiddenVisualizer: _virtualBoard is null");
             return;
         }
-        
+        if (_dicBlocks == null || _dicBlocks.Count == 0)
+        {
+            if (GameManager.Instance.Board != null)
+            {
+                _dicBlocks = GameManager.Instance.Board.DicBlocks;
+            }
+            if (_dicBlocks == null)
+            {
+                Debug.LogError("ForbiddenVisualizer: _dicBlocks is null");
+                return;
+            }
+        }
         foreach (var dicBlock in _dicBlocks)
         {
-            int row = dicBlock.Key.Item2;
-            int col = dicBlock.Key.Item1;
-            
-            if (_board[row, col] != Constants.PlayerType.None)
+            int row = dicBlock.Key.Item1;
+            int col = dicBlock.Key.Item2;
+
+            if (_virtualBoard[row, col] != Constants.PlayerType.None)
             {
                 continue;
             }
-            // if (GomokuLibrary.IsForbidden(_gameLogic.VirtualBoard, currPlayerType, row,
-            //         col, Constants.BOARD_SIZE) != Constants.ForbiddenType.None)
-            // {
-            //     _spriteRenderers[(row, col)].sprite = _forbiddenSprite;
-            // }
+
+            if (GomokuLibrary.IsForbidden(gameLogic.VirtualBoard, currPlayerType, row,
+                    col, Constants.BOARD_SIZE) != Constants.ForbiddenType.None)
+            {
+                dicBlock.Value.SetForbiddenStone();
+            }
         }
     }
-    
+
     // 금수 표시 초기화 기능
     public void ClearForbiddens()
     {
-        if (_spriteRenderers == null)
-            return;
-        
-        foreach (var pair in _spriteRenderers)
+        foreach (var pair in _dicBlocks.Values)
         {
-            pair.Value.sprite = null;
+            pair.ResetStone();
         }
     }
 }

@@ -22,11 +22,12 @@ public class Board : MonoBehaviour
     [SerializeField]
     private PlayerType currentType;
 
-    //Âø¼ö ºí·°
+    //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
     private Block currentBlock;
 
-    //key: ºí·° À§Ä¡(row, col)
+    //key: ï¿½ï¿½ ï¿½ï¿½Ä¡(row, col)
     private Dictionary<(int, int), Block> dicBlocks = new Dictionary<(int, int), Block>();
+    public Dictionary<(int, int), Block> DicBlocks =>  this.dicBlocks;
     
     private List<ReplayFrameData> listReplayFrame = new List<ReplayFrameData>();
 
@@ -133,7 +134,7 @@ public class Board : MonoBehaviour
 
         this.currentBlock = null;
 
-        //ÀúÀå
+        //ï¿½ï¿½ï¿½ï¿½
         SaveReplayFrame();
     }
     private void Return()
@@ -151,22 +152,22 @@ public class Board : MonoBehaviour
         
         ReplaySaveData data = new ReplaySaveData
         {
-            // [ÆÄÀÏ ÀÌ¸§]
+            // [ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½]
             listRecordFrameData = this.listReplayFrame,
             recordName = DateTime.Now.ToString("yy-MM-dd_HH-mm-ss"),
 
-            // [³¯Â¥]
+            // [ï¿½ï¿½Â¥]
             date = DateTime.Now.ToString("yyyy-MM-dd"),
             time = DateTime.Now.ToString("HH:mm"),
 
-            // [°ÔÀÓ Á¾·ù]
+            // [ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½]
             gameType = GameType.SinglePlay, 
 
-            // [»ó´ë¹æ Á¤º¸]
-            nickName = "",              // »ó´ë¹æ ´Ð³×ÀÓ
-            rank = "",                   // »ó´ë¹æ ±Þ¼ö
+            // [ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½]
+            nickName = "",              // ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½ï¿½ï¿½
+            rank = "",                   // ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¼ï¿½
 
-            // [°á°ú ¹× Åë°è]
+            // [ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½]
             result = GameResult.None,         
             resultType = GameResultType.None, 
 
@@ -182,7 +183,7 @@ public class Board : MonoBehaviour
         string filePath = folderPath + $"/Replay_{fileName}.json";
         File.WriteAllText(filePath, json);
 
-        Debug.Log("ÆÄÀÏ ÀúÀå ¿Ï·á! °æ·Î: " + filePath);
+        Debug.Log("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½! ï¿½ï¿½ï¿½: " + filePath);
     }
     private void SaveReplayFrame()
     {

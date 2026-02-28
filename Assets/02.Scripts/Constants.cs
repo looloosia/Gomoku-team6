@@ -9,7 +9,7 @@ public static class Constants
 
     public const int BOARD_SIZE = 15;
 
-    public const int TIME_LIMIT = 5;
+    public const int TIME_LIMIT = 30;
     public enum GameType { SinglePlay, LocalDualPlay /*, MultiDualPlay*/ }
     public enum PlayerType { None, Black, White, Forbidden }
 

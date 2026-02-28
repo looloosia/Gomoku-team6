@@ -13,10 +13,13 @@ namespace _02.Scripts.States
         public override void OnEnter(GomokuGameLogic gameLogic)
         {
             //GameManager.Instance.SetGameTurn(_currentPlayerType);
+            
             (int, int)? bestMove = GomokuLibrary.GetBestMove(gameLogic.VirtualBoard, _currentPlayerType, 15);
-            Debug.Log("AI: " + bestMove);
+            Debug.Log("OnEnter AI: " + bestMove);
+            
             if (bestMove.HasValue)
             {
+
                 HandleMove(gameLogic, bestMove.Value.Item1, bestMove.Value.Item2);
             }
         }

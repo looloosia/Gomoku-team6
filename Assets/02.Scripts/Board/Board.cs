@@ -58,9 +58,8 @@ public class Board : MonoBehaviour
     {
         this.currentType = type;
     }
-    public void UpdateBlock()
+    public void UpdateBlock(PlayerType[,] virtualBoard)
     {
-        PlayerType[,] virtualBoard = GameManager.Instance.GameLogic.VirtualBoard;
         int rows = virtualBoard.GetLength(0);
         int cols = virtualBoard.GetLength(1);
 
@@ -95,6 +94,10 @@ public class Board : MonoBehaviour
 
             if (clickedBlock != null)
             {
+                if(clickedBlock.GetBlockData().markerType !=PlayerType.None)
+                {
+                    return;
+                }
                 if (this.currentBlock != null)
                     this.currentBlock.ResetStone();
 

@@ -31,7 +31,7 @@ public class ReplayBoard : MonoBehaviour
     }
     
     private void SetReplayData(List<ReplayFrameData> frameData)
-    {
+    { 
         this.listRecordFrame = frameData;
     }
     private void SetBoardFromReplayData(ReplayFrameData frameData)

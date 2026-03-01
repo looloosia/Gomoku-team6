@@ -13,7 +13,7 @@ public class ReplayBoard : MonoBehaviour
     private RecordPanelController recordPanelCR;
 
 
-    //key: ºí·° À§Ä¡(row, col)
+    //key: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡(row, col)
     private Dictionary<(int, int), Block> dicBlocks = new Dictionary<(int, int), Block>();
 
     private List<ReplayFrameData> listRecordFrame = new List<ReplayFrameData>();
@@ -82,7 +82,7 @@ public class ReplayBoard : MonoBehaviour
         if (this.listRecordFrame == null || this.listRecordFrame.Count == 0)
             return;
 
-        this.currentReplayframe = 0; // ÀÎµ¦½º¸¦ 0À¸·Î ÃÊ±âÈ­
+        this.currentReplayframe = 0; // ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
         ReplayFrameData frameToPlay = this.listRecordFrame[this.currentReplayframe];
         SetBoardFromReplayData(frameToPlay);
     }
@@ -91,7 +91,7 @@ public class ReplayBoard : MonoBehaviour
         if (this.listRecordFrame == null || this.listRecordFrame.Count == 0)
             return;
 
-        this.currentReplayframe = this.listRecordFrame.Count - 1; // ÀÎµ¦½º¸¦ ¸¶Áö¸·À¸·Î ¼³Á¤
+        this.currentReplayframe = this.listRecordFrame.Count - 1; // ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         ReplayFrameData frameToPlay = this.listRecordFrame[this.currentReplayframe];
         SetBoardFromReplayData(frameToPlay);
     }

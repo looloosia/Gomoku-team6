@@ -194,11 +194,8 @@ public class AccountManager
     {
         if (CurrentUser == null) return;
 
-        // 현재 로그인한 유저의 기보 리스트에 데이터 추가
         CurrentUser.replayHistory.Add(replayData);
-
-        // Repository를 통해 PlayerPrefs에 즉시 덮어쓰기(저장)
-        repository.Save(CurrentUser);
+        repository.Save(CurrentUser); // 로컬 영구 저장!
         
         Debug.Log("기보 데이터가 성공적으로 로컬에 저장되었습니다.");
     }

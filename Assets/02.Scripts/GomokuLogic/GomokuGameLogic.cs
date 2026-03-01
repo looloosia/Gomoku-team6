@@ -49,7 +49,7 @@ public class GomokuGameLogic
         }
 
         PlayerType otherPlayerType = playerType == PlayerType.Black ? PlayerType.White : PlayerType.Black; //상대방 타입(멀티플레이일 경우 게스트)
-
+        SoundManager.Instance.PlaySFX(SFX.징소리E);
         //TODO: stoneonclick에서 쏠 액션을 받을 함수 연결, (state가 연결할 함수)
 
         switch (gameType)
@@ -142,6 +142,7 @@ public class GomokuGameLogic
     public void ChangeGameState()
     {
 
+        SoundManager.Instance.PlaySFX(SFX.baduck_button_click);
         if (currentState == playerAState)
         {
             SetState(playerBState);
@@ -164,7 +165,7 @@ public class GomokuGameLogic
     }
     public void EndGame(BaseState playerState, Constants.GameResult gameResult)
     {
-
+        SoundManager.Instance.PlaySFX(SFX.징소리E);
         string colorOfWinner = "";
 
         if (gameResult == Constants.GameResult.Win) //승리
@@ -172,7 +173,7 @@ public class GomokuGameLogic
             colorOfWinner = playerState.Type == PlayerType.Black ? "흑" : "백"; //승리자 색
 
             ConfirmPopup popup = UIManager.Instance.OpenConfirmPopup();
-            popup.Show(colorOfWinner + "승리!", "오목을 완성하여 승리하였습니다.", "", null, "확인", () =>
+            popup.Show(colorOfWinner + " 승리!", "오목을 완성하여 승리하였습니다.", "", null, "확인", () =>
             {
                 GameManager.Instance.ChangeToLobbyScene();
             });

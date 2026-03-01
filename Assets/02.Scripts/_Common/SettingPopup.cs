@@ -11,10 +11,17 @@ public class SettingPopup : BasePopup
     protected override void Init()
     {
         base.Init();
-        bgmSlider.onValueChanged.AddListener(OnBgmVolumeChanged);
-        sfxSlider.onValueChanged.AddListener(OnSfxVolumeChanged);
 
-        muteToggle.onValueChanged.AddListener(OnMuteToggled);
+        bgmSlider.value = SoundManager.Instance.GetBGMVolume();
+        sfxSlider.value = SoundManager.Instance.GetSFXVolume();
+
+        muteToggle.isOn = SoundManager.Instance.IsSoundMute();
+
+        bgmSlider.onValueChanged.AddListener(SoundManager.Instance.BGMVolume);
+        sfxSlider.onValueChanged.AddListener(SoundManager.Instance.SFXVolume);
+
+        muteToggle.onValueChanged.AddListener(SoundManager.Instance.BGMMute);
+        muteToggle.onValueChanged.AddListener(SoundManager.Instance.SFXMute);
     }
 
     private void OnBgmVolumeChanged(float volume)

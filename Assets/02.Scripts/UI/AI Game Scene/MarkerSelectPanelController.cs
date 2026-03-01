@@ -36,9 +36,10 @@ public class MarkerSelectPanelController : MonoBehaviour
             finalType = (PlayerType)choice;
 
         bool isPlayerBlack = (finalType == PlayerType.Black);
-        UserData me = AccountManager.Instance.CurrentUser;
 
+        UserData me = AccountManager.Instance.CurrentUser;
         GamePanelController gamePanel = FindFirstObjectByType<GamePanelController>();
+        
         if (gamePanel != null && me != null)
         {
             gamePanel.SetupPlayerProfile(me.nickname, $"{me.rank}급", isPlayerBlack, null);

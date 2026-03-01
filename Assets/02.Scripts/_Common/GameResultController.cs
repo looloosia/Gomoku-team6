@@ -15,15 +15,17 @@ public class GameResultController : MonoBehaviour
         ConfirmPopup popup = UIManager.Instance.OpenConfirmPopup();
         popup.Show("기보 저장", "대국 결과를 저장하시겠습니까?", 
             "취소", () => { GameManager.Instance.ChangeToLobbyScene(); }, 
-            "저장", () => OnClickSaveRecord(recordToSave)
+            "저장", () => 
+            {
+                AccountManager.Instance.AddReplayDataAndSave(recordToSave);
+                ShowSaveCompletePopup();
+            }
         );
     }
 
     // 3. 실제 저장 처리
-    private void OnClickSaveRecord(ReplaySaveData recordToSave)
+    private void ShowSaveCompletePopup()
     {
-        AccountManager.Instance.AddReplayDataAndSave(recordToSave);
-
         ConfirmPopup popup = UIManager.Instance.OpenConfirmPopup();
         popup.Show("", "대국 결과가 저장되었습니다.", "", null, "확인", () => { GameManager.Instance.ChangeToLobbyScene(); });
     }

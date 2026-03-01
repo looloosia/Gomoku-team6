@@ -117,7 +117,6 @@ public class Board : MonoBehaviour
         this.panel.OnConfirmMoveEvent += PutStone;
         this.panel.OnReturnMoveEvent += Return;
 
-        this.panel.OnResignEvent += SaveReplayJson;
         this.panel.OnResignEvent += BoardReset;
     }
     private void PutStone()

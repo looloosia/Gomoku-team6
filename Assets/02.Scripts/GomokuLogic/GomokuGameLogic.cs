@@ -110,12 +110,9 @@ public class GomokuGameLogic
         if (currentState.Type == PlayerType.Black)
             CheckForbiddenPostions(virtualBoard, currentState.Type, BOARD_SIZE);
 
-
-
         gomokuBoard.UpdateBlock(virtualBoard);
         isStart = true;
         
-
         turnStateManager.SetState(newState);
     }
 

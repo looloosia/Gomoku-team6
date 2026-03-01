@@ -188,4 +188,15 @@ public class AccountManager
         if (rank >= 1 && rank <= 4) return 10;
         return 3;
     }
+
+    // 기보 추가 및 저장 로직
+    public void AddReplayDataAndSave(ReplaySaveData replayData)
+    {
+        if (CurrentUser == null) return;
+
+        CurrentUser.replayHistory.Add(replayData);
+        repository.Save(CurrentUser); // 로컬 영구 저장!
+        
+        Debug.Log("기보 데이터가 성공적으로 로컬에 저장되었습니다.");
+    }
 }

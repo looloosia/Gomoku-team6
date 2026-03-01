@@ -27,27 +27,11 @@ public class ReplayBoard : MonoBehaviour
     {
         this.dicBlocks = this.boardGenerator.GenerateBoard();
 
-        this.onLoadReplayData = LoadReplayData;
-
         EventsInit();
-
-        //Test
-        TestReadJson();
     }
-    //Test
-    private void TestReadJson()
-    {
-        string fileName = "Replay_26-02-26_22-51-34";
-        string folderPath = Application.dataPath + "/Replay";
-        string filePath = folderPath + $"/{fileName}.json";
-
-        string json = File.ReadAllText(filePath);
-        ReplaySaveData loadData = JsonUtility.FromJson<ReplaySaveData>(json);
-        
-        LoadReplayData(loadData.listRecordFrameData);
-    }
-    private void LoadReplayData(List<ReplayFrameData> frameData)
-    {
+    
+    private void SetReplayData(List<ReplayFrameData> frameData)
+    { 
         this.listRecordFrame = frameData;
     }
     private void SetBoardFromReplayData(ReplayFrameData frameData)
@@ -101,5 +85,7 @@ public class ReplayBoard : MonoBehaviour
         this.recordPanelCR.OnLastMoveEvent += LastFrame;
         this.recordPanelCR.OnNextMoveEvent += NextFrame;
         this.recordPanelCR.OnPrevMoveEvent += PrevFrame;
+
+        this.onLoadReplayData += SetReplayData;
     }
 }

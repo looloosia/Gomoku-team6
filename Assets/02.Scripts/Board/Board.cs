@@ -15,6 +15,11 @@ public class Board : MonoBehaviour
     [SerializeField]
     private GamePanelController panel;
     
+    //temp
+    [SerializeField]
+    private Button btnSave;
+
+    [SerializeField]
     private PlayerType currentType;
 
     //���� ��
@@ -33,6 +38,14 @@ public class Board : MonoBehaviour
         this.dicBlocks = this.boardGenerator.GenerateBoard();
 
         InitEvents();
+        SaveReplayFrame();
+
+        //test
+        this.btnSave.onClick.AddListener(() =>
+        {
+            SaveReplayJson();
+            BoardReset();
+        });
     }
     
     void Update()
@@ -45,7 +58,6 @@ public class Board : MonoBehaviour
     public void SetCurrentStone(PlayerType type)
     {
         this.currentType = type;
-        SaveReplayFrame();
     }
     public void UpdateBlock(PlayerType[,] virtualBoard)
     {
@@ -105,6 +117,7 @@ public class Board : MonoBehaviour
         this.panel.OnConfirmMoveEvent += PutStone;
         this.panel.OnReturnMoveEvent += Return;
 
+        this.panel.OnResignEvent += SaveReplayJson;
         this.panel.OnResignEvent += BoardReset;
     }
     private void PutStone()
@@ -121,6 +134,8 @@ public class Board : MonoBehaviour
 
         this.currentBlock = null;
 
+        //����
+        SaveReplayFrame();
     }
     private void Return()
     {
@@ -130,31 +145,55 @@ public class Board : MonoBehaviour
         this.currentBlock.ResetStone();
         this.currentBlock = null;
     }
-    
+    private void SaveReplayJson()
+    {
+        string fileName = DateTime.Now.ToString("yy-MM-dd_HH-mm-ss");
+        string replayName = DateTime.Now.ToString("(yy/MM/dd) HH:mm:ss");
+        
+        ReplaySaveData data = new ReplaySaveData
+        {
+            // [���� �̸�]
+            listRecordFrameData = this.listReplayFrame,
+            recordName = DateTime.Now.ToString("yy-MM-dd_HH-mm-ss"),
+
+            // [��¥]
+            date = DateTime.Now.ToString("yyyy-MM-dd"),
+            time = DateTime.Now.ToString("HH:mm"),
+
+            // [���� ����]
+            gameType = GameType.SinglePlay, 
+
+            // [���� ����]
+            nickName = "",              // ���� �г���
+            rank = "",                   // ���� �޼�
+
+            // [��� �� ���]
+            result = GameResult.None,         
+            resultType = GameResultType.None, 
+
+            winStoneType = PlayerType.None,   
+            myStoneType = PlayerType.None,    
+
+            totalStone = TotalStoneCount()
+        };
+        
+        string json = JsonUtility.ToJson(data, true);
+
+        string folderPath = Application.dataPath + "/Replay";
+        string filePath = folderPath + $"/Replay_{fileName}.json";
+        File.WriteAllText(filePath, json);
+
+        Debug.Log("���� ���� �Ϸ�! ���: " + filePath);
+    }
     private void SaveReplayFrame()
     {
-        BlockData[] blocks = this.dicBlocks.Values.Select(x =>
-        {
-            BlockData originalData = x.GetBlockData();
-
-            if (originalData.markerType == PlayerType.Forbidden)
-            {
-                return new BlockData()
-                {
-                    markerType = PlayerType.None,
-                    row = originalData.row,
-                    col = originalData.col
-                };
-            }
-
-            return originalData;
-        }).ToArray();
+        BlockData[] blocks = this.dicBlocks.Values.Select(x => x.GetBlockData()).ToArray();
 
         ReplayFrameData frameData = new ReplayFrameData(blocks);
 
         this.listReplayFrame.Add(frameData);
     }
-    public int TotalStoneCount()
+    private int TotalStoneCount()
     {
         int count = 0;
 
@@ -169,10 +208,6 @@ public class Board : MonoBehaviour
         }
 
         return count;
-    }
-    public List<ReplayFrameData> ReplayFrameDatas()
-    {
-        return new List<ReplayFrameData>(this.listReplayFrame);
     }
     private void BoardReset()
     {

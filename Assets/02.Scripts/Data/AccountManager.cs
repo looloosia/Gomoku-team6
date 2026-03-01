@@ -192,11 +192,15 @@ public class AccountManager
     // 기보 추가 및 저장 로직
     public void AddReplayDataAndSave(ReplaySaveData replayData)
     {
-        if (CurrentUser == null) return;
+        if (CurrentUser == null) 
+        {
+            Debug.LogError("유저 정보를 불러올 수 없습니다. 로그인을 해주세요");
+            return;
+        }
 
         CurrentUser.replayHistory.Add(replayData);
         repository.Save(CurrentUser); // 로컬 영구 저장!
         
-        Debug.Log("기보 데이터가 성공적으로 로컬에 저장되었습니다.");
+        Debug.Log($"기보 데이터가 성공적으로 저장되었습니다. 현재 총 기보 개수: {CurrentUser.replayHistory.Count}개");
     }
 }

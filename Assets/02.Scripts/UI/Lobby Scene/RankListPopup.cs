@@ -11,7 +11,7 @@ public class RankListPopup : BasePopup
 
     public override void Show()
     {
-        Debug.Log("RecordListPopup의 Show() 함수가 호출되었습니다!");
+        Debug.Log("RankListPopup의 Show() 함수가 호출되었습니다!");
         base.Show();
         LoadAllRankJson();
     }
@@ -33,14 +33,21 @@ public class RankListPopup : BasePopup
         {
             RankResponse response = JsonUtility.FromJson<RankResponse>(json);
             RankData[] rankDatas = response.rankDatas;
-
-            foreach(RankData data in rankDatas)
+            int num = 1;
+            foreach (RankData data in rankDatas)
             {
+                string rankNum = "";
+                if (num <= 3)
+                    rankNum = num.ToString();
+                else
+                    rankNum = "";
 
                 GameObject obj = Instantiate(this.objPrefab, this.parent);
                 RankContent content = obj.GetComponent<RankContent>();
 
-                content.Init(data.id, data.nickname, data.rank);
+                content.Init(rankNum, data.nickname, data.rank);
+
+                num++;
             }
         });
     }

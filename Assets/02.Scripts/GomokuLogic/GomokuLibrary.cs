@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using static Constants;
-using static UnityEditor.PlayerSettings;
 //큐로 기보 가능할지도 (포지션, 돌 타입)
 
 

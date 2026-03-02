@@ -44,7 +44,7 @@ public class Board : MonoBehaviour
     public void SetCurrentStone(PlayerType type)
     {
         this.currentType = type;
-        SaveReplayFrame();
+        //SaveReplayFrame();
     }
     public void UpdateBlock(PlayerType[,] virtualBoard)
     {
@@ -125,7 +125,7 @@ public class Board : MonoBehaviour
         this.currentBlock = null;
     }
 
-    private void SaveReplayFrame()
+    public void SaveReplayFrame()
     {
         BlockData[] blocks = this.dicBlocks.Values.Select(x =>
         {

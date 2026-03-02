@@ -30,7 +30,7 @@ public class Board : MonoBehaviour
     void Awake()
     {
         this.dicBlocks = this.boardGenerator.GenerateBoard();
-
+        SaveReplayFrame();
         InitEvents();
     }
 
@@ -110,11 +110,6 @@ public class Board : MonoBehaviour
     {
         if (this.currentBlock == null)
             return;
-
-        if (this.currentType == PlayerType.Black)
-            this.currentBlock.SetBlackStone();
-        else if (this.currentType == PlayerType.White)
-            this.currentBlock.SetWhiteStone();
 
         this.onPlaceStone?.Invoke(this.currentBlock);
 

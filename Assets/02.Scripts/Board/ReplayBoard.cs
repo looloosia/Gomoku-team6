@@ -30,21 +30,6 @@ public class ReplayBoard : MonoBehaviour
         this.onLoadReplayData = LoadReplayData;
 
         EventsInit();
-
-        //Test
-        TestReadJson();
-    }
-    //Test
-    private void TestReadJson()
-    {
-        string fileName = "Replay_26-02-26_22-51-34";
-        string folderPath = Application.dataPath + "/Replay";
-        string filePath = folderPath + $"/{fileName}.json";
-
-        string json = File.ReadAllText(filePath);
-        ReplaySaveData loadData = JsonUtility.FromJson<ReplaySaveData>(json);
-        
-        LoadReplayData(loadData.listRecordFrameData);
     }
     private void LoadReplayData(List<ReplayFrameData> frameData)
     {

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1168217529845603101}
   - component: {fileID: 3582627309160144669}
   m_Layer: 5
-  m_Name: '[Text] Play Data'
+  m_Name: '[Text] Ranking'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -149,7 +149,7 @@ GameObject:
   - component: {fileID: 2137805473505635095}
   - component: {fileID: 20401282418578536}
   m_Layer: 5
-  m_Name: '[Text] Play Data (2)'
+  m_Name: '[Text] Rank'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -286,7 +286,7 @@ GameObject:
   - component: {fileID: 1851216986329682797}
   - component: {fileID: 4938946869453392611}
   - component: {fileID: 694645782889224202}
-  - component: {fileID: 3215199636548723562}
+  - component: {fileID: 4680256896253009181}
   m_Layer: 5
   m_Name: Rank
   m_TagString: Untagged
@@ -380,7 +380,7 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &3215199636548723562
+--- !u!114 &4680256896253009181
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -389,12 +389,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 9142425419650975889}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d608e98d8769bcd41bf51431ade22f9c, type: 3}
+  m_Script: {fileID: 11500000, guid: 3086f098cfea2e94098ab2013bf101d4, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Rank
-  txtRanking: {fileID: 0}
-  txtNickname: {fileID: 0}
-  txtRank: {fileID: 0}
+  m_EditorClassIdentifier: Assembly-CSharp::RankContent
+  txtRanking: {fileID: 3582627309160144669}
+  txtNickname: {fileID: 4567988845928895531}
+  txtRank: {fileID: 20401282418578536}
 --- !u!1 &9201822118969295022
 GameObject:
   m_ObjectHideFlags: 0
@@ -407,7 +407,7 @@ GameObject:
   - component: {fileID: 2552840887144209841}
   - component: {fileID: 4567988845928895531}
   m_Layer: 5
-  m_Name: '[Text] Play Data (1)'
+  m_Name: '[Text] Nickname'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

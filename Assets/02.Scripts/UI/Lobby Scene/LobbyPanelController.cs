@@ -57,8 +57,8 @@ public class LobbyPanelController : MonoBehaviour
 
     void BindButtons()
     {
-        playGameBtn.onClick.AddListener(() => {gameOptionPopup.SetActive(true);});
-        playerRecodeBtn.onClick.AddListener(() => 
+        playGameBtn.BindEventWithSound(() => {gameOptionPopup.SetActive(true);});
+        playerRecodeBtn.BindEventWithSound(() => 
         { 
             gameRecordPopup.SetActive(true);
             // gameRecordPopup에 붙어있는 스크립트를 찾아서 Show()를 실행합니다.
@@ -68,11 +68,11 @@ public class LobbyPanelController : MonoBehaviour
             else
                 gameRecordPopup.SetActive(true);  // 혹시 모르니 스크립트가 없으면 화면이라도 켭니다.
         });
-        rankBtn.onClick.AddListener(ShowRankPopup);
-        storeBtn.onClick.AddListener(ChangeSceneStore);
-        settingBtn.onClick.AddListener(ShowSettingPopup);
-        backBtn.onClick.AddListener(ChangeSceneMain);
-        playerinfoBtn.onClick.AddListener(() => {playerInfoPopup.SetActive(true);});
+        rankBtn.BindEventWithSound(ShowRankPopup);
+        storeBtn.BindEventWithSound(ChangeSceneStore);
+        settingBtn.BindEventWithSound(ShowSettingPopup);
+        backBtn.BindEventWithSound(ChangeSceneMain);
+        playerinfoBtn.BindEventWithSound(() => {playerInfoPopup.SetActive(true);});
     }
 
     private void UpdateUserProfile()

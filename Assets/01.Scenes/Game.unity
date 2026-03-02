@@ -350,7 +350,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1013800887
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2752,7 +2752,7 @@ MonoBehaviour:
   m_text: "Player A\uC758 \uD134"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: aede691b9ba6fac4ebc0c07efd2373cd, type: 2}
-  m_sharedMaterial: {fileID: -8920307732825691148, guid: aede691b9ba6fac4ebc0c07efd2373cd, type: 2}
+  m_sharedMaterial: {fileID: -2912052202862912144, guid: aede691b9ba6fac4ebc0c07efd2373cd, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3285,7 +3285,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535

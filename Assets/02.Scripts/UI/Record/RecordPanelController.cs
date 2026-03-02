@@ -32,22 +32,22 @@ public class RecordPanelController : MonoBehaviour
     private void BindButtons()
     {
         // 하단 복기 컨트롤 버튼 연결
-        firstBtn.onClick.AddListener(() => OnFirstMoveEvent?.Invoke());
-        prevBtn.onClick.AddListener(() => OnPrevMoveEvent?.Invoke());
-        nextBtn.onClick.AddListener(() => OnNextMoveEvent?.Invoke());
-        lastBtn.onClick.AddListener(() => OnLastMoveEvent?.Invoke());
+        firstBtn.BindEventWithSound(() => OnFirstMoveEvent?.Invoke());
+        prevBtn.BindEventWithSound(() => OnPrevMoveEvent?.Invoke());
+        nextBtn.BindEventWithSound(() => OnNextMoveEvent?.Invoke());
+        lastBtn.BindEventWithSound(() => OnLastMoveEvent?.Invoke());
 
         // 복기 종료 버튼: 만능 팝업창 띄우기!
-        exitReviewBtn.onClick.AddListener(OnClickExitReview);
+        exitReviewBtn.BindEventWithSound(OnClickExitReview);
         
         // 설정 버튼
-        settingBtn.onClick.AddListener(() => UIManager.Instance.OpenSettingPopup());
+        settingBtn.BindEventWithSound(() => UIManager.Instance.OpenSettingPopup());
     }
 
     private void OnClickExitReview()
     {
         ConfirmPopup popup = UIManager.Instance.OpenConfirmPopup();
-        popup.Show("복기를 종료하시겠습니까?", "", "취소", null, "확인", () => 
+        popup.Show("", "복기를 종료하시겠습니까?", "취소", null, "확인", () => 
         {
             GameManager.Instance.ChangeToLobbyScene();
         });

@@ -24,8 +24,8 @@ public class GameOptionPopup : BasePopup
 
     private void BindButtons()
     {
-        playAiBtn.onClick.AddListener(OnClickPlayAi);
-        playMultiBtn.onClick.AddListener(OnClickPlayMulti);
+        playAiBtn.BindEventWithSound(OnClickPlayAi);
+        playMultiBtn.BindEventWithSound(OnClickPlayMulti);
     }
 
     private void OnClickPlayAi()

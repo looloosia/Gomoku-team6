@@ -20,9 +20,9 @@ public class MarkerSelectPanelController : MonoBehaviour
 
     private void BindButtons()
     {
-        blackMarkerBtn.onClick.AddListener(() => OnClickMarker(MarkerChoice.Black));
-        whiteMarkerBtn.onClick.AddListener(() => OnClickMarker(MarkerChoice.White));
-        randomMarkerBtn.onClick.AddListener(() => OnClickMarker(MarkerChoice.Random));
+        blackMarkerBtn.BindEventWithSound(() => OnClickMarker(MarkerChoice.Black));
+        whiteMarkerBtn.BindEventWithSound(() => OnClickMarker(MarkerChoice.White));
+        randomMarkerBtn.BindEventWithSound(() => OnClickMarker(MarkerChoice.Random));
     }
 
     private void OnClickMarker(MarkerChoice choice)

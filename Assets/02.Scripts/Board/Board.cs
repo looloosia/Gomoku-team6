@@ -114,7 +114,6 @@ public class Board : MonoBehaviour
         this.onPlaceStone?.Invoke(this.currentBlock);
 
         this.currentBlock = null;
-
     }
     private void Return()
     {

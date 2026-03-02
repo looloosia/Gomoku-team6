@@ -14,7 +14,7 @@ public class LobbyPanelController : MonoBehaviour
 
     [SerializeField] private GameObject gameOptionPopup;
     [SerializeField] private GameObject gameRecordPopup;
-    // [SerializeField] private RankPopup rankPopup;
+    [SerializeField] private GameObject rankPopup;
     [SerializeField] private GameObject playerInfoPopup;
     
     [Header("Buttons")]
@@ -58,20 +58,11 @@ public class LobbyPanelController : MonoBehaviour
     void BindButtons()
     {
         playGameBtn.BindEventWithSound(() => {gameOptionPopup.SetActive(true);});
-        playerRecodeBtn.BindEventWithSound(() => 
-        { 
-            gameRecordPopup.SetActive(true);
-            // gameRecordPopup에 붙어있는 스크립트를 찾아서 Show()를 실행합니다.
-            var popupScript = gameRecordPopup.GetComponent<RecordListPopup>();
-            if (popupScript != null)
-                popupScript.Show(); 
-            else
-                gameRecordPopup.SetActive(true);  // 혹시 모르니 스크립트가 없으면 화면이라도 켭니다.
-        });
+        playerRecodeBtn.BindEventWithSound(ShowRecordPopup);
         rankBtn.BindEventWithSound(ShowRankPopup);
         storeBtn.BindEventWithSound(ChangeSceneStore);
-        settingBtn.BindEventWithSound(ShowSettingPopup);
-        backBtn.BindEventWithSound(ChangeSceneMain);
+        settingBtn.BindEventWithSound(() => {UIManager.Instance.OpenSettingPopup();});
+        backBtn.BindEventWithSound(() => {GameManager.Instance.ChangeToMainScene();});
         playerinfoBtn.BindEventWithSound(() => {playerInfoPopup.SetActive(true);});
     }
 
@@ -97,23 +88,30 @@ public class LobbyPanelController : MonoBehaviour
         }
     }
 
+    private void ShowRecordPopup()
+    {
+        gameRecordPopup.SetActive(true);
+        // gameRecordPopup에 붙어있는 스크립트를 찾아서 Show()를 실행합니다.
+        var popupScript = gameRecordPopup.GetComponent<RecordListPopup>();
+        if (popupScript != null)
+            popupScript.Show(); 
+        else
+            gameRecordPopup.SetActive(true);  // 혹시 모르니 스크립트가 없으면 화면이라도 켭니다.
+    }
+
     private void ShowRankPopup()
     {
-        // 서버내 플레이어들의 랭킹 팝업창 띄우기
+        rankPopup.SetActive(true);
+        // gameRankPopup에 붙어있는 스크립트를 찾아서 Show()를 실행합니다.
+        var popupScript = rankPopup.GetComponent<RecordListPopup>();
+        if (popupScript != null)
+            popupScript.Show(); 
+        else
+            rankPopup.SetActive(true);  // 혹시 모르니 스크립트가 없으면 화면이라도 켭니다.
     }
 
     private void ChangeSceneStore()
     {
         // 상점 씬으로 이동
-    }
-
-    private void ShowSettingPopup()
-    {
-        UIManager.Instance.OpenSettingPopup();
-    }
-
-    private void ChangeSceneMain()
-    {
-        GameManager.Instance.ChangeToMainScene();
     }
 }

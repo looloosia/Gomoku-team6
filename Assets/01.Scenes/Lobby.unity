@@ -244,6 +244,7 @@ MonoBehaviour:
   popupCanvas: {fileID: 1304235620}
   gameOptionPopup: {fileID: 717626149}
   gameRecordPopup: {fileID: 1455228793}
+  rankPopup: {fileID: 592555358}
   playerInfoPopup: {fileID: 1704914828}
   playGameBtn: {fileID: 850040057}
   playerRecodeBtn: {fileID: 1368433366}
@@ -4145,7 +4146,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0005588533}
+  m_AnchoredPosition: {x: 0, y: 0.00038711567}
   m_SizeDelta: {x: 0, y: 460}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &945791677

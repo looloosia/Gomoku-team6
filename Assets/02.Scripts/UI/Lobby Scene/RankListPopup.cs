@@ -24,7 +24,7 @@ public class RankListPopup : BasePopup
 
     private void LoadAllRankJson()
     {
-        NetworkManager.Instance.Res("rank", (json) =>
+        NetworkManager.Instance.Res("/user", (json) =>
         {
             RankResponse response = JsonUtility.FromJson<RankResponse>(json);
             RankData[] rankDatas = response.rankDatas;
@@ -39,4 +39,5 @@ public class RankListPopup : BasePopup
             }
         });
     }
+
 }

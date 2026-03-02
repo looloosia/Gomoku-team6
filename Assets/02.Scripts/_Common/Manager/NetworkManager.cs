@@ -69,24 +69,6 @@ public class NetworkManager : Singleton<NetworkManager>
             }
         }
     }
-    public void SignUp(RankData data)
-    {
-        string json = JsonUtility.ToJson(data);
 
-        Req("user", json, (response) =>
-        {
-            Debug.Log("유저: " + response);
-
-            RankResponse res = JsonUtility.FromJson<RankResponse>(response);
-            if (res != null && res.cmd == 200)
-            {
-                Debug.Log("가입 완료");
-            }
-            else
-            {
-                Debug.LogWarning("가입 실패: " + res.message);
-            }
-        });
-    }
     protected override void OnSceneLoad(Scene scene, LoadSceneMode mode) { }
 }

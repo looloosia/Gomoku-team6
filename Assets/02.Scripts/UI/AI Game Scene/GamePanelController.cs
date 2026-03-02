@@ -34,12 +34,12 @@ public class GamePanelController : MonoBehaviour
         // 처음엔 보드에 돌이 없으니 착수/무르기 비활성화
         SetActionButtonsInteractable(false);
 
-        confirmBtn.onClick.AddListener(() => { OnConfirmMoveEvent?.Invoke(); });
+        confirmBtn.BindEventWithSound(() => { OnConfirmMoveEvent?.Invoke(); });
 
-        returnBtn.onClick.AddListener(() => { OnReturnMoveEvent?.Invoke(); });
+        returnBtn.BindEventWithSound(() => { OnReturnMoveEvent?.Invoke(); });
 
-        resignBtn.onClick.AddListener(OnClickResign);
-        settingBtn.onClick.AddListener(OnClickSetting);
+        resignBtn.BindEventWithSound(OnClickResign);
+        settingBtn.BindEventWithSound(OnClickSetting);
     }
 
     private void OnClickResign()
@@ -79,7 +79,7 @@ public class GamePanelController : MonoBehaviour
         TimeSpan time = TimeSpan.FromSeconds(timeLeft);
         timerText.text = time.ToString(@"mm\:ss");
     
-        timerText.color = (timeLeft <= 5) ? Color.red : Color.black;
+        timerText.color = (timeLeft <= 5) ? Color.red : Color.white;
     }
 
     public void OnStoneTemporarilyPlaced()

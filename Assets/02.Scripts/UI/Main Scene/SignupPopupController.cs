@@ -16,9 +16,9 @@ public class SignupPopupController : MonoBehaviour
 
     private void BindButtons()
     {
-        view.idDuplicateBtn.onClick.AddListener(OnClickCheckDuplicate);
-        view.registerBtn.onClick.AddListener(OnClickRegister);
-        view.cancelBtn.onClick.AddListener(OnClickCancel);
+        view.idDuplicateBtn.BindEventWithSound(OnClickCheckDuplicate);
+        view.registerBtn.BindEventWithSound(OnClickRegister);
+        view.cancelBtn.BindEventWithSound(OnClickCancel);
     }
 
     // 이메일 중복 확인 버튼

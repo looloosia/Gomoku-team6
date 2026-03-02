@@ -36,7 +36,7 @@ public class NicknameEditPopup : BasePopup
 
     private void BindButtons()
     {
-        confirmBtn.onClick.AddListener(OnClickConfirmBtn);
+        confirmBtn.BindEventWithSound(OnClickConfirmBtn);
     }
 
     private void OnClickConfirmBtn()

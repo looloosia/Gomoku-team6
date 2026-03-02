@@ -44,7 +44,6 @@ public class RecordContent : MonoBehaviour
         totalMovesTxt.text = $"{data.totalStone}수";
 
         // 복기 버튼 이벤트 연결
-        reviewBtn.onClick.RemoveAllListeners();
-        reviewBtn.onClick.AddListener(() => onClickReview?.Invoke(data));
+        reviewBtn.BindEventWithSound(() => onClickReview?.Invoke(data));
     }
 }

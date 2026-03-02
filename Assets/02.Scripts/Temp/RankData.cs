@@ -6,6 +6,7 @@ public class RankData
 {
     public string id;
     public string nickname;
+    public string rank;
 }
 
 [Serializable]

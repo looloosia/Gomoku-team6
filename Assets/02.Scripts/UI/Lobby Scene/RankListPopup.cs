@@ -24,6 +24,11 @@ public class RankListPopup : BasePopup
 
     private void LoadAllRankJson()
     {
+        foreach (Transform child in this.parent)
+        {
+            Destroy(child.gameObject);
+        }
+
         NetworkManager.Instance.Res("rank", (json) =>
         {
             RankResponse response = JsonUtility.FromJson<RankResponse>(json);

@@ -10,12 +10,12 @@ public class NetworkManager : Singleton<NetworkManager>
     [Header("서버 주소 설정")]
     private string server = "https://pricilla-multibranched-photochemically.ngrok-free.dev/";
 
-    public void Res(string type, UnityAction<string> onSuccess, UnityAction<string> onError = null)
+    public void Res(string type, UnityAction<string> onSuccess = null, UnityAction<string> onError = null)
     {
         StartCoroutine(GetCoroutine(type, onSuccess, onError));
     }
 
-    private IEnumerator GetCoroutine(string type, UnityAction<string> onSuccess, UnityAction<string> onError = null)
+    private IEnumerator GetCoroutine(string type, UnityAction<string> onSuccess = null, UnityAction<string> onError = null)
     {
         string url = server + type;
 
@@ -37,11 +37,11 @@ public class NetworkManager : Singleton<NetworkManager>
         }
     }
 
-    public void Req(string type, string jsonBody, UnityAction<string> onSuccess, UnityAction<string> onError = null)
+    public void Req(string type, string json, UnityAction<string> onSuccess = null, UnityAction<string> onError = null)
     {
-        StartCoroutine(PostCoroutine(type, jsonBody, onSuccess, onError));
+        StartCoroutine(PostCoroutine(type, json, onSuccess, onError));
     }
-    private IEnumerator PostCoroutine(string type, string json, UnityAction<string> success, UnityAction<string> error = null)
+    private IEnumerator PostCoroutine(string type, string json, UnityAction<string> onSuccess = null, UnityAction<string> onError = null)
     {
         string url = server + type;
 
@@ -59,13 +59,13 @@ public class NetworkManager : Singleton<NetworkManager>
             if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
             {
                 Debug.LogError($"통신 실패: {request.error}");
-                error?.Invoke(request.error); 
+                onError?.Invoke(request.error); 
             }
             else
             {
                 string responseText = request.downloadHandler.text;
                 Debug.Log($"응답 성공: {responseText}");
-                success?.Invoke(responseText);
+                onSuccess?.Invoke(responseText);
             }
         }
     }

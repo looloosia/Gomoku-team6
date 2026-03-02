@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
 using static Constants;
 using static GomokuLibrary;
 
@@ -49,7 +47,7 @@ public class GomokuGameLogic
         }
 
         PlayerType otherPlayerType = playerType == PlayerType.Black ? PlayerType.White : PlayerType.Black; //상대방 타입(멀티플레이일 경우 게스트)
-        SoundManager.Instance.PlaySFX(SFX.징소리E);
+        SoundManager.Instance.PlaySFX(SFX.JingE);
         //TODO: stoneonclick에서 쏠 액션을 받을 함수 연결, (state가 연결할 함수)
 
         switch (gameType)
@@ -112,7 +110,7 @@ public class GomokuGameLogic
 
         gomokuBoard.UpdateBlock(virtualBoard);
         isStart = true;
-        
+
         turnStateManager.SetState(newState);
     }
 
@@ -162,31 +160,54 @@ public class GomokuGameLogic
     }
     public void EndGame(BaseState playerState, Constants.GameResult gameResult)
     {
-        SoundManager.Instance.PlaySFX(SFX.징소리E);
+        SoundManager.Instance.PlaySFX(SFX.JingE);
         string colorOfWinner = "";
+        string title = "";
+        string subText = "";
 
         if (gameResult == Constants.GameResult.Win) //승리
         {
             colorOfWinner = playerState.Type == PlayerType.Black ? "흑" : "백"; //승리자 색
+            title = colorOfWinner + " 승리!";
 
             ConfirmPopup popup = UIManager.Instance.OpenConfirmPopup();
-            popup.Show(colorOfWinner + " 승리!", "오목을 완성하여 승리하였습니다.", "", null, "확인", () =>
+            subText = title + "오목을 완성하여 승리하였습니다.";
+            popup.Show(title, "오목을 완성하여 승리하였습니다.", "", null, "확인", () =>
+            {
+                GameManager.Instance.ChangeToLobbyScene();
+            });
+        }
+
+        else if (gameResult == Constants.GameResult.Lose) //패배(시간 초과 등)
+        {
+            colorOfWinner = playerState.Type == PlayerType.Black ? "백" : "흑"; //패배자의 상태 반대 색
+            title = colorOfWinner + " 승리!";
+
+            ConfirmPopup popup = UIManager.Instance.OpenConfirmPopup();
+            subText = title + "시간 초과로 승리하였습니다.";
+            popup.Show(title, "시간 초과로 승리하였습니다.", "", null, "확인", () =>
             {
                 GameManager.Instance.ChangeToLobbyScene();
             });
 
         }
 
-        else if (gameResult == Constants.GameResult.Lose) //패배(시간 초과 등)
+        // 기보 최종 포장 및 데이터 넘겨주기 위한 코드
+        ReplaySaveData finalRecord = ReplayManager.Instance.GetFinalRecord(
+        gameResult,
+        playerState.Type,
+        Constants.GameResultType.ConnectFive // (임시 승리조건)
+        );
+
+        // 기존 승패 결과 팝업창에게 정보를 넘기기 위한 코드
+        GameResultController resultController = UnityEngine.Object.FindFirstObjectByType<GameResultController>();
+        if (resultController != null)
         {
-            colorOfWinner = playerState.Type == PlayerType.Black ? "백" : "흑"; //패배자의 상태 반대 색
-
-            ConfirmPopup popup = UIManager.Instance.OpenConfirmPopup();
-            popup.Show(colorOfWinner+" 승리!", "상대가 시간 내에 착수하지 못해 승리하였습니다.", "", null, "확인", () =>
-            {
-                GameManager.Instance.ChangeToLobbyScene();
-            });
-
+            resultController.StartResultFlow(title, subText, finalRecord);
+        }
+        else
+        {
+            GameManager.Instance.ChangeToLobbyScene();
         }
 
 

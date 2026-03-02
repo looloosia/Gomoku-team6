@@ -33,9 +33,24 @@ public class RecordContent : MonoBehaviour
         string resultStr = (data.result == Constants.GameResult.Win) ? "승" :
                            (data.result == Constants.GameResult.Lose) ? "패" : "무승부";
         string winStoneStr = (data.winStoneType == Constants.PlayerType.Black) ? "흑" : "백";
+
+        string reasonStr = "";
+        switch (data.resultType)
+        {
+            case Constants.GameResultType.ConnectFive:
+                reasonStr = "5목";
+                break;
+            case Constants.GameResultType.TimeOut:
+                reasonStr = "시간초과";
+                break;
+            // 만약 나중에 기권(Resign) 같은 게 추가된다면 여기에 case를 늘려주시면 됩니다!
+            default:
+                reasonStr = "기권"; 
+                break;
+        }
         
         // (GameResultType은 '5목', '기권' 등의 Enum이라고 가정)
-        resultTxt.text = $"{resultStr} ({winStoneStr} {data.resultType})";
+        resultTxt.text = $"{resultStr} ({winStoneStr} {reasonStr})";
 
         // 내 돌 색상 이미지
         myMarkerImg.sprite = (data.myStoneType == Constants.PlayerType.Black) ? blackMarkerSprite : whiteMarkerSprite;

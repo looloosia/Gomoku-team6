@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8236827287721448963}
   - component: {fileID: 4771185235903547530}
-  - component: {fileID: 9073998506923954592}
   m_Layer: 0
   m_Name: TurnManager
   m_TagString: Untagged
@@ -45,15 +44,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa6d1a8df12249e084dd5052abef80e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurnStateManager
---- !u!114 &9073998506923954592
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6751448452482175575}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 659ae62ad9174058b32088ad06cfb111, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ForbiddensVisualizer

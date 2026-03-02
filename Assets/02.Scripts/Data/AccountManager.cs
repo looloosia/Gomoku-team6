@@ -81,6 +81,19 @@ public class AccountManager
         UserData newUser = new UserData(id, hashedPw, generatedNickname);
         repository.Save(newUser);
 
+        // 랭킹 서버 연동 파트: RankData 생성 및 전송
+        RankData newRankData = new RankData();
+        newRankData.id = newUser.id;
+        newRankData.nickname = newUser.nickname;
+        
+        // 중요: UserData의 rank는 int(18)이므로 ToString()으로 string("18") 변환!
+        newRankData.rank = newUser.rank.ToString(); 
+
+        if (NetworkManager.Instance != null)
+            NetworkManager.Instance.SignUp(newRankData);
+        else
+            Debug.LogWarning("NetworkManager 인스턴스를 찾을 수 없어 랭킹 서버에 등록하지 못했습니다.");
+
         return true;
     }
 

@@ -103,7 +103,7 @@ public class LobbyPanelController : MonoBehaviour
     {
         rankPopup.SetActive(true);
         // gameRankPopup에 붙어있는 스크립트를 찾아서 Show()를 실행합니다.
-        var popupScript = rankPopup.GetComponent<RecordListPopup>();
+        var popupScript = rankPopup.GetComponent<RankListPopup>();
         if (popupScript != null)
             popupScript.Show(); 
         else

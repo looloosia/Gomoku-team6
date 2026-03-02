@@ -19,5 +19,5 @@ public static class Constants
     public enum ForbiddenType { None, DoubleThree, DoubleFour, Overline } //3-3, 4-4
 
     public enum MarkerChoice { None, Black, White, Random };
-    public enum GameResultType { None, ConnectFive, Surrender }
+    public enum GameResultType { None, ConnectFive, TimeOut }
 }

@@ -23,9 +23,7 @@ public class Board : MonoBehaviour
 
     //key: �� ��ġ(row, col)
     private Dictionary<(int, int), Block> dicBlocks = new Dictionary<(int, int), Block>();
-    public Dictionary<(int, int), Block> DicBlocks => this.dicBlocks;
 
-    private List<ReplayFrameData> listReplayFrame = new List<ReplayFrameData>();
 
     public UnityAction<Block> onPlaceStone;
 
@@ -153,7 +151,7 @@ public class Board : MonoBehaviour
 
         ReplayFrameData frameData = new ReplayFrameData(blocks);
 
-        this.listReplayFrame.Add(frameData);
+        ReplayManager.Instance.AddMoveRecord(frameData);
     }
     public int TotalStoneCount()
     {
@@ -171,10 +169,6 @@ public class Board : MonoBehaviour
 
         return count;
     }
-    public List<ReplayFrameData> ReplayFrameDatas()
-    {
-        return new List<ReplayFrameData>(this.listReplayFrame);
-    }
     private void BoardReset()
     {
         foreach (Block block in this.dicBlocks.Values)
@@ -182,9 +176,6 @@ public class Board : MonoBehaviour
             block.ResetStone();
         }
 
-        if (this.listReplayFrame.Count > 1)
-        {
-            this.listReplayFrame.RemoveRange(1, this.listReplayFrame.Count - 1);
-        }
+        ReplayManager.Instance.ClearMoveRecord();
     }
 }

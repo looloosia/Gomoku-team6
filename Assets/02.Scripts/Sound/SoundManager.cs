@@ -6,14 +6,16 @@ using UnityEngine.UI;
 
 public enum BGM
 {
-    //background_music,
+    MasCafe,
+    SomniaVariation10,
     COUNT
 }
 
 public enum SFX
 {
     baduck_button_click,
-    Â¡¼Ò¸®E,
+    MenuSelectionClick,
+    JingE,
     COUNT
 }
 

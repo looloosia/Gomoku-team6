@@ -27,7 +27,7 @@ public abstract class BaseState
         if (gameLogic.PlaceMarker(_currentPlayerType, inRow, inCol))
         {
             var gameResult = gameLogic.CheckGameResult(_currentPlayerType, inRow, inCol);
-        
+            gameLogic.CaptureFrame();
             if (gameResult == Constants.GameResult.None)
             {
                 HandleNextTurn(gameLogic);
@@ -35,6 +35,13 @@ public abstract class BaseState
             else
             {
                 gameLogic.EndGame(this, gameResult);
+            }
+        }
+        else
+        {
+            if(ControllerType == Constants.ControllerType.AI)
+            {
+                gameLogic.EndGame(this, Constants.GameResult.Lose);//놓을 자리 없어 기권
             }
         }
     }

@@ -93,20 +93,27 @@ public class GomokuGameLogic
 
         currentState?.OnExit(this); //기존 스테이트 끝
         currentState = newState;
+        turnStateManager.SetState(currentState);
         currentState?.OnEnter(this);    //새로운 스테이트 시작
 
         //Debug.Log($"{currentState.Type}: CURRENTONENTER");
 
         gomokuBoard.SetCurrentStone(currentState.Type);
+
         //금수 자리 해제 및 새로 체크
         ClearForbiddenPositionCheck(virtualBoard);
         if (currentState.Type == PlayerType.Black)
             CheckForbiddenPostions(virtualBoard, currentState.Type, BOARD_SIZE);
 
+        //현 블록 상태 표시
         gomokuBoard.UpdateBlock(virtualBoard);
         isStart = true;
 
-        turnStateManager.SetState(newState);
+    }
+    public void CaptureFrame()
+    {
+        gomokuBoard.UpdateBlock(virtualBoard);
+        gomokuBoard.SaveReplayFrame();
     }
 
     public bool PlaceMarker(PlayerType playerType, int inRow, int inCol)
@@ -166,27 +173,38 @@ public class GomokuGameLogic
             winnerType = playerState.Type;
             title = colorOfWinner + " 승리!";
             subText = title + "오목을 완성하여 승리하였습니다.";
-            gomokuBoard.UpdateBlock(virtualBoard);
-            gomokuBoard.SetCurrentStone(winnerType);
+            //gomokuBoard.UpdateBlock(virtualBoard);
+           // gomokuBoard.SetCurrentStone(winnerType);
             resultType = GameResultType.ConnectFive;
         }
 
         else if (gameResult == Constants.GameResult.Lose) //패배(시간 초과 등)
         {
             colorOfWinner = playerState.Type == PlayerType.Black ? "백" : "흑"; //패배자의 상태 반대 색
-            winnerType = playerState.Type==PlayerType.Black?PlayerType.White:PlayerType.Black;
+            winnerType = playerState.Type == PlayerType.Black ? PlayerType.White : PlayerType.Black;
             title = colorOfWinner + " 승리!";
-            subText = title + "시간 초과로 승리하였습니다.";
-            gomokuBoard.UpdateBlock(virtualBoard);
-            gomokuBoard.SetCurrentStone(winnerType);
-            resultType = GameResultType.TimeOut;
+
+            if (playerState.ControllerType != ControllerType.AI)
+            {
+                subText = title + "시간 초과로 승리하였습니다.";
+                //gomokuBoard.UpdateBlock(virtualBoard);
+                //gomokuBoard.SetCurrentStone(winnerType);
+                resultType = GameResultType.TimeOut;
+            }
+            else
+            {
+                subText = title + "AI가 포기하였습니다!";
+               // gomokuBoard.UpdateBlock(virtualBoard);
+               // gomokuBoard.SetCurrentStone(winnerType);
+                resultType = GameResultType.Surrender;
+            }
         }
 
         // 기보 최종 포장 및 데이터 넘겨주기 위한 코드
         ReplaySaveData finalRecord = ReplayManager.Instance.GetFinalRecord(
         gameResult,
         playerState.Type,
-        resultType 
+        resultType
         );
 
         // 기존 승패 결과 팝업창에게 정보를 넘기기 위한 코드

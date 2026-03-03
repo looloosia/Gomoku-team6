@@ -10,8 +10,7 @@ using static Constants;
 /// </summary>
 public class GameManager : Singleton<GameManager>
 {
-    private bool isStoneSelected = false;
-    
+    #region Fields & Properties
     // 착수금지 표시 sprite
     [SerializeField]
     private Sprite forbiddenSprite;
@@ -51,7 +50,9 @@ public class GameManager : Singleton<GameManager>
         get { return _aiRank; }
         set { _aiRank = value; }
     }
-    
+    #endregion
+
+    #region Functions
     protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
     {
         // TODO: 돌 색상 선택되면 돌의 정보와 함께 유저 닉네임과 급수 인게임 메인 UI에 띄워야
@@ -137,7 +138,6 @@ public class GameManager : Singleton<GameManager>
 
     public void OnMarkerSelected(PlayerType finalType)
     {
-        isStoneSelected = true;
         _gamePlayerType = finalType;
 
         if (UIManager.Instance.GamePanelController == null)
@@ -146,4 +146,5 @@ public class GameManager : Singleton<GameManager>
         }
         NewGameLogic();
     }
+    #endregion
 }

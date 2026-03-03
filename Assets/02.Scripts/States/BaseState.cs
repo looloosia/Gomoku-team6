@@ -8,9 +8,6 @@ public abstract class BaseState
     protected Constants.ControllerType _controllerType;
     protected GomokuGameLogic _gameLogic;
     public  Constants.ControllerType ControllerType => _controllerType;
-
-    protected Board _board;
-
     protected BaseState(Constants.PlayerType playerType, Constants.ControllerType controllerType)
     {
         _currentPlayerType = playerType;

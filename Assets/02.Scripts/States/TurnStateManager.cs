@@ -29,9 +29,6 @@ public class TurnStateManager : MonoBehaviour
             // 턴 UI 변경
             string uiMessage = newState.ControllerType == ControllerType.Human ? "Player의 턴" : "AI의 턴";
             panel.UpdateTurnUI(uiMessage);
-        
-            // 타이머 UI 변경
-            panel.UpdateTimerUI(_remainingSeconds);
         }
         
         _counterRoutine = StartCoroutine(CounterRoutine(newState));

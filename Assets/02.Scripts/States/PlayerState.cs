@@ -17,13 +17,10 @@ public class PlayerState : BaseState
     {
         // Debug.Log("<color=red>OnEnter</color>");
         _gameLogic = gameLogic;
-        _board = GameManager.Instance.Board;
 
         _gameLogic.onBlockClicked = OnStonePlace;
         
         _gamePlayerType = GameManager.Instance.GamePlayerType;
-        // TODO: Turn UI 업데이트?
-        // UIManager.Instance.SetGameTurn(_currentPlayerType);
     }
 
     public override void HandleNextTurn(GomokuGameLogic gameLogic)

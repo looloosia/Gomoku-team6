@@ -51,7 +51,6 @@ public static class GomokuLibrary
         //TODO: 6
         if (CheckOverline(board, playerType, inRow, inCol, boardRange))
         {
-            //Debug.Log("OVERLINE");
             return Constants.ForbiddenType.Overline;
         }
 
@@ -64,7 +63,6 @@ public static class GomokuLibrary
         //TODO: 3-3인 경우 
         if (CheckDoubleThree(board, playerType, inRow, inCol, boardRange))
         {
-            //Debug.Log("DOUBLETHREE");
             return ForbiddenType.DoubleThree;
         }
         //TODO: 4-4
@@ -89,7 +87,6 @@ public static class GomokuLibrary
 
                 if (IsForbidden(board, playerType, r, c, boardRange) != ForbiddenType.None) //금수 자리면
                 {
-                    //Debug.Log($"FORBIDDENCHECK {r}, {c}");
                     board[r, c] = PlayerType.Forbidden; //둘 수 없도록 금수 위치 체크
                     forbiddenPositions.Enqueue(new Vector2Int(r, c));
                     retQueue.Enqueue(new Vector2Int(r, c));
@@ -122,9 +119,6 @@ public static class GomokuLibrary
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //AI구현
-
-    /// 수정해야할 수도 있는 부분
-    ///: Minimax함수에서 isMaximizing이 바뀔 때, playerType매개변수 부분에 otherplayerType을 넣는게 맞는지 확인해봐야 함
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private static int EvaluateScore(PlayerType[,] board, PlayerType playerType, int inRow, int inCol, int boardRange)
@@ -261,7 +255,6 @@ public static class GomokuLibrary
 
                     if (isEnemyWin)
                     {
-                        //Debug.Log($"상대: {aiType}: {r} {c}");
                         break;
                     }
                 }
@@ -271,7 +264,6 @@ public static class GomokuLibrary
             if (isEnemyWin)
             {
                 finalScore += 10000;
-                //Debug.Log($"{initRow} {initCol}: FAILURE");
             }
             return finalScore;
         }
@@ -364,11 +356,10 @@ public static class GomokuLibrary
                                 int rr = r + dr;
                                 int cc = c + dc;
 
-                                if (IsInRange(rr, cc, boardRange) && board[rr, cc] == PlayerType.None /*&&!visited[rr, cc]*/)
+                                if (IsInRange(rr, cc, boardRange) && board[rr, cc] == PlayerType.None)
                                 {
                                     candidates2.Add((rr, cc));
-                                    //candidates.Add((rr, cc));
-                                    //visited[rr, cc] = true;
+
                                 }
                             }
                         }
@@ -405,7 +396,7 @@ public static class GomokuLibrary
         {
             for (int c = cStart; c <= cEnd; c++)
             {
-                if ((r == inRow && c == inCol) || !IsInRange(r, c, BOARD_SIZE) || board[r, c] != PlayerType.None /*|| visited[r,c]*/)
+                if ((r == inRow && c == inCol) || !IsInRange(r, c, BOARD_SIZE) || board[r, c] != PlayerType.None )
                     continue;
                 else
                 {
@@ -415,11 +406,9 @@ public static class GomokuLibrary
         }
     }
 
-
-    ///<summary>
-    ///CountStones: 연속적으로 놓여있는 돌 개수 세는 함수
-    ///</summary>
-
+    /////////////////////////////
+    /// 금수, 오목 등 판정에 사용되는 함수들
+    ////////////////////////////
     private static int CountStones(PlayerType[,] board, PlayerType playerType, int inRow, int inCol, int boardRange, int dr, int dc)
     {
         int stoneCount = 0;
@@ -427,7 +416,6 @@ public static class GomokuLibrary
         int r = inRow + dr;
         int c = inCol + dc;
 
-        //Debug.Log("CountStones START");
         while (true)
         {
 
@@ -437,7 +425,6 @@ public static class GomokuLibrary
             }
             if (board[r, c] == playerType)
             {
-                //Debug.Log($"R: {r}, C: {c}");
                 stoneCount++;
 
                 r += dr;
@@ -446,11 +433,9 @@ public static class GomokuLibrary
             }
             else
             {
-                //Debug.Log($"OTHER TYPE R: {r}, C: {c}");
                 break;
             }
         }
-        //Debug.Log($"CountStones END: {stoneCount}");
         return stoneCount;
     }
     ///<summary>
@@ -465,17 +450,16 @@ public static class GomokuLibrary
             stoneCount = CountStones(board, playerType, inRow, inCol, boardRange, dir[0], dir[1]) + CountStones(board, playerType, inRow, inCol, boardRange, -1 * dir[0], -1 * dir[1]);
             if (stoneCount == 4)
             {
-                //Debug.Log("GOMOKU");
                 return true;
             }
-            //Debug.Log($"checkGomoku Result: {stoneCount}");
         }
         return false;
     }
 
+
     public static bool CheckOverline(PlayerType[,] board, PlayerType playerType, int inRow, int inCol, int boardRange) //장목 체크 
     {
-        //Debug.Log("장목 찾기");
+
         //놓은 돌 주변에 5개의 이상의 돌이 있다면 장목
         int stoneCount = 0;
         foreach (Vector2Int dir in directions)
@@ -483,10 +467,8 @@ public static class GomokuLibrary
             stoneCount = CountStones(board, playerType, inRow, inCol, boardRange, dir[0], dir[1]) + CountStones(board, playerType, inRow, inCol, boardRange, -1 * dir[0], -1 * dir[1]);
             if (stoneCount >= 5)
             {
-                //      Debug.Log("OVERLINE");
                 return true;
             }
-            //Debug.Log($"CheckOverline Result: {stoneCount}");
         }
         return false;
     }
@@ -586,7 +568,6 @@ public static class GomokuLibrary
         return isOmok;
     }
 
-    //나중에 4가 있으면 33이 안 되도록 하기
     public static bool CheckFour(PlayerType[,] board, PlayerType playerType, int inRow, int inCol, int boardRange)//4가 있는지 체크. 나중에 분리하기
     {
 
@@ -729,7 +710,6 @@ public static class GomokuLibrary
     public static void PutStone(PlayerType[,] board, PlayerType playerType, int inRow, int inCol, int boardRange)
     {
         board[inRow, inCol] = playerType;
-        //Debug.Log($"PUTSTONE: {inRow}, {inCol}");
     }
 
     private static void RemoveStone(PlayerType[,] board, int inRow, int inCol, int boardRange)

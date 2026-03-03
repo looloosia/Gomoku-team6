@@ -30,6 +30,8 @@
 /[Aa]ssets/Plugins/Editor/JetBrains*
 # Jetbrains Rider personal-layer settings
 *.DotSettings.user
+.idea/
+
 
 # Visual Studio cache directory
 .vs/
@@ -97,3 +99,29 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# --- Additional Custom Ignores ---
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Unity extra
+/[Aa]ssets/Replay/*.json
+/[Aa]ssets/Replay/*.json.meta
+/UserSettings/Search/
+.plastic/
+*.bak

@@ -147,7 +147,7 @@ public class AccountManager
 
         // 3. 통과! 데이터 업데이트
         repository.UpdateNickname(CurrentUser, newNickname);
-
+        NetworkManager.Instance.UpdateNickName(new RankData { id = CurrentUser.id, nickname = newNickname});
         OnUserDataUpdated?.Invoke();
 
         errorMsg = "닉네임이 성공적으로 변경되었습니다!";

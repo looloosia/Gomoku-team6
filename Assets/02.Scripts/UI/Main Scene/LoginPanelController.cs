@@ -15,6 +15,7 @@ public class LoginPanelController : MonoBehaviour
     [Header("Buttons")]
     [SerializeField] private Button signupBtn;
     [SerializeField] private Button loginBtn;
+    [SerializeField] private Button settingBtn;
 
     void Start()
     {
@@ -23,8 +24,9 @@ public class LoginPanelController : MonoBehaviour
 
     private void BindButtons()
     {
-        signupBtn.onClick.AddListener(OnClickShowSignupPopup);
-        loginBtn.onClick.AddListener(OnClickLogin);
+        signupBtn.BindEventWithSound(OnClickShowSignupPopup);
+        loginBtn.BindEventWithSound(OnClickLogin);
+        settingBtn.BindEventWithSound(() => {UIManager.Instance.OpenSettingPopup();});
     }
 
     private void OnClickShowSignupPopup()

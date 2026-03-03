@@ -13,7 +13,7 @@ public class ReplayBoard : MonoBehaviour
     private RecordPanelController recordPanelCR;
 
 
-    //key: ºí·° À§Ä¡(row, col)
+    //key: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡(row, col)
     private Dictionary<(int, int), Block> dicBlocks = new Dictionary<(int, int), Block>();
 
     private List<ReplayFrameData> listRecordFrame = new List<ReplayFrameData>();
@@ -30,21 +30,6 @@ public class ReplayBoard : MonoBehaviour
         this.onLoadReplayData = LoadReplayData;
 
         EventsInit();
-
-        //Test
-        TestReadJson();
-    }
-    //Test
-    private void TestReadJson()
-    {
-        string fileName = "Replay_26-02-26_22-51-34";
-        string folderPath = Application.dataPath + "/Replay";
-        string filePath = folderPath + $"/{fileName}.json";
-
-        string json = File.ReadAllText(filePath);
-        ReplaySaveData loadData = JsonUtility.FromJson<ReplaySaveData>(json);
-        
-        LoadReplayData(loadData.listRecordFrameData);
     }
     private void LoadReplayData(List<ReplayFrameData> frameData)
     {
@@ -82,7 +67,7 @@ public class ReplayBoard : MonoBehaviour
         if (this.listRecordFrame == null || this.listRecordFrame.Count == 0)
             return;
 
-        this.currentReplayframe = 0; // ÀÎµ¦½º¸¦ 0À¸·Î ÃÊ±âÈ­
+        this.currentReplayframe = 0; // ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
         ReplayFrameData frameToPlay = this.listRecordFrame[this.currentReplayframe];
         SetBoardFromReplayData(frameToPlay);
     }
@@ -91,7 +76,7 @@ public class ReplayBoard : MonoBehaviour
         if (this.listRecordFrame == null || this.listRecordFrame.Count == 0)
             return;
 
-        this.currentReplayframe = this.listRecordFrame.Count - 1; // ÀÎµ¦½º¸¦ ¸¶Áö¸·À¸·Î ¼³Á¤
+        this.currentReplayframe = this.listRecordFrame.Count - 1; // ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         ReplayFrameData frameToPlay = this.listRecordFrame[this.currentReplayframe];
         SetBoardFromReplayData(frameToPlay);
     }

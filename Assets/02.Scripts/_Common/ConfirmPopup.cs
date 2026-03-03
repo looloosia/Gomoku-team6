@@ -27,9 +27,9 @@ public class ConfirmPopup : BasePopup
     {
         base.Init(); // 닫기(X) 버튼은 부모가 알아서 처리
         
-        confirmBtn.onClick.AddListener(OnClickConfirm);
+        confirmBtn.BindEventWithSound(OnClickConfirm);
         if (cancelBtn != null)
-            cancelBtn.onClick.AddListener(OnClickCancel);
+            cancelBtn.BindEventWithSound(OnClickCancel);
     }
 
     // 외부(GameManager 등)에서 이 팝업을 띄울 때 부르는 함수, 만능 팝업창의 텍스트를 입맛대로 변경 가능

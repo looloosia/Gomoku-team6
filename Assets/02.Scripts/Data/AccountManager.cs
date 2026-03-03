@@ -81,6 +81,19 @@ public class AccountManager
         UserData newUser = new UserData(id, hashedPw, generatedNickname);
         repository.Save(newUser);
 
+        // 랭킹 서버 연동 파트: RankData 생성 및 전송
+        RankData newRankData = new RankData();
+        newRankData.id = newUser.id;
+        newRankData.nickname = newUser.nickname;
+        
+        // 중요: UserData의 rank는 int(18)이므로 ToString()으로 string("18") 변환!
+        newRankData.rank = newUser.rank.ToString(); 
+
+        if (NetworkManager.Instance != null)
+            NetworkManager.Instance.SignUp(newRankData);
+        else
+            Debug.LogWarning("NetworkManager 인스턴스를 찾을 수 없어 랭킹 서버에 등록하지 못했습니다.");
+
         return true;
     }
 
@@ -134,7 +147,7 @@ public class AccountManager
 
         // 3. 통과! 데이터 업데이트
         repository.UpdateNickname(CurrentUser, newNickname);
-
+        NetworkManager.Instance.UpdateNickName(new RankData { id = CurrentUser.id, nickname = newNickname});
         OnUserDataUpdated?.Invoke();
 
         errorMsg = "닉네임이 성공적으로 변경되었습니다!";
@@ -187,5 +200,20 @@ public class AccountManager
         if (rank >= 5 && rank <= 9) return 5;
         if (rank >= 1 && rank <= 4) return 10;
         return 3;
+    }
+
+    // 기보 추가 및 저장 로직
+    public void AddReplayDataAndSave(ReplaySaveData replayData)
+    {
+        if (CurrentUser == null) 
+        {
+            Debug.LogError("유저 정보를 불러올 수 없습니다. 로그인을 해주세요");
+            return;
+        }
+
+        CurrentUser.replayHistory.Add(replayData);
+        repository.Save(CurrentUser); // 로컬 영구 저장!
+        
+        Debug.Log($"기보 데이터가 성공적으로 저장되었습니다. 현재 총 기보 개수: {CurrentUser.replayHistory.Count}개");
     }
 }

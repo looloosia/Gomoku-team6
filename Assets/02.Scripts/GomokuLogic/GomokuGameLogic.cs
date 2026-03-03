@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
 using static Constants;
 using static GomokuLibrary;
 
@@ -10,7 +8,7 @@ public class GomokuGameLogic
     private PlayerType[,] virtualBoard;
     public PlayerType[,] VirtualBoard { get { return virtualBoard; } }
 
-    public Action<int, int> onBlockClicked;//½ºÅ×ÀÌÆ®°¡ ¹ŞÀ» ¾×¼Ç
+    public Action<int, int> onBlockClicked;//ìŠ¤í…Œì´íŠ¸ê°€ ë°›ì„ ì•¡ì…˜
     bool isStart = false;
 
     public BaseState playerAState;
@@ -25,11 +23,7 @@ public class GomokuGameLogic
 
     private Coroutine counterRoutine = null;
 
-    //½Â¸®, ÆĞ¹è ÆÇÁ¤ ¿ë ÀÓ½Ã Ä«¿îÅÍ º¯¼ö(»èÁ¦¿¹Á¤)
-    public int demoCounter = 5;
-
-
-    //Èæµ¹ÀÎÁö ¹éµ¹ÀÎÁö ¼±ÅÃ(Èæ: ¼±, ¹é: ÈÄ)
+    //í‘ëŒì¸ì§€ ë°±ëŒì¸ì§€ ì„ íƒ(í‘: ì„ , ë°±: í›„)
     public GomokuGameLogic(GameType gameType, PlayerType playerType, Board gomokuBoard, TurnStateManager turnStateManager)
     {
         virtualBoard = new PlayerType[BOARD_SIZE, BOARD_SIZE];
@@ -45,19 +39,18 @@ public class GomokuGameLogic
         }
         else
         {
-            Debug.LogError("À¯È¿ÇÑ º¸µå°¡ ¾ø½À´Ï´Ù");
+            Debug.LogError("Valid board doesn't exist.");
         }
 
-        PlayerType otherPlayerType = playerType == PlayerType.Black ? PlayerType.White : PlayerType.Black; //»ó´ë¹æ Å¸ÀÔ(¸ÖÆ¼ÇÃ·¹ÀÌÀÏ °æ¿ì °Ô½ºÆ®)
-
-        //TODO: stoneonclick¿¡¼­ ½ò ¾×¼ÇÀ» ¹ŞÀ» ÇÔ¼ö ¿¬°á, (state°¡ ¿¬°áÇÒ ÇÔ¼ö)
+        PlayerType otherPlayerType = playerType == PlayerType.Black ? PlayerType.White : PlayerType.Black; //ìƒëŒ€ íƒ€ì…
+        SoundManager.Instance.PlaySFX(SFX.JingE);
 
         switch (gameType)
         {
             case GameType.LocalDualPlay:
                 playerAState = new PlayerState(playerType);
                 playerBState = new PlayerState(otherPlayerType);
-                ////Èæµ¹ÀÎ Player¸ÕÀú ½ÃÀÛ
+                //í‘ëŒì¸ Playerë¨¼ì € ì‹œì‘
                 StartFirstState();
                 break;
 
@@ -65,7 +58,7 @@ public class GomokuGameLogic
                 playerAState = new PlayerState(playerType);
                 playerBState = new _02.Scripts.States.AIState(otherPlayerType);
 
-                //Ã¹ ÅÏÀÎ Player¸ÕÀú ½ÃÀÛ
+                //ì²« í„´ì¸ Playerë¨¼ì € ì‹œì‘
                 StartFirstState();
                 break;
 
@@ -74,7 +67,7 @@ public class GomokuGameLogic
 
     public void OnBlockClicked(Block block)
     {
-        Debug.Log("ONBLOCKCLICKED");
+        //Debug.Log("ONBLOCKCLICKED");
         int row = block.GetBlockData().row;
         int col = block.GetBlockData().col;
 
@@ -94,54 +87,58 @@ public class GomokuGameLogic
         isStart = true;
     }
 
-    //ÅÏ È¤Àº »óÅÂ°¡ ¹Ù²ğ ¶§ È£ÃâµÇ´Â ¸Ş¼­µå
+    //í„´ í˜¹ì€ ìƒíƒœê°€ ë°”ë€” ë•Œ í˜¸ì¶œë˜ëŠ” ë©”ì„œë“œ
     public void SetState(BaseState newState)
     {
 
-        currentState?.OnExit(this); //±âÁ¸ ½ºÅ×ÀÌÆ® ³¡
+        currentState?.OnExit(this); //ê¸°ì¡´ ìŠ¤í…Œì´íŠ¸ ë
         currentState = newState;
-        currentState?.OnEnter(this);    //»õ·Î¿î ½ºÅ×ÀÌÆ® ½ÃÀÛ
+        turnStateManager.SetState(currentState);
+        currentState?.OnEnter(this);    //ìƒˆë¡œìš´ ìŠ¤í…Œì´íŠ¸ ì‹œì‘
 
-        Debug.Log($"{currentState.Type}: CURRENTONENTER");
+        //Debug.Log($"{currentState.Type}: CURRENTONENTER");
+
         gomokuBoard.SetCurrentStone(currentState.Type);
 
-        //±İ¼ö ÀÚ¸® ÇØÁ¦ ¹× »õ·Î Ã¼Å©
+        //ê¸ˆìˆ˜ ìë¦¬ í•´ì œ ë° ìƒˆë¡œ ì²´í¬
         ClearForbiddenPositionCheck(virtualBoard);
         if (currentState.Type == PlayerType.Black)
             CheckForbiddenPostions(virtualBoard, currentState.Type, BOARD_SIZE);
 
-
-
+        //í˜„ ë¸”ë¡ ìƒíƒœ í‘œì‹œ
         gomokuBoard.UpdateBlock(virtualBoard);
         isStart = true;
-        
 
-        turnStateManager.SetState(newState);
+    }
+    public void CaptureFrame()
+    {
+        gomokuBoard.UpdateBlock(virtualBoard);
+        gomokuBoard.SaveReplayFrame();
     }
 
     public bool PlaceMarker(PlayerType playerType, int inRow, int inCol)
     {
-        if (virtualBoard[inRow, inCol] != Constants.PlayerType.None) //¹«¾ùÀÎ°¡ ÀÖ´Â °æ¿ì
+        if (virtualBoard[inRow, inCol] != Constants.PlayerType.None) //ë¬´ì—‡ì¸ê°€ ìˆëŠ” ê²½ìš°
         {
             if (virtualBoard[inRow, inCol] == Constants.PlayerType.Forbidden)
             {
-                Debug.Log("±İ¼ö ÀÚ¸®");
+                //Debug.Log("ê¸ˆìˆ˜ ìë¦¬");
             }
             else
-                Debug.Log("ºó Ä­¿¡ µ¹À» ³õ¾ÆÁÖ¼¼¿ä");
+            {
+                //Debug.Log("ë¹ˆ ì¹¸ì— ëŒì„ ë†“ì•„ì£¼ì„¸ìš”");
+            }
             return false;
         }
-        //if (RuleChecker(playerType, inRow, inCol) != ForbiddenType.None)
-        //    return false;
 
         virtualBoard[inRow, inCol] = playerType;
         return true;
     }
 
-    //ÅÏ º¯°æ
+    //í„´ ë³€ê²½
     public void ChangeGameState()
     {
-
+        SoundManager.Instance.PlaySFX(SFX.baduck_button_click);
         if (currentState == playerAState)
         {
             SetState(playerBState);
@@ -152,9 +149,9 @@ public class GomokuGameLogic
         }
     }
 
-    public Constants.GameResult CheckGameResult(Constants.PlayerType playerType, int inRow, int inCol) //ÀÎÇ²: ¹ÙµÏµ¹ ³õÀº ÁÂÇ¥ 
+    public Constants.GameResult CheckGameResult(Constants.PlayerType playerType, int inRow, int inCol) //ï¿½ï¿½Ç²: ï¿½ÙµÏµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ 
     {
-        //½Â¸® Á¶°Ç È®ÀÎ ·ÎÁ÷ ±¸Çö
+        //ìŠ¹ë¦¬ ì¡°ê±´ í™•ì¸ ë¡œì§ êµ¬í˜„
         if (CheckGomoku(virtualBoard, playerType, inRow, inCol, 15))
         {
             return Constants.GameResult.Win;
@@ -164,47 +161,68 @@ public class GomokuGameLogic
     }
     public void EndGame(BaseState playerState, Constants.GameResult gameResult)
     {
-
+        SoundManager.Instance.PlaySFX(SFX.JingE);
         string colorOfWinner = "";
-
-        if (gameResult == Constants.GameResult.Win) //½Â¸®
+        string title = "";
+        string subText = "";
+        PlayerType winnerType;
+        Constants.GameResultType resultType = GameResultType.ConnectFive;
+        if (gameResult == Constants.GameResult.Win) //ìŠ¹ë¦¬
         {
-            colorOfWinner = playerState.Type == PlayerType.Black ? "Èæ" : "¹é"; //½Â¸®ÀÚ »ö
-
-            ConfirmPopup popup = UIManager.Instance.OpenConfirmPopup();
-            popup.Show(colorOfWinner + "½Â¸®!", "¿À¸ñÀ» ¿Ï¼ºÇÏ¿© ½Â¸®ÇÏ¿´½À´Ï´Ù.", "", null, "È®ÀÎ", () =>
-            {
-                GameManager.Instance.ChangeToLobbyScene();
-            });
-
+            colorOfWinner = playerState.Type == PlayerType.Black ? "í‘" : "ë°±"; //ìŠ¹ë¦¬ì ìƒ‰
+            winnerType = playerState.Type;
+            title = colorOfWinner + " ìŠ¹ë¦¬!";
+            subText = title + "ì˜¤ëª©ì„ ì™„ì„±í•˜ì—¬ ìŠ¹ë¦¬í•˜ì˜€ìŠµë‹ˆë‹¤.";
+            //gomokuBoard.UpdateBlock(virtualBoard);
+           // gomokuBoard.SetCurrentStone(winnerType);
+            resultType = GameResultType.ConnectFive;
         }
 
-        else if (gameResult == Constants.GameResult.Lose) //ÆĞ¹è(½Ã°£ ÃÊ°ú µî)
+        else if (gameResult == Constants.GameResult.Lose) //íŒ¨ë°°(ì‹œê°„ ì´ˆê³¼ ë“±)
         {
-            colorOfWinner = playerState.Type == PlayerType.Black ? "¹é" : "Èæ"; //ÆĞ¹èÀÚÀÇ »óÅÂ ¹İ´ë »ö
+            colorOfWinner = playerState.Type == PlayerType.Black ? "ë°±" : "í‘"; //íŒ¨ë°°ìì˜ ìƒíƒœ ë°˜ëŒ€ ìƒ‰
+            winnerType = playerState.Type == PlayerType.Black ? PlayerType.White : PlayerType.Black;
+            title = colorOfWinner + " ìŠ¹ë¦¬!";
 
-            ConfirmPopup popup = UIManager.Instance.OpenConfirmPopup();
-            popup.Show(colorOfWinner+" ½Â¸®!", "»ó´ë°¡ ½Ã°£ ³»¿¡ Âø¼öÇÏÁö ¸øÇØ ½Â¸®ÇÏ¿´½À´Ï´Ù.", "", null, "È®ÀÎ", () =>
+            if (playerState.ControllerType != ControllerType.AI)
             {
-                GameManager.Instance.ChangeToLobbyScene();
-            });
+                subText = title + "ì‹œê°„ ì´ˆê³¼ë¡œ ìŠ¹ë¦¬í•˜ì˜€ìŠµë‹ˆë‹¤.";
+                //gomokuBoard.UpdateBlock(virtualBoard);
+                //gomokuBoard.SetCurrentStone(winnerType);
+                resultType = GameResultType.TimeOut;
+            }
+            else
+            {
+                subText = title + "AIê°€ í¬ê¸°í•˜ì˜€ìŠµë‹ˆë‹¤!";
+               // gomokuBoard.UpdateBlock(virtualBoard);
+               // gomokuBoard.SetCurrentStone(winnerType);
+                resultType = GameResultType.Surrender;
+            }
+        }
 
+        // ê¸°ë³´ ìµœì¢… í¬ì¥ ë° ë°ì´í„° ë„˜ê²¨ì£¼ê¸° ìœ„í•œ ì½”ë“œ
+        ReplaySaveData finalRecord = ReplayManager.Instance.GetFinalRecord(
+        gameResult,
+        playerState.Type,
+        resultType
+        );
+
+        // ê¸°ì¡´ ìŠ¹íŒ¨ ê²°ê³¼ íŒì—…ì°½ì—ê²Œ ì •ë³´ë¥¼ ë„˜ê¸°ê¸° ìœ„í•œ ì½”ë“œ
+        GameResultController resultController = UnityEngine.Object.FindFirstObjectByType<GameResultController>();
+        if (resultController != null)
+        {
+            resultController.StartResultFlow(title, subText, finalRecord);
+        }
+        else
+        {
+            GameManager.Instance.ChangeToLobbyScene();
         }
 
 
         turnStateManager.onEndGame -= EndGame;
-        //BoardÀÇ Action ÇØÁ¦.
+        gomokuBoard.onPlaceStone -= OnBlockClicked;
 
-        //GameManager.Instance.OpenConfirmPanel(resultString, () => { GameManager.Instance.ChangeToMainScene(); });
     }
 
-    //public ForbiddenType RuleChecker(Constants.PlayerType playerType, int inRow, int inCol)
-    //{
-    //    //3¸ñÀÎ °æ¿ì return ForbiddenType.Three;
-    //    //4¸ñÀÎ °æ¿ì return ForbiddenType.Four;
-    //    //Àå¸ñÀÎ °æ¿ì return ForbiddenType.Long;
 
-
-    //    return ForbiddenType.None;
-    //}
 }

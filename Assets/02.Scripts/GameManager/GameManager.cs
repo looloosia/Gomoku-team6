@@ -62,6 +62,11 @@ public class GameManager : Singleton<GameManager>
         if (scene.name == SCENE_GAME)
         {
             InitGameScene();
+            SoundManager.Instance.PlayBGM(BGM.SomniaVariation10);
+        }
+        else if (scene.name == SCENE_MAIN)
+        {
+            SoundManager.Instance.PlayBGM(BGM.MasCafe);
         }
     }
 
@@ -125,6 +130,10 @@ public class GameManager : Singleton<GameManager>
         }
         _gameLogic = new GomokuGameLogic(_gameType, _gamePlayerType, _board, _turnStateManager);
         Debug.Log($"<color=yellow>GameManager에서 GomokuGameLogic 생성함: {_gameType} gameType</color>");
+
+        // [추가] 기보 기록 시작
+        string opponentName = (_gameType == GameType.SinglePlay) ? "알파고(AI)" : "Player 2";
+        ReplayManager.Instance.StartRecording(_gameType, opponentName, "18", _gamePlayerType);
     }
 
     public void OnMarkerSelected(PlayerType finalType)

@@ -69,8 +69,8 @@ public class PlayerProfilePopup : BasePopup
 
     private void BindButtons()
     {
-        editProfileIconBtn.onClick.AddListener(OnClickEditIcon);
-        editNicknameBtn.onClick.AddListener(OnClickEditNickname);
+        editProfileIconBtn.BindEventWithSound(OnClickEditIcon);
+        editNicknameBtn.BindEventWithSound(OnClickEditNickname);
     }
 
     private void OnClickEditIcon()

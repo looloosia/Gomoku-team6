@@ -6,16 +6,13 @@ namespace _02.Scripts.States
     {
         public AIState(Constants.PlayerType playerType) : base(playerType, Constants.ControllerType.AI)
         {
-            Debug.Log("AI생성자: " + playerType);
         }
 
         // 한 턴이 시작될 때
         public override void OnEnter(GomokuGameLogic gameLogic)
         {
-            //GameManager.Instance.SetGameTurn(_currentPlayerType);
             
             (int, int)? bestMove = GomokuLibrary.GetBestMove(gameLogic.VirtualBoard, _currentPlayerType, 15);
-            Debug.Log("OnEnter AI: " + bestMove);
             
             if (bestMove.HasValue)
             {

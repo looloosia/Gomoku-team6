@@ -67,7 +67,6 @@ public class GomokuGameLogic
 
     public void OnBlockClicked(Block block)
     {
-        //Debug.Log("ONBLOCKCLICKED");
         int row = block.GetBlockData().row;
         int col = block.GetBlockData().col;
 
@@ -96,8 +95,6 @@ public class GomokuGameLogic
         turnStateManager.SetState(currentState);
         currentState?.OnEnter(this);    //새로운 스테이트 시작
 
-        //Debug.Log($"{currentState.Type}: CURRENTONENTER");
-
         gomokuBoard.SetCurrentStone(currentState.Type);
 
         //금수 자리 해제 및 새로 체크
@@ -118,16 +115,9 @@ public class GomokuGameLogic
 
     public bool PlaceMarker(PlayerType playerType, int inRow, int inCol)
     {
-        if (virtualBoard[inRow, inCol] != Constants.PlayerType.None) //무엇인가 있는 경우
+        if (virtualBoard[inRow, inCol] != Constants.PlayerType.None) //돌이 있거나 금수가 있는 경우
         {
-            if (virtualBoard[inRow, inCol] == Constants.PlayerType.Forbidden)
-            {
-                //Debug.Log("금수 자리");
-            }
-            else
-            {
-                //Debug.Log("빈 칸에 돌을 놓아주세요");
-            }
+
             return false;
         }
 
@@ -173,8 +163,6 @@ public class GomokuGameLogic
             winnerType = playerState.Type;
             title = colorOfWinner + " 승리!";
             subText = title + "오목을 완성하여 승리하였습니다.";
-            //gomokuBoard.UpdateBlock(virtualBoard);
-           // gomokuBoard.SetCurrentStone(winnerType);
             resultType = GameResultType.ConnectFive;
         }
 
@@ -187,15 +175,11 @@ public class GomokuGameLogic
             if (playerState.ControllerType != ControllerType.AI)
             {
                 subText = title + "시간 초과로 승리하였습니다.";
-                //gomokuBoard.UpdateBlock(virtualBoard);
-                //gomokuBoard.SetCurrentStone(winnerType);
                 resultType = GameResultType.TimeOut;
             }
             else
             {
                 subText = title + "AI가 포기하였습니다!";
-               // gomokuBoard.UpdateBlock(virtualBoard);
-               // gomokuBoard.SetCurrentStone(winnerType);
                 resultType = GameResultType.Surrender;
             }
         }

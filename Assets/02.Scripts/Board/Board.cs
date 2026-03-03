@@ -18,10 +18,10 @@ public class Board : MonoBehaviour
 
     private PlayerType currentType;
 
-    //���� ��
+    //현재 선택된 블록
     private Block currentBlock;
 
-    //key: �� ��ġ(row, col)
+    //key: 보드 좌표(row, col)
     private Dictionary<(int, int), Block> dicBlocks = new Dictionary<(int, int), Block>();
 
 
